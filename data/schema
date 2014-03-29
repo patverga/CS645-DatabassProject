@@ -5,13 +5,13 @@ forum.csv
  id(Long) | title(String) | creationDate(DateTime)    
 
 organisation.csv
- id(Long) | type(Integer) | name(String) | url(String)    
+ id(Long) | type(String) | name(String) | url(String)    
 
 person.csv
  id(Long) | firstName(String) | lastName(String) | gender(String) | birthday(Date) | creationDate(DateTime) | locationIP(String) | browserUsed(String)    
 
 place.csv
- id(Long) | name(String) | url(String) | type(Integer)
+ id(Long) | name(String) | url(String) | type(String)
 
 post.csv
  id(Long) | imageFile(String) | creationDate(DateTime) | locationIP(String) | browserUsed(String) | language(String) | content(String)

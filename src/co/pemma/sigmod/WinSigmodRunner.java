@@ -8,51 +8,107 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.deri.iris.Configuration;
+import org.deri.iris.EvaluationException;
+import org.deri.iris.KnowledgeBaseFactory;
+import org.deri.iris.api.IKnowledgeBase;
+import org.deri.iris.api.basics.IPredicate;
+import org.deri.iris.api.basics.IQuery;
+import org.deri.iris.api.basics.IRule;
+import org.deri.iris.api.basics.ITuple;
+import org.deri.iris.api.terms.IVariable;
+import org.deri.iris.compiler.Parser;
+import org.deri.iris.compiler.ParserException;
+import org.deri.iris.storage.IRelation;
+
 public class WinSigmodRunner 
 {
 	public static void main(String[] args)
 	{
-		Map<String, List<String>> schema = readSchema();
-		CreateRelations.readData("data/outputDir-1k");
-	}
+		//CreateRelations.readData("data/outputDir-1k");
+		
+		Configuration configuration = KnowledgeBaseFactory.getDefaultConfiguration();
+		configuration.externalDataSources.add(new SigmodDataSource());
+		
+		Parser parser = new Parser();
+		String poop = "q(?X, ?Y, ?Z) :- tag(?X, ?Y, ?Z).\r\n";
+		String program = "?-tag(?X, ?Y, ?Z).";
+		try {
+			parser.parse(program);
+			Map<IPredicate, IRelation> facts = parser.getFacts();
+			List<IRule> rules = parser.getRules();
+			
+			IKnowledgeBase knowledgeBase = KnowledgeBaseFactory.createKnowledgeBase(facts, rules, configuration );
+			
+			long duration = -System.currentTimeMillis();
+			StringBuilder output = new StringBuilder();
 
-	private static Map<String, List<String>> readSchema() 
-	{
-		Map<String, List<String>> schema = new HashMap<String, List<String>>();
-		String line;
-		try (BufferedReader reader = new BufferedReader(new FileReader("data/schema")))
-		{
-			String table = null, type;
-			List<String> columns = null;
-			while ((line = reader.readLine()) != null)
-			{			
-				// column names / types
-				if (line.startsWith(" "))
+			List<IVariable> variableBindings = new ArrayList<>();
+			for(IQuery query : parser.getQueries()){
+				duration = -System.currentTimeMillis();
+				IRelation results = knowledgeBase.execute( query, variableBindings );
+				duration += System.currentTimeMillis();
+
+				String BAR = "|";
+				String NEW_LINE = "\n";
+				boolean SHOW_ROW_COUNT = true;
+				boolean SHOW_QUERY_TIME = true;
+				boolean SHOW_VARIABLE_BINDINGS = true;
+				
+				output.append( BAR ).append( NEW_LINE );
+				output.append( "Query:      " ).append( query );
+				if( SHOW_ROW_COUNT )
 				{
-					for (String column : line.split("\\|"))
+					output.append( " ==>> " ).append( results.size() );
+					if( results.size() == 1 )
+						output.append( " row" );
+					else
+						output.append( " rows" );
+				}
+				if( SHOW_QUERY_TIME )
+					output.append( " in " ).append( duration ).append( "ms" );
+				
+				output.append( NEW_LINE );
+				
+				if( SHOW_VARIABLE_BINDINGS )
+				{
+					output.append( "Variables:  " );
+					boolean first = true;
+					for( IVariable variable : variableBindings )
 					{
-						type = column.substring(0, column.indexOf(")"));
-						type = type.substring(type.indexOf("(")+1, type.length());
-						System.out.print(type + " ");
-						columns.add(type);
+						if( first )
+							first = false;
+						else
+							output.append( ", " );
+						output.append( variable );
 					}
-					System.out.println();
-					schema.put(table, columns);
+					output.append( NEW_LINE );
 				}
-				// table name
-				else if (!line.equals("\\s+"))
-				{
-					table = line;
-					columns = new ArrayList<String>();
-				}
+			
+				formatResults( output, results );
 			}
-		} 
-		catch (IOException e) 
-		{
+			
+		} catch (ParserException | EvaluationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return schema;			
-
+		
+	
 	}
+	
+	/**
+	 * Format the actual query results (tuples).
+	 * @param builder
+	 * @param m
+	 */
+	private static void formatResults( StringBuilder builder, IRelation m )
+	{
+		for(int t = 0; t < m.size(); ++t )
+		{
+			ITuple tuple = m.get( t );
+			builder.append( tuple.toString() ).append( "\n" );
+		}
+    }
+
+
 }
