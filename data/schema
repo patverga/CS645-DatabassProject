@@ -1,196 +1,92 @@
-The Social Network Data Generator will create the following files
+comment.csv
+ id(Long) | creationDate(DateTime) | locationIP(String) | browserUsed(String) | content(String)    
 
-### Node files
-The following files contain information about the different nodes of the graph.
+forum.csv
+ id(Long) | title(String) | creationDate(DateTime)    
 
-**comment.csv**
+organisation.csv
+ id(Long) | type(Integer) | name(String) | url(String)    
 
-Contains information about the comments, such as the date of creation, the IP from which it was created, 
-the browser used and the content.
+person.csv
+ id(Long) | firstName(String) | lastName(String) | gender(String) | birthday(Date) | creationDate(DateTime) | locationIP(String) | browserUsed(String)    
 
-    id(Long) | creationDate(DateTime) | locationIP(String) | browserUsed(String) | content(String)    
+place.csv
+ id(Long) | name(String) | url(String) | type(Integer)
 
-**forum.csv**
+post.csv
+ id(Long) | imageFile(String) | creationDate(DateTime) | locationIP(String) | browserUsed(String) | language(String) | content(String)
 
-Contains information about the forums, such as the title and the date of creation.
+tagclass.csv
+  id(Long) | name(String) | url(String)    
 
-    id(Long) | title(String) | creationDate(DateTime)    
+tag.csv
+  id(Long) | name(String) | url(String)    
 
-**organisation.csv**
+person\_speaks\_language.csv
+  Person.id(Long) | language(Long)    
 
-Contains information about the organizations, such as the type (university or company), the name and the url of the organization's website.
+person_email_emailaddress.csv
+  Person.id(Long) | email(Long)    
 
-    id(Long) | type({"university", "company"}) | name(String) | url(String)    
+comment_hasCreator_person.csv
+  Comment.id(Long) | Person.id(Long)    
 
-**person.csv**
+comment_isLocatedIn_place.csv
+  Comment.id(Long) | Place.id(Long)    
 
-Contains information about persons, such as the first and last names, the gender, the birthday, the date of creation, the IP from which it was created and the browser used.
+comment_replyOf_comment.csv
+  Comment.id(Long) | Comment.id(Long)    
 
-    id(Long) | firstName(String) | lastName(String) | gender(String) | birthday(Date) | creationDate(DateTime) | locationIP(String) | browserUsed(String)    
+comment_replyOf_post.csv
+  Comment.id(Long) | Post.id(Long)    
 
-**place.csv**
+forum_containerOf_post.csv
+  Forum.id(Long) | Post.id(Long)    
 
-Contains information about the different places, such as the name, the url or the type of place (city, country or continent).
+forum_hasMember_person.csv
+  Forum.id(Long) | Person.id(Long) | joinDate(DateTime)    
 
-    id(Long) | name(String) | url(String) | type({"city", "country", "continent"})
+forum_hasModerator_person.csv
+  Forum.id(Long) | Person.id(Long)    
 
-**post.csv**
+forum_hasTag_tag.csv
+  Forum.id(Long) | Tag.id(Long)    
 
-Contains information about the posts, such as the image file it contains, the creation date, the IP from which it was created, the browser used, the language or the content.
+person_hasInterest_tag.csv
+  Person.id(Long) | Tag.id(Long)    
 
-    id(Long) | imageFile(String) | creationDate(DateTime) | locationIP(String) | browserUsed(String) | language(String) | content(String)
+person_isLocatedIn_place.csv
+  Person.id(Long) | Place.id(Long)    
 
-**tagclass.csv**
+person_knows_person.csv
+  Person.id(Long) | Person.id(Long)    
 
-Contains information about the different tag classes, such as the name and the url explaining the class.
+person_likes_post.csv
+  Person.id(Long) | Post.id(Long) | creationDate(DateTime)    
 
-    id(Long) | name(String) | url(String)    
+person_studyAt_organisation.csv
+  Person.id(Long) | Organisation.id(Long) | classYear(Integer)    
 
-**tag.csv**
+person_workAt_organisation.csv
+  Person.id(Long) | Organisation.id(Long) | workFrom(Integer)    
 
-Contains information about the different tags, such as the name and the url of the concept.
+place_isPartOf_place.csv
+  Place.id(Long) | Place.id(Long)    
 
-    id(Long) | name(String) | url(String)    
+post_hasCreator_person.csv
+  Post.id(Long) | Person.id(Long)    
 
-### Property files
-This set of files contain the properties of the nodes.
+post_hasTag_tag.csv
+  Post.id(Long) | Tag.id(Long)    
 
-**person\_speaks\_language.csv**
+post_isLocatedIn_place.csv
+  Post.id(Long) | Place.id(Long)
 
-Contains the languages each person speaks.
-    Person.id(Long) | language(Long)    
+tagclass_isSubclassOf_tagclass.csv
+  TagClass.id(Long) | TagClass.id(Long)    
 
-**person_email_emailaddress.csv**
+tag_hasType_tagclass.csv
+  Tag.id(Long) | TagClass.id(Long)    
 
-Contains the emails each person has.
-
-    Person.id(Long) | email(Long)    
-
-### Relationship files
-This files specify the relations between the different nodes.
-
-**comment_hasCreator_person.csv**
-
-Contains the hasCreator relationships, between comments and persons.
-
-    Comment.id(Long) | Person.id(Long)    
-
-**comment_isLocatedIn_place.csv**
-
-Contains the isLocatedIn relationships, between comments and places.
-
-    Comment.id(Long) | Place.id(Long)    
-
-**comment_replyOf_comment.csv**
-
-Contains the replyOf relationships, between comments and comments.
-
-    Comment.id(Long) | Comment.id(Long)    
-
-**comment_replyOf_post.csv**
-
-Contains the replyOf relationships, between comments and posts.
-
-    Comment.id(Long) | Post.id(Long)    
-
-**forum_containerOf_post.csv**
-
-Contains the containerOf relationships, between forums and posts.
-
-    Forum.id(Long) | Post.id(Long)    
-
-**forum_hasMember_person.csv**
-
-Contains the hasMember relationships, between forums and persons.
-
-    Forum.id|Person.id|joinDate    
-
-**forum_hasModerator_person.csv**
-
-Contains the hasModerator relationships, between forums and persons.
-
-    Forum.id(Long) | Person.id(Long)    
-
-**forum_hasTag_tag.csv**
-
-Contains the hasTag relationships, between forums and tags.
-
-    Forum.id(Long) | Tag.id(Long)    
-
-**person_hasInterest_tag.csv**
-
-Contains the hasInterest relationships, between persons and tags.
-
-    Person.id(Long) | Tag.id(Long)    
-
-**person_isLocatedIn_place.csv**
-
-Contains the isLocatedIn relationships, between persons and places.
-
-    Person.id(Long) | Place.id(Long)    
-
-**person_knows_person.csv**
-
-Contains the knows relationships, between persons and persons.
-
-    Person.id(Long) | Person.id(Long)    
-
-**person_likes_post.csv**
-
-Contains the likes relationships, between persons and posts. It also includes the creation date of the like.
-
-    Person.id(Long) | Post.id(Long) | creationDate(DateTime)    
-
-**person_studyAt_organisation.csv**
-
-Contains the studyAt relationships, between persons and organizations. It also specifies the year the student studied at the organization.
-
-    Person.id(Long) | Organisation.id(Long) | classYear(Integer)    
-
-**person_workAt_organisation.csv**
-
-Contains the workAt relationships, between persons and organizations. It also includes the year from which the persons worked at the given organization.
-
-    Person.id(Long) | Organisation.id(Long) | workFrom(Integer)    
-
-**place_isPartOf_place.csv**
-
-Contains the isPartOf relationships, between places and places.
-
-    Place.id(Long) | Place.id(Long)    
-
-**post_hasCreator_person.csv**
-
-Contains the hasCreator relationships, between posts and persons.
-
-    Post.id(Long) | Person.id(Long)    
-
-**post_hasTag_tag.csv**
-
-Contains the hasTag relationships, between posts and tags.
-
-    Post.id(Long) | Tag.id(Long)    
-
-**post_isLocatedIn_place.csv**
-
-Contains the isLocatedIn relationships, between posts and places.
-
-    Post.id(Long) | Place.id(Long)
-
-**tagclass_isSubclassOf_tagclass.csv**
-
-Contains the isSubclassOf relationships, between tagClasses.
-
-    TagClass.id|TagClass.id    
-
-**tag_hasType_tagclass.csv**
-
-Contains the hasType relationships, between tags and classes.
-
-    Tag.id(Long) | TagClass.id(Long)    
-
-**organisation_isLocatedIn_place.csv**
-
-Contains the isLocatedIn relationships, between organizations and places.
-
-    Organisation.id(Long) | Place.id(Long)    
+organisation_isLocatedIn_place.csv
+  Organisation.id(Long) | Place.id(Long)    
