@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class ReadData 
+public class CreateRelations 
 {
 
 	public static void readData(String directoryString)
@@ -20,18 +20,33 @@ public class ReadData
 			}
 		}
 	}
-	
+
 	public static void parseFile(File file)
 	{
-		String header = "";
+		String[] header = null;
+		String line;
+
 		try (BufferedReader reader = new BufferedReader(new FileReader(file)))
 		{
-			if(header == null)
+			header = reader.readLine().split("|");
+			for (String col : header)
+				System.out.print(col);
+			System.out.println();
+			
+			while ((line = reader.readLine()) != null)
+			{			
+				createTuple(line.split("|"));				
+			}
 		} 
 		catch (IOException e) 
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private static void createTuple(String[] columns) 
+	{
+		
 	}
 }
