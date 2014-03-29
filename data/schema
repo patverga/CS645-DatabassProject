@@ -1,0 +1,196 @@
+The Social Network Data Generator will create the following files
+
+### Node files
+The following files contain information about the different nodes of the graph.
+
+**comment.csv**
+
+Contains information about the comments, such as the date of creation, the IP from which it was created, 
+the browser used and the content.
+
+    id(Long) | creationDate(DateTime) | locationIP(String) | browserUsed(String) | content(String)    
+
+**forum.csv**
+
+Contains information about the forums, such as the title and the date of creation.
+
+    id(Long) | title(String) | creationDate(DateTime)    
+
+**organisation.csv**
+
+Contains information about the organizations, such as the type (university or company), the name and the url of the organization's website.
+
+    id(Long) | type({"university", "company"}) | name(String) | url(String)    
+
+**person.csv**
+
+Contains information about persons, such as the first and last names, the gender, the birthday, the date of creation, the IP from which it was created and the browser used.
+
+    id(Long) | firstName(String) | lastName(String) | gender(String) | birthday(Date) | creationDate(DateTime) | locationIP(String) | browserUsed(String)    
+
+**place.csv**
+
+Contains information about the different places, such as the name, the url or the type of place (city, country or continent).
+
+    id(Long) | name(String) | url(String) | type({"city", "country", "continent"})
+
+**post.csv**
+
+Contains information about the posts, such as the image file it contains, the creation date, the IP from which it was created, the browser used, the language or the content.
+
+    id(Long) | imageFile(String) | creationDate(DateTime) | locationIP(String) | browserUsed(String) | language(String) | content(String)
+
+**tagclass.csv**
+
+Contains information about the different tag classes, such as the name and the url explaining the class.
+
+    id(Long) | name(String) | url(String)    
+
+**tag.csv**
+
+Contains information about the different tags, such as the name and the url of the concept.
+
+    id(Long) | name(String) | url(String)    
+
+### Property files
+This set of files contain the properties of the nodes.
+
+**person\_speaks\_language.csv**
+
+Contains the languages each person speaks.
+    Person.id(Long) | language(Long)    
+
+**person_email_emailaddress.csv**
+
+Contains the emails each person has.
+
+    Person.id(Long) | email(Long)    
+
+### Relationship files
+This files specify the relations between the different nodes.
+
+**comment_hasCreator_person.csv**
+
+Contains the hasCreator relationships, between comments and persons.
+
+    Comment.id(Long) | Person.id(Long)    
+
+**comment_isLocatedIn_place.csv**
+
+Contains the isLocatedIn relationships, between comments and places.
+
+    Comment.id(Long) | Place.id(Long)    
+
+**comment_replyOf_comment.csv**
+
+Contains the replyOf relationships, between comments and comments.
+
+    Comment.id(Long) | Comment.id(Long)    
+
+**comment_replyOf_post.csv**
+
+Contains the replyOf relationships, between comments and posts.
+
+    Comment.id(Long) | Post.id(Long)    
+
+**forum_containerOf_post.csv**
+
+Contains the containerOf relationships, between forums and posts.
+
+    Forum.id(Long) | Post.id(Long)    
+
+**forum_hasMember_person.csv**
+
+Contains the hasMember relationships, between forums and persons.
+
+    Forum.id|Person.id|joinDate    
+
+**forum_hasModerator_person.csv**
+
+Contains the hasModerator relationships, between forums and persons.
+
+    Forum.id(Long) | Person.id(Long)    
+
+**forum_hasTag_tag.csv**
+
+Contains the hasTag relationships, between forums and tags.
+
+    Forum.id(Long) | Tag.id(Long)    
+
+**person_hasInterest_tag.csv**
+
+Contains the hasInterest relationships, between persons and tags.
+
+    Person.id(Long) | Tag.id(Long)    
+
+**person_isLocatedIn_place.csv**
+
+Contains the isLocatedIn relationships, between persons and places.
+
+    Person.id(Long) | Place.id(Long)    
+
+**person_knows_person.csv**
+
+Contains the knows relationships, between persons and persons.
+
+    Person.id(Long) | Person.id(Long)    
+
+**person_likes_post.csv**
+
+Contains the likes relationships, between persons and posts. It also includes the creation date of the like.
+
+    Person.id(Long) | Post.id(Long) | creationDate(DateTime)    
+
+**person_studyAt_organisation.csv**
+
+Contains the studyAt relationships, between persons and organizations. It also specifies the year the student studied at the organization.
+
+    Person.id(Long) | Organisation.id(Long) | classYear(Integer)    
+
+**person_workAt_organisation.csv**
+
+Contains the workAt relationships, between persons and organizations. It also includes the year from which the persons worked at the given organization.
+
+    Person.id(Long) | Organisation.id(Long) | workFrom(Integer)    
+
+**place_isPartOf_place.csv**
+
+Contains the isPartOf relationships, between places and places.
+
+    Place.id(Long) | Place.id(Long)    
+
+**post_hasCreator_person.csv**
+
+Contains the hasCreator relationships, between posts and persons.
+
+    Post.id(Long) | Person.id(Long)    
+
+**post_hasTag_tag.csv**
+
+Contains the hasTag relationships, between posts and tags.
+
+    Post.id(Long) | Tag.id(Long)    
+
+**post_isLocatedIn_place.csv**
+
+Contains the isLocatedIn relationships, between posts and places.
+
+    Post.id(Long) | Place.id(Long)
+
+**tagclass_isSubclassOf_tagclass.csv**
+
+Contains the isSubclassOf relationships, between tagClasses.
+
+    TagClass.id|TagClass.id    
+
+**tag_hasType_tagclass.csv**
+
+Contains the hasType relationships, between tags and classes.
+
+    Tag.id(Long) | TagClass.id(Long)    
+
+**organisation_isLocatedIn_place.csv**
+
+Contains the isLocatedIn relationships, between organizations and places.
+
+    Organisation.id(Long) | Place.id(Long)    
