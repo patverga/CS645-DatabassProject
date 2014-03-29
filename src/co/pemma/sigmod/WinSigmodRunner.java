@@ -31,8 +31,11 @@ public class WinSigmodRunner
 		configuration.externalDataSources.add(new SigmodDataSource());
 		
 		Parser parser = new Parser();
-		String poop = "q(?X, ?Y, ?Z) :- tag(?X, ?Y, ?Z).\r\n";
-		String program = "?-tag(?X, ?Y, ?Z).";
+		//String program = "?-tag(?X, ?Y, ?Z).";
+		String program = "interests(?a,?b,?z) :- person_hasInterest_tag(?x, ?y), tag(?y, ?z, ?q), person(?x, ?a, ?b, ?c, ?d, ?e, ?f, ?g).\r\n ?-interests(?n,?i).\r\n";
+		//String program = "?-person_hasInterest_tag(?x, ?y).";
+//		String program = "?-person_hasInterest_tag(?x, ?y), tag(?y, ?z, ?q), person(?x, ?a, ?b, ?c, ?d, ?e, ?f, ?g).";
+		String poop = "poop(?X, ?Y, ?Z) :- tag(?X, ?Y, ?Z).\r\n ?-poop(?X, ?Y, ?Z).";
 		try {
 			parser.parse(program);
 			Map<IPredicate, IRelation> facts = parser.getFacts();
@@ -93,7 +96,6 @@ public class WinSigmodRunner
 			e.printStackTrace();
 		}
 		
-	
 	}
 	
 	/**
@@ -108,6 +110,8 @@ public class WinSigmodRunner
 			ITuple tuple = m.get( t );
 			builder.append( tuple.toString() ).append( "\n" );
 		}
+		System.out.println(builder);
+
     }
 
 

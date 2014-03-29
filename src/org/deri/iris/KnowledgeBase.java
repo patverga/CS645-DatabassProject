@@ -76,13 +76,18 @@ public class KnowledgeBase implements IKnowledgeBase
 		// Set up the facts object(s)
 		IFacts facts = new Facts( inputFacts, mConfiguration.relationFactory );
 		
-		if( mConfiguration.externalDataSources.size() > 0 )
-			facts = new FactsWithExternalData( facts, mConfiguration.externalDataSources );
+		if( mConfiguration.externalDataSources.size() > 0 ){
+			facts = new FactsWithExternalData(facts, mConfiguration.externalDataSources );
+			System.out.println("Added external data source");
+			System.out.println(facts.getPredicates().size() + " facts");
+			System.out.println("facts: " + facts.toString());
+		}
 		
 		mFacts = facts;
 		
 		// Check if the debug environment variable is set.
-		DEBUG = System.getenv( IRIS_DEBUG_FLAG ) != null;
+		//DEBUG = System.getenv( IRIS_DEBUG_FLAG ) != null;
+		DEBUG = true;
 		
 		if( DEBUG )
 		{

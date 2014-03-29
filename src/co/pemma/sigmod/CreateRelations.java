@@ -23,7 +23,7 @@ import org.deri.iris.terms.concrete.ConcreteFactory;
 public class CreateRelations 
 {
 	private static Map<String,List<String>> schema = readSchema();
-	
+
 	public static Map<String, List<String>> readSchema() 
 	{
 		Map<String, List<String>> schema = new HashMap<String, List<String>>();
@@ -61,7 +61,7 @@ public class CreateRelations
 		return schema;			
 
 	}
-	
+
 	public static void readData(String directoryString)
 	{
 		final File directory = new File(directoryString);
@@ -87,7 +87,7 @@ public class CreateRelations
 			for (String col : header)
 				System.out.print(col);
 			System.out.println();
-			
+
 			while ((line = reader.readLine()) != null)
 			{			
 				//createTuple(line.split("\\|"));				
@@ -100,21 +100,25 @@ public class CreateRelations
 		}
 		return tuples;
 	}
-	
+
 	public static List<ITuple> getTuples(String predicateName, ITuple from, ITuple to)
 	{
 		String[] header = null;
 		String line;
 		List<ITuple> tuples = new ArrayList<>();
-				
-		try (BufferedReader reader = new BufferedReader(new FileReader(new File("data/"+predicateName+".csv"))))
+
+		File file = new File("data/"+predicateName+".csv");
+		try (BufferedReader reader = new BufferedReader(new FileReader(file)))
 		{
 			reader.readLine();
 			while ((line = reader.readLine()) != null)
 			{		
 				ITuple newTuple = createTuple(predicateName, line.split("\\|"));
-				if(newTuple.compareTo(from) >= 0 && newTuple.compareTo(to) <= 0)
-					tuples.add(newTuple);
+				//				if((from == null || newTuple.compareTo(from) >= 0) && (to == null || newTuple.compareTo(to) <= 0))
+				//				{
+				System.out.println("Adding a tuple");
+				tuples.add(newTuple);
+				//				}
 			}
 		} 
 		catch (IOException e) 
@@ -130,35 +134,50 @@ public class CreateRelations
 		IConcreteFactory termFactory = ConcreteFactory.getInstance();
 		List<String> types = schema.get(predicateName);
 		List<ITerm> terms = new ArrayList<>();
-				
+
 		for(int i = 0; i < columns.length; i++){
 			switch(types.get(i)){
 			case "String":
 				terms.add(termFactory.createNormalizedString(columns[i]));
 				break;
-				
-			case "DateTime":
-				// 2012-10-15T08:43:48Z
+
+			case "Date":
+				// 2012-10-15
 				// int year, int month, int day, int hour,
 				// int minute, double second, int tzHour, int tzMinute
-				SimpleDateFormat dateFormatter = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm:ss'Z'");
+				SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 				Date date;
 				try {
 					date = dateFormatter.parse(columns[i]);
-					terms.add(termFactory.createDateTime(date.getYear(), date.getMonth(), 
-							date.getDay(), date.getHours(), date.getMinutes(), 
-							date.getSeconds(), 0, 0));
+					//System.out.println(columns[i] + " " + (date.getYear() + 1900) +" " + (date.getMonth()+1) + " " + date.getDate());
+					terms.add(termFactory.createDate(date.getYear() + 1900, date.getMonth()+1, date.getDate(), 0, 0));
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+				break;	
+
+			case "DateTime":
+				// 2012-10-15T08:43:48Z
+				// int year, int month, int day, int hour,
+				// int minute, double second, int tzHour, int tzMinute
+				SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm:ss'Z'");
+				Date dateTime;
+				try {
+					dateTime = dateTimeFormatter.parse(columns[i]);
+					terms.add(termFactory.createDateTime(dateTime.getYear()+1900, dateTime.getMonth()+1, 
+							dateTime.getDate(), dateTime.getHours(), dateTime.getMinutes(), 
+							dateTime.getSeconds(), 0, 0));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				break;
-				
+
 			case "Integer":
 				terms.add(termFactory.createInteger(Integer.parseInt(columns[i])));
 				break;
-				
+
 			case "Long":
 				terms.add(termFactory.createLong(Long.parseLong(columns[i])));
 				break;
