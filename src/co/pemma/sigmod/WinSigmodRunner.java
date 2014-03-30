@@ -21,13 +21,11 @@ public class WinSigmodRunner
 {
 	public static void main(String[] args)
 	{
-
-//		String program = "?-person_hasInterest_tag(?x, ?y), tag(?y, ?z, ?q), person(?x, ?a, ?b, ?c, ?d, ?e, ?f, ?g).";
-		String program = "poop(?a,?b,?z) :- person_hasInterest_tag(?x, ?y), tag(?y, ?z, ?q), person(?x, ?a, ?b, ?c, ?d, ?e, ?f, ?g).\r\n ?-poop(?a,?b,?z).\r\n";
-
-		//CreateRelations.readData("data/outputDir-1k");
+//		String program = "poop(?a,?b,?z) :- person_hasInterest_tag(?x, ?y), tag(?y, ?z, ?q), person(?x, ?a, ?b, ?c, ?d, ?e, ?f, ?g).\r\n ?-poop(?a,?b,?z).\r\n";
 		
-		runQuery(program);
+//		runQuery(program);
+		
+		query3(1,1,"Australia");
 		
 	}
 
@@ -129,7 +127,21 @@ public class WinSigmodRunner
 	 */
 	public static void query3(int k, int h, String p)
 	{
+		// get all places
+		String query = "all_locs(?locid) :- place(?locid, '"+p+"', ?x1, ?x2).\r\n"
+		+ "all_locs(?locid) :- all_locs(?parentlocid), place_isPartOf_place(?locid, ?parentlocid), place(?locid, ?name, ?x1, ?x2).\r\n"
+		+ "all_orgs(?orgid) :- organisation(?orgid, ?x1, ?x2, ?x3), organisation_isLocatedIn_place(?orgid, ?locid), all_locs(?locid).\r\n"
+		+ "loc_people(?pid) :- person_isLocatedIn_place(?pid, ?locid), all_locs(?locid).\r\n"
+		+ "org_people(?pid) :- person_workAt_organisation(?pid, ?orgid, ?x8), all_orgs(?orgid).\r\n"
+		+ "org_people(?pid) :- person_studyAt_organisation(?pid, ?orgid, ?x8), all_orgs(?orgid).\r\n"
 		
+		+ "all_people(?pid) :- loc_people(?pid).\r\n"
+		+ "all_people(?pid) :- org_people(?pid).\r\n";
+				
+		query += "?-org_people(?pid).\r\n?-loc_people(?pid).\r\n";
+
+		
+		runQuery(query);
 	}
 
 }
