@@ -164,5 +164,7 @@ public class WinSigmodRunner
 		System.out.println(query.toString());
 		return query.toString();
 	}
+	
+	
 
 }
