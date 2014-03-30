@@ -35,11 +35,11 @@ public class WinSigmodRunner
 //		query3(3, 2, "Egypt");
 //		query3(3, 2, "Italy");
 //		query3(5, 4, "Chengdu");
-		query3(3, 2, "Peru");
+//		query3(3, 2, "Peru");
 		query3(3, 2, "Democratic_Republic_of_the_Congo");
-		query3(7, 6, "Ankara");
-		query3(3, 2, "Luoyang");
-		query3(4, 3, "Taiwan");
+//		query3(7, 6, "Ankara");
+//		query3(3, 2, "Luoyang");
+//		query3(4, 3, "Taiwan");
 
 	}
 
@@ -99,11 +99,18 @@ public class WinSigmodRunner
 		+ "common_interests(?pid1,?pid2,'__null') :- all_hops(?pid1, ?pid2).\r\n"
 		+ "common_interests(?pid1,?pid2,?interest) :- all_hops(?pid1, ?pid2), person_hasInterest_tag(?pid1,?interest), person_hasInterest_tag(?pid2,?interest).\r\n"
 
-		+ "?-common_interests(?pid1,?pid2,?interest).\r\n";
+		//+ "?-common_interests(?pid1,?pid2,?interest).\r\n";
+		+ "?-all_people(?pid).\r\n";
 
+		
 		// get results from query
 		IRelation results = runQuery(query).get(0);
+		
+		for (int i = 0; i < results.size(); i++)
+			System.out.println(results.get(i).toString());
 
+		System.exit(0);
+		
 		// filter out duplicates and find top k shared interest pairs
 		Map<String, Integer> sharedInterestCounts = new HashMap<>();
 		ITuple tuple;
@@ -111,6 +118,7 @@ public class WinSigmodRunner
 		for (int i = 0; i < results.size(); i++)
 		{
 			tuple = results.get(i);
+			System.out.println(tuple.toString());
 			// skip self pairs
 			if (!tuple.get(0).equals(tuple.get(1)))
 			{
