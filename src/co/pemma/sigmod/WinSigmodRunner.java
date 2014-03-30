@@ -32,7 +32,7 @@ public class WinSigmodRunner
 		
 		Parser parser = new Parser();
 		//String program = "?-tag(?X, ?Y, ?Z).";
-		String program = "interests(?a,?b,?z) :- person_hasInterest_tag(?x, ?y), tag(?y, ?z, ?q), person(?x, ?a, ?b, ?c, ?d, ?e, ?f, ?g).\r\n ?-interests(?n,?i).\r\n";
+		String program = "interests(?a,?b,?z) :- person_hasInterest_tag(?x, ?y), tag(?y, ?z, ?q), person(?x, ?a, ?b, ?c, ?d, ?e, ?f, ?g).\r\n";
 		//String program = "?-person_hasInterest_tag(?x, ?y).";
 //		String program = "?-person_hasInterest_tag(?x, ?y), tag(?y, ?z, ?q), person(?x, ?a, ?b, ?c, ?d, ?e, ?f, ?g).";
 		String poop = "poop(?X, ?Y, ?Z) :- tag(?X, ?Y, ?Z).\r\n ?-poop(?X, ?Y, ?Z).";
@@ -42,6 +42,7 @@ public class WinSigmodRunner
 			List<IRule> rules = parser.getRules();
 			
 			IKnowledgeBase knowledgeBase = KnowledgeBaseFactory.createKnowledgeBase(facts, rules, configuration );
+			System.out.println(" T T ");
 			
 			long duration = -System.currentTimeMillis();
 			StringBuilder output = new StringBuilder();

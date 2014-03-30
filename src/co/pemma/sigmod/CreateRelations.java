@@ -103,7 +103,6 @@ public class CreateRelations
 
 	public static List<ITuple> getTuples(String predicateName, ITuple from, ITuple to)
 	{
-		String[] header = null;
 		String line;
 		List<ITuple> tuples = new ArrayList<>();
 
@@ -116,7 +115,6 @@ public class CreateRelations
 				ITuple newTuple = createTuple(predicateName, line.split("\\|"));
 				//				if((from == null || newTuple.compareTo(from) >= 0) && (to == null || newTuple.compareTo(to) <= 0))
 				//				{
-				System.out.println("Adding a tuple");
 				tuples.add(newTuple);
 				//				}
 			}

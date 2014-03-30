@@ -22,6 +22,7 @@
  */
 package org.deri.iris.facts;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.deri.iris.api.basics.ITuple;
 import org.deri.iris.api.terms.ITerm;
 import org.deri.iris.factory.Factory;
 import org.deri.iris.storage.IRelation;
+import com.sun.xml.internal.bind.v2.model.core.ID;
 
 
 public class FactsWithExternalData implements IFacts
@@ -44,48 +46,56 @@ public class FactsWithExternalData implements IFacts
 		mFacts = facts;
 		mExternalDataSources = new ArrayList<IDataSource>( externalDataSources );
 	}
-	
+
 
 	public IRelation get( IPredicate predicate )
-    {
-	    IRelation result = mFacts.get( predicate );
-	    
-	    System.out.println("doing an external data facts get");
-	    
-	    // If we haven't got the external data for this predicate yet...
-	    if( mExternalPredicatesAlreadyFetched.add( predicate ) )
-	    {
-	    	// ... then get it now.
-	    	System.out.println("fetching some shit");
-	    	ITuple from = Factory.BASIC.createTuple( new ITerm[ predicate.getArity() ] );
-	    	ITuple to   = Factory.BASIC.createTuple( new ITerm[ predicate.getArity() ] );
-	    	
-	    	for( IDataSource dataSource : mExternalDataSources )
-	    		dataSource.get( predicate, from, to, result );
+	{
+		IRelation result = mFacts.get( predicate );
 
-	    }
-	    
-	    return result;
-    }
+		System.out.println("doing an external data facts get");
+
+		// If we haven't got the external data for this predicate yet...
+		if( mExternalPredicatesAlreadyFetched.add( predicate ) )
+		{
+			File file = new File("data/"+predicate+".csv");
+			if ( file.exists())
+			{
+				// ... then get it now.
+				System.out.println("fetching some shit");
+				ITuple from = Factory.BASIC.createTuple( new ITerm[ predicate.getArity() ] );
+				ITuple to   = Factory.BASIC.createTuple( new ITerm[ predicate.getArity() ] );
+
+				for( IDataSource dataSource : mExternalDataSources )
+					dataSource.get( predicate, from, to, result );			
+			}
+		}
+
+		return result;
+	}
 
 
 	public Set<IPredicate> getPredicates()
-    {
-	    return mFacts.getPredicates();
-    }
+	{
+		return mFacts.getPredicates();
+	}
 
-    /**
-     * Return all facts. The format of the resulting string is parse-able.
-     * @return a parse-able string containing all facts
-     */
-    public String toString()
-    {
-    	return mFacts.toString();
-    }
+	/**
+	 * Return all facts. The format of the resulting string is parse-able.
+	 * @return a parse-able string containing all facts
+	 */
+	public String toString()
+	{
+		return mFacts.toString();
+	}
 
 	private final IFacts mFacts;
-	
+
 	private final List<IDataSource> mExternalDataSources;
 	
+	public List<IDataSource> getExternalSources()
+	{
+		return mExternalDataSources;
+	}
+
 	private Set<IPredicate> mExternalPredicatesAlreadyFetched = new HashSet<IPredicate>();
 }

@@ -30,6 +30,8 @@ import org.deri.iris.api.basics.IPredicate;
 import org.deri.iris.api.basics.ITuple;
 import org.deri.iris.evaluation.stratifiedbottomup.IRuleEvaluator;
 import org.deri.iris.facts.Facts;
+import org.deri.iris.facts.FactsWithExternalData;
+import org.deri.iris.facts.IDataSource;
 import org.deri.iris.facts.IFacts;
 import org.deri.iris.rules.compiler.ICompiledRule;
 import org.deri.iris.storage.IRelation;
@@ -42,7 +44,7 @@ public class SemiNaiveEvaluator implements IRuleEvaluator
 	public void evaluateRules( List<ICompiledRule> rules, IFacts facts, Configuration configuration ) throws EvaluationException
 	{
 		IFacts deltas = new Facts( configuration.relationFactory );
-		
+
 		// One pass with simple evaluation to generate deltas
 		// For each rule in the collection (stratum)
 		for (final ICompiledRule rule : rules )
@@ -55,26 +57,26 @@ public class SemiNaiveEvaluator implements IRuleEvaluator
 				deltas.get( predicate ).addAll( delta );
 			}
 		}
-		
+
 		// Update the facts
 		addAll( facts, deltas );
-		
+
 		// Now do iterative evaluation (semi-naive)
 		boolean newTuples;
 		for(;;)
 		{
 			newTuples = false;
-			
+
 			IFacts previousDeltas = deltas;
-			
+
 			deltas = new Facts( configuration.relationFactory );
-			
+
 			for (final ICompiledRule rule : rules )
 			{
 				IPredicate predicate = rule.headPredicate();
 
 				IRelation delta = rule.evaluateIteratively( previousDeltas );
-				
+
 				// Remove already known tuples
 				if( delta != null && delta.size() > 0 )
 				{
@@ -88,7 +90,7 @@ public class SemiNaiveEvaluator implements IRuleEvaluator
 					deltas.get( predicate ).addAll( delta );
 				}
 			}
-			
+
 			if( ! newTuples )
 				break;
 
@@ -105,7 +107,16 @@ public class SemiNaiveEvaluator implements IRuleEvaluator
 	private static void addAll( IFacts target, IFacts deltas )
 	{
 		for( IPredicate predicate : deltas.getPredicates() )
-			target.get( predicate ).addAll( deltas.get( predicate ) );
+		{
+			IRelation targetRelation = target.get( predicate ); 
+			targetRelation.addAll( deltas.get( predicate ) );
+
+			if (target.getClass() == FactsWithExternalData.class)
+			{
+				for( IDataSource dataSource :((FactsWithExternalData) target).getExternalSources() )
+					dataSource.put(predicate, target.get( predicate ));
+			}
+		}
 	}
 
 	/**
@@ -120,16 +131,16 @@ public class SemiNaiveEvaluator implements IRuleEvaluator
 		// If there is nothing to take away from, or just nothing to take-away...
 		if( delta.size() == 0 || programFacts.size() == 0 )
 			return delta;
-		
+
 		IRelation result = configuration.relationFactory.createRelation();
-		
+
 		for( int t = 0; t < delta.size(); ++ t )
 		{
 			ITuple tuple = delta.get( t );
 			if( ! programFacts.contains( tuple ) )
 				result.add( tuple );
 		}
-		
+
 		return result;
 	}
 }
