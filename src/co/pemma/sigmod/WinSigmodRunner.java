@@ -96,11 +96,11 @@ public class WinSigmodRunner
 		+ "all_people(?pid) :- loc_people(?pid).\r\n"
 		+ "all_people(?pid) :- org_people(?pid).\r\n"
 		+ genHopsQuery(h)
-		+ "common_interests(?pid1,?pid2,'__null') :- all_hops(?pid1, ?pid2).\r\n"
-		+ "common_interests(?pid1,?pid2,?interest) :- all_hops(?pid1, ?pid2), person_hasInterest_tag(?pid1,?interest), person_hasInterest_tag(?pid2,?interest).\r\n"
+		+ "common_interests(?pid1,?pid2,'__null') :- all_hops(?pid1, ?pid2), all_people(?pid1), all_people(?pid2).\r\n"
+		+ "common_interests(?pid1,?pid2,?interest) :- common_interests(?pid1, ?pid2, '__null'), person_hasInterest_tag(?pid1,?interest), person_hasInterest_tag(?pid2,?interest).\r\n"
 
 		//+ "?-common_interests(?pid1,?pid2,?interest).\r\n";
-		+ "?-all_people(?pid).\r\n";
+		+ "?-all_hops(?pid1, ?pid2).\r\n";
 
 		
 		// get results from query
@@ -165,9 +165,9 @@ public class WinSigmodRunner
 		for(int i = 0; i < h; ++i){
 			query.append("hop"+(i+1)+"(?pid0,?pid"+(i+1)+") :- ");
 			for(int j = 0; j < i+1; ++j){
-				query.append("all_people(?pid"+j+"), person_knows_person(?pid"+j+", ?pid"+(j+1)+"), ");
+				query.append("person(?pid"+j+", ?x1, ?x2, ?x3, ?x4, ?x5, ?x6, ?x7), person_knows_person(?pid"+j+", ?pid"+(j+1)+"), ");
 			}
-			query.append("all_people(?pid"+(i+1)+").\r\n");
+			query.append("person(?pid"+(i+1)+", ?x1, ?x2, ?x3, ?x4, ?x5, ?x6, ?x7).\r\n");
 			query.append("all_hops(?pid1,?pid2) :- hop"+(i+1)+"(?pid1,?pid2).\r\n");
 		}
 		System.out.println(query.toString());
