@@ -27,8 +27,7 @@ public class WinSigmodRunner
 		configuration.externalDataSources.add(new SigmodDataSource());
 		
 		Parser parser = new Parser();
-		
-//		String program = "?-tag(?X, ?Y, ?Z).";
+
 //		String program = "?-person_hasInterest_tag(?x, ?y), tag(?y, ?z, ?q), person(?x, ?a, ?b, ?c, ?d, ?e, ?f, ?g).";
 		String program = "poop(?a,?b,?z) :- person_hasInterest_tag(?x, ?y), tag(?y, ?z, ?q), person(?x, ?a, ?b, ?c, ?d, ?e, ?f, ?g).\r\n ?-poop(?a,?b,?z).\r\n";
 
@@ -44,6 +43,7 @@ public class WinSigmodRunner
 			
 			System.out.println("Constructing knowledge base...");
 			IKnowledgeBase knowledgeBase = KnowledgeBaseFactory.createKnowledgeBase(facts, rules, configuration );
+			System.out.println(" T T ");
 			
 			long duration = -System.currentTimeMillis();
 			StringBuilder output = new StringBuilder();

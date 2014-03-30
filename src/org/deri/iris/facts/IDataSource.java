@@ -59,5 +59,6 @@ public interface IDataSource {
 	 */
 	public void get(final IPredicate p, final ITuple from, final ITuple to, final IRelation r);
 
-	public void put(IPredicate p, IRelation r);
+	public void put(final IPredicate p, final IRelation r);
+
 }
