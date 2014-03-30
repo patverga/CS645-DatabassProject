@@ -127,7 +127,7 @@ public class WinSigmodRunner
 	 * @param h maximum number of hops between people
 	 * @param p place persons must be located in or work in
 	 */
-	public void query3(int k, int h, String p)
+	public static void query3(int k, int h, String p)
 	{
 		
 	}
