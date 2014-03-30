@@ -98,6 +98,7 @@ public class WinSigmodRunner
 		+ "all_people(?pid) :- loc_people(?pid).\r\n"
 		+ "all_people(?pid) :- org_people(?pid).\r\n"
 		+ genHopsQuery(h)
+		+ "common_interests(?pid1,?pid2,'__null') :- all_hops(?pid1, ?pid2).\r\n"
 		+ "common_interests(?pid1,?pid2,?interest) :- all_hops(?pid1, ?pid2), person_hasInterest_tag(?pid1,?interest), person_hasInterest_tag(?pid2,?interest).\r\n"
 
 		+ "?-common_interests(?pid1,?pid2,?interest).\r\n";
@@ -106,7 +107,7 @@ public class WinSigmodRunner
 		IRelation results = runQuery(query).get(0);
 
 		// filter out duplicates and find top k shared interest pairs
-		Map<String, Integer> sharedInterestCounts = new HashMap<>();;
+		Map<String, Integer> sharedInterestCounts = new HashMap<>();
 		ITuple tuple;
 		String pairKey;
 		for (int i = 0; i < results.size(); i++)
@@ -115,7 +116,7 @@ public class WinSigmodRunner
 			// skip self pairs
 			if (!tuple.get(0).equals(tuple.get(1)))
 			{
-				// filter out duplicates by skipping second in lexigraphical order
+				// filter out duplicates by skipping second in lexicographical order
 				if (tuple.get(0).compareTo(tuple.get(1)) < 0)
 				{
 					pairKey = tuple.get(0)+","+tuple.get(1);
