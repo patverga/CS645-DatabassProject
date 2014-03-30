@@ -31,6 +31,15 @@ public class WinSigmodRunner
 		//		runQuery(program);
 
 		query3(3, 2, "Asia");
+		query3(4, 3, "Indonesia");
+		query3(3, 2, "Egypt");
+		query3(3, 2, "Italy");
+		query3(5, 4, "Chengdu");
+		query3(3, 2, "Peru");
+		query3(3, 2, "Democratic_Republic_of_the_Congo");
+		query3(7, 6, "Ankara");
+		query3(3, 2, "Luoyang");
+		query3(4, 3, "Taiwan");
 
 	}
 
@@ -109,7 +118,7 @@ public class WinSigmodRunner
 				// filter out duplicates by skipping second in lexigraphical order
 				if (tuple.get(0).compareTo(tuple.get(1)) < 0)
 				{
-					pairKey = tuple.get(0)+"-"+tuple.get(1);
+					pairKey = tuple.get(0)+","+tuple.get(1);
 					if (sharedInterestCounts.containsKey(pairKey))
 						sharedInterestCounts.put(pairKey, sharedInterestCounts.get(pairKey)+1);
 					else
@@ -117,25 +126,30 @@ public class WinSigmodRunner
 				}
 			}
 		}
-		// get top k 
-		PriorityQueue<Pair<Integer, String>> topKPairs = new PriorityQueue<>(k);
-		
+		// get top k
+		SigmodComparator comp = new SigmodComparator();
+		PriorityQueue<Pair<Integer, String>> topKPairs = new PriorityQueue<>(k, comp);
 		for (String key : sharedInterestCounts.keySet())
 		{
+			ImmutablePair<Integer, String> newPair = new ImmutablePair<>(sharedInterestCounts.get(key), key);
 			if (topKPairs.size() < k) 
 			{
-				topKPairs.add(new ImmutablePair<Integer, String>(sharedInterestCounts.get(key), key));
+				topKPairs.add(newPair);
 			}				
-			else if(sharedInterestCounts.get(key) > topKPairs.peek().getLeft())
+			else if(comp.compare(newPair,topKPairs.peek()) > 0)
 			{
 				topKPairs.poll();
-				topKPairs.add(new ImmutablePair<Integer, String>(sharedInterestCounts.get(key), key));
+				topKPairs.add(newPair);
 			}
 		}
+		
+		ArrayList<Pair<Integer, String>> resultArray = new ArrayList<>(k);
 		while(!topKPairs.isEmpty())
 		{
-			System.out.println(topKPairs.poll().getRight());
+			resultArray.add(topKPairs.poll());
 		}
+		for(int i = k-1; i >= 0; --i)
+			System.out.println(resultArray.get(i).toString());
 	}
 
 	private static String genHopsQuery(int h) {
