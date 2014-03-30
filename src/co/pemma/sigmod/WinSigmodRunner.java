@@ -30,11 +30,11 @@ public class WinSigmodRunner
 
 		//		runQuery(program);
 
-		query3(3, 2, "Asia");
-		query3(4, 3, "Indonesia");
-		query3(3, 2, "Egypt");
-		query3(3, 2, "Italy");
-		query3(5, 4, "Chengdu");
+//		query3(3, 2, "Asia");
+//		query3(4, 3, "Indonesia");
+//		query3(3, 2, "Egypt");
+//		query3(3, 2, "Italy");
+//		query3(5, 4, "Chengdu");
 		query3(3, 2, "Peru");
 		query3(3, 2, "Democratic_Republic_of_the_Congo");
 		query3(7, 6, "Ankara");
@@ -68,9 +68,7 @@ public class WinSigmodRunner
 			List<IVariable> variableBindings = new ArrayList<>();
 			for(IQuery query : parser.getQueries())
 			{
-				long start = System.currentTimeMillis();
 				results.add(knowledgeBase.execute( query, variableBindings ));
-				System.out.println(System.currentTimeMillis() - start);
 			}
 
 		} catch (ParserException | EvaluationException e) {
@@ -123,7 +121,7 @@ public class WinSigmodRunner
 					if (sharedInterestCounts.containsKey(pairKey))
 						sharedInterestCounts.put(pairKey, sharedInterestCounts.get(pairKey)+1);
 					else
-						sharedInterestCounts.put(pairKey, 1);
+						sharedInterestCounts.put(pairKey, 0);
 				}
 			}
 		}
@@ -145,6 +143,7 @@ public class WinSigmodRunner
 		}
 		
 		ArrayList<Pair<Integer, String>> resultArray = new ArrayList<>(k);
+		System.out.println(topKPairs.size() + "  POOP");
 		while(!topKPairs.isEmpty())
 		{
 			resultArray.add(topKPairs.poll());
