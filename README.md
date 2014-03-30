@@ -16,4 +16,13 @@ Query 2
 
 Query 3
 ---------
-- 
+- Get all pairs of people h hops away from each other
+- Filter by either live in same location or work/associated with same location
+- For each pair count number of common interests
+- Take max k
+
+Query 4
+---------
+- Do all-pairs shortest paths where edges defined by sharing interests (members of same forum, given)
+- For each node, compute centrality: function of number of nodes reachable and lengths of those paths
+- Return k nodes with max centrality
