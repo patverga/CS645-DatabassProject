@@ -21,15 +21,22 @@ public class WinSigmodRunner
 {
 	public static void main(String[] args)
 	{
+
+//		String program = "?-person_hasInterest_tag(?x, ?y), tag(?y, ?z, ?q), person(?x, ?a, ?b, ?c, ?d, ?e, ?f, ?g).";
+		String program = "poop(?a,?b,?z) :- person_hasInterest_tag(?x, ?y), tag(?y, ?z, ?q), person(?x, ?a, ?b, ?c, ?d, ?e, ?f, ?g).\r\n ?-poop(?a,?b,?z).\r\n";
+
 		//CreateRelations.readData("data/outputDir-1k");
 		
+		runQuery(program);
+		
+	}
+
+	private static void runQuery(String program) 
+	{
 		Configuration configuration = KnowledgeBaseFactory.getDefaultConfiguration();
 		configuration.externalDataSources.add(new SigmodDataSource());
 		
 		Parser parser = new Parser();
-
-//		String program = "?-person_hasInterest_tag(?x, ?y), tag(?y, ?z, ?q), person(?x, ?a, ?b, ?c, ?d, ?e, ?f, ?g).";
-		String program = "poop(?a,?b,?z) :- person_hasInterest_tag(?x, ?y), tag(?y, ?z, ?q), person(?x, ?a, ?b, ?c, ?d, ?e, ?f, ?g).\r\n ?-poop(?a,?b,?z).\r\n";
 
 		try {
 			System.out.println("Parsing the program...");
@@ -43,7 +50,6 @@ public class WinSigmodRunner
 			
 			System.out.println("Constructing knowledge base...");
 			IKnowledgeBase knowledgeBase = KnowledgeBaseFactory.createKnowledgeBase(facts, rules, configuration );
-			System.out.println(" T T ");
 			
 			long duration = -System.currentTimeMillis();
 			StringBuilder output = new StringBuilder();
@@ -98,7 +104,6 @@ public class WinSigmodRunner
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 	
 	/**
@@ -117,5 +122,14 @@ public class WinSigmodRunner
 
     }
 
+	/**
+	 * @param k number of person id pairs to return
+	 * @param h maximum number of hops between people
+	 * @param p place persons must be located in or work in
+	 */
+	public void query3(int k, int h, String p)
+	{
+		
+	}
 
 }
