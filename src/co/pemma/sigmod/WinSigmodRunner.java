@@ -167,7 +167,7 @@ public class WinSigmodRunner
 			for(int j = 0; j < i+1; ++j){
 				query.append("person(?pid"+j+", ?x1, ?x2, ?x3, ?x4, ?x5, ?x6, ?x7), person_knows_person(?pid"+j+", ?pid"+(j+1)+"), ");
 			}
-			query.append("person(?pid"+(i+1)+", ?x1, ?x2, ?x3, ?x4, ?x5, ?x6, ?x7).\r\n");
+			query.append("person(?pid"+(i+1)+", ?y1, ?y2, ?y3, ?y4, ?y5, ?y6, ?y7).\r\n");
 			query.append("all_hops(?pid1,?pid2) :- hop"+(i+1)+"(?pid1,?pid2).\r\n");
 		}
 		System.out.println(query.toString());
