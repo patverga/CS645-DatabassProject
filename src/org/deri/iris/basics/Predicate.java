@@ -46,7 +46,7 @@ public class Predicate implements IPredicate {
 
 	private final int arity;
 	
-	Predicate(final String symbol, final int arity) {
+	public Predicate(final String symbol, final int arity) {
 		this.symbol = symbol;
 		this.arity = arity;
 		

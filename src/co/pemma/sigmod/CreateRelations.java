@@ -1,9 +1,14 @@
 package co.pemma.sigmod;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,17 +16,22 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.deri.iris.api.basics.IPredicate;
 import org.deri.iris.api.basics.ITuple;
 import org.deri.iris.api.factory.IConcreteFactory;
 import org.deri.iris.api.terms.ITerm;
 import org.deri.iris.api.terms.IVariable;
+import org.deri.iris.basics.Predicate;
 import org.deri.iris.basics.Tuple;
-import org.deri.iris.terms.TermFactory;
+import org.deri.iris.storage.IRelation;
+import org.deri.iris.storage.simple.SimpleRelationFactory;
 import org.deri.iris.terms.concrete.ConcreteFactory;
 
 public class CreateRelations 
 {
+	private static String tempDir = null;
 	private static Map<String,List<String>> schema = readSchema();
 
 	public static Map<String, List<String>> readSchema() 
@@ -103,7 +113,6 @@ public class CreateRelations
 
 	public static List<ITuple> getTuples(String predicateName, ITuple from, ITuple to)
 	{
-		String[] header = null;
 		String line;
 		List<ITuple> tuples = new ArrayList<>();
 
@@ -116,7 +125,6 @@ public class CreateRelations
 				ITuple newTuple = createTuple(predicateName, line.split("\\|"));
 				//				if((from == null || newTuple.compareTo(from) >= 0) && (to == null || newTuple.compareTo(to) <= 0))
 				//				{
-				System.out.println("Adding a tuple");
 				tuples.add(newTuple);
 				//				}
 			}
@@ -127,6 +135,53 @@ public class CreateRelations
 			e.printStackTrace();
 		}
 		return tuples;
+	}
+	
+	public static List<ITuple> getTuples(String predicateName)
+	{
+		String line;
+		List<ITuple> tuples = new ArrayList<>();
+
+		File file = new File(getTempDir() + "/" + predicateName + ".csv");
+		if(!file.exists())
+			file = new File("data/"+predicateName+".csv");
+		
+		try (BufferedReader reader = new BufferedReader(new FileReader(file)))
+		{
+			reader.readLine();
+			while ((line = reader.readLine()) != null)
+			{		
+				ITuple newTuple = createTuple(predicateName, line.split("\\|"));
+				tuples.add(newTuple);
+			}
+		} 
+		catch (IOException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return tuples;
+	}
+	
+	public static Map<IPredicate, IRelation> getFacts(){
+		Map<IPredicate, IRelation> facts = new HashMap<>();
+		String predicateName;
+		List<String> args;
+		int i = 1;
+		for(Entry<String,List<String>> predicate: schema.entrySet()){
+			predicateName = predicate.getKey();
+			args = predicate.getValue();
+			IPredicate newPredicate = new Predicate(predicateName,args.size());
+			IRelation newRelation = new SimpleRelationFactory().createRelation();
+			System.out.format("\tLoading tuples for predicate %s (%d/%d)\n", predicateName , i, schema.size());
+			for(ITuple tuple : getTuples(predicateName)){
+				newRelation.add(tuple);
+			}
+			facts.put(newPredicate, newRelation);
+			i++;
+		}
+		
+		return facts;
 	}
 
 	private static ITuple createTuple(String predicateName, String[] columns) 
@@ -184,5 +239,36 @@ public class CreateRelations
 			}
 		}
 		return new Tuple(terms);
+	}
+
+	public static void putTuples(String predicateSymbol, IRelation r) {
+
+		File file = new File(getTempDir().toString() + "/" + predicateSymbol + ".csv");
+		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(file, true))))
+		{
+			for(int i = 0; i < r.size(); i++){
+				List<IVariable> tuple = r.get(i).getAllVariables();
+				for(IVariable var : tuple)
+					writer.write(var.getValue() + "\\|");
+				writer.write("\n");
+			}
+		} 
+		catch (IOException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private static String getTempDir() {
+		if(tempDir == null){
+			try {
+				tempDir = Files.createTempDirectory(null).toString();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return tempDir;
 	}
 }

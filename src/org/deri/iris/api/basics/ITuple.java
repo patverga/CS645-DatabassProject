@@ -54,21 +54,21 @@ public interface ITuple extends List<ITerm>, Comparable<ITuple> {
 	public boolean isGround();
 
 	/**
-	 * Returns all distinct variables from this tupple.
+	 * Returns all distinct variables from this tuple.
 	 * 
-	 * @return All distinct variables from this tupple.
+	 * @return All distinct variables from this tuple.
 	 */
 	public Set<IVariable> getVariables();
 	
 	/**
-	 * Returns all variables from this tupple.
+	 * Returns all variables from this tuple.
 	 * 
-	 * @return All variables from this tupple.
+	 * @return All variables from this tuple.
 	 */
 	public List<IVariable> getAllVariables();
 
 	/**
-	 * Creates a new tupel with the tuples of <code>this</code> one and
+	 * Creates a new tuple with the tuples of <code>this</code> one and
 	 * appends the tuples of the submitted list at the end.
 	 * @param t the tuples to add
 	 * @return the newly created tuple

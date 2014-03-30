@@ -22,11 +22,11 @@ tagclass.csv
 tag.csv
   id(Long) | name(String) | url(String)    
 
-person\_speaks\_language.csv
-  Person.id(Long) | language(Long)    
+person_speaks_language.csv
+  Person.id(Long) | language(String) 
 
 person_email_emailaddress.csv
-  Person.id(Long) | email(Long)    
+  Person.id(Long) | email(String)    
 
 comment_hasCreator_person.csv
   Comment.id(Long) | Person.id(Long)    

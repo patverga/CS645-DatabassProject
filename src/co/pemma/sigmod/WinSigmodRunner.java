@@ -1,10 +1,6 @@
 package co.pemma.sigmod;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,21 +27,28 @@ public class WinSigmodRunner
 		configuration.externalDataSources.add(new SigmodDataSource());
 		
 		Parser parser = new Parser();
-		//String program = "?-tag(?X, ?Y, ?Z).";
-		String program = "interests(?a,?b,?z) :- person_hasInterest_tag(?x, ?y), tag(?y, ?z, ?q), person(?x, ?a, ?b, ?c, ?d, ?e, ?f, ?g).\r\n ?-interests(?n,?i).\r\n";
-		//String program = "?-person_hasInterest_tag(?x, ?y).";
+		
+//		String program = "?-tag(?X, ?Y, ?Z).";
 //		String program = "?-person_hasInterest_tag(?x, ?y), tag(?y, ?z, ?q), person(?x, ?a, ?b, ?c, ?d, ?e, ?f, ?g).";
-		String poop = "poop(?X, ?Y, ?Z) :- tag(?X, ?Y, ?Z).\r\n ?-poop(?X, ?Y, ?Z).";
+		String program = "poop(?a,?b,?z) :- person_hasInterest_tag(?x, ?y), tag(?y, ?z, ?q), person(?x, ?a, ?b, ?c, ?d, ?e, ?f, ?g).\r\n ?-poop(?a,?b,?z).\r\n";
+
 		try {
+			System.out.println("Parsing the program...");
 			parser.parse(program);
-			Map<IPredicate, IRelation> facts = parser.getFacts();
+			
 			List<IRule> rules = parser.getRules();
 			
+			System.out.println("Loading facts...");
+			//Map<IPredicate, IRelation> facts = CreateRelations.getFacts();
+			Map<IPredicate, IRelation> facts = parser.getFacts();
+			
+			System.out.println("Constructing knowledge base...");
 			IKnowledgeBase knowledgeBase = KnowledgeBaseFactory.createKnowledgeBase(facts, rules, configuration );
 			
 			long duration = -System.currentTimeMillis();
 			StringBuilder output = new StringBuilder();
 
+			System.out.println("Evaluating queries...");
 			List<IVariable> variableBindings = new ArrayList<>();
 			for(IQuery query : parser.getQueries()){
 				duration = -System.currentTimeMillis();

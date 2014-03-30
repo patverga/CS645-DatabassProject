@@ -15,5 +15,9 @@ public class SigmodDataSource implements IDataSource{
 		for(ITuple t: tuples)
 			r.add(t);
 	}
-
+	
+	@Override
+	public void put(IPredicate p, IRelation r) {
+		CreateRelations.putTuples(p.getPredicateSymbol(), r);
+	}
 }

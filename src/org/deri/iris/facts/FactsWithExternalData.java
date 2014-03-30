@@ -43,8 +43,7 @@ public class FactsWithExternalData implements IFacts
 	{
 		mFacts = facts;
 		mExternalDataSources = new ArrayList<IDataSource>( externalDataSources );
-	}
-	
+	}	
 
 	public IRelation get( IPredicate predicate )
     {
@@ -62,9 +61,7 @@ public class FactsWithExternalData implements IFacts
 	    	
 	    	for( IDataSource dataSource : mExternalDataSources )
 	    		dataSource.get( predicate, from, to, result );
-
-	    }
-	    
+	    }	    
 	    return result;
     }
 
