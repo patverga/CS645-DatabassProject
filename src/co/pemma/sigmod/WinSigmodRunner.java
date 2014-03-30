@@ -100,8 +100,8 @@ public class WinSigmodRunner
 		+ "common_interests(?pid1,?pid2,?interest) :- common_interests(?pid1, ?pid2, '__null'), person_hasInterest_tag(?pid1,?interest), person_hasInterest_tag(?pid2,?interest).\r\n"
 
 		//+ "?-common_interests(?pid1,?pid2,?interest).\r\n";
-		+ "?-all_hops(?pid1, ?pid2).\r\n";
-
+		+ "?-all_hops(?pid1, '99').\r\n";
+		//+ "?-all_people(?pid).\r\n";
 		
 		// get results from query
 		IRelation results = runQuery(query).get(0);
@@ -165,7 +165,7 @@ public class WinSigmodRunner
 		for(int i = 0; i < h; ++i){
 			query.append("hop"+(i+1)+"(?pid0,?pid"+(i+1)+") :- ");
 			for(int j = 0; j < i+1; ++j){
-				query.append("person(?pid"+j+", ?x1, ?x2, ?x3, ?x4, ?x5, ?x6, ?x7), person_knows_person(?pid"+j+", ?pid"+(j+1)+"), ");
+				query.append("person(?pid"+j+", ?x"+j+"1, ?x"+j+"2, ?x"+j+"3, ?x"+j+"4, ?x"+j+"5, ?x"+j+"6, ?x"+j+"7), person_knows_person(?pid"+j+", ?pid"+(j+1)+"), ");
 			}
 			query.append("person(?pid"+(i+1)+", ?y1, ?y2, ?y3, ?y4, ?y5, ?y6, ?y7).\r\n");
 			query.append("all_hops(?pid1,?pid2) :- hop"+(i+1)+"(?pid1,?pid2).\r\n");
