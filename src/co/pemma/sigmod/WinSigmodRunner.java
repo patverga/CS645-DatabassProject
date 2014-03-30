@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.deri.iris.Configuration;
 import org.deri.iris.EvaluationException;
 import org.deri.iris.KnowledgeBaseFactory;
@@ -18,6 +20,7 @@ import org.deri.iris.api.terms.IVariable;
 import org.deri.iris.compiler.Parser;
 import org.deri.iris.compiler.ParserException;
 import org.deri.iris.storage.IRelation;
+
 
 public class WinSigmodRunner 
 {
@@ -113,6 +116,25 @@ public class WinSigmodRunner
 						sharedInterestCounts.put(pairKey, 1);
 				}
 			}
+		}
+		// get top k 
+		PriorityQueue<Pair<Integer, String>> topKPairs = new PriorityQueue<>(k);
+		
+		for (String key : sharedInterestCounts.keySet())
+		{
+			if (topKPairs.size() < k) 
+			{
+				topKPairs.add(new ImmutablePair<Integer, String>(sharedInterestCounts.get(key), key));
+			}				
+			else if(sharedInterestCounts.get(key) > topKPairs.peek().getLeft())
+			{
+				topKPairs.poll();
+				topKPairs.add(new ImmutablePair<Integer, String>(sharedInterestCounts.get(key), key));
+			}
+		}
+		while(!topKPairs.isEmpty())
+		{
+			System.out.println(topKPairs.poll().getRight());
 		}
 	}
 
