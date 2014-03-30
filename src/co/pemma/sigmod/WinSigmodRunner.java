@@ -30,16 +30,18 @@ public class WinSigmodRunner
 
 		//		runQuery(program);
 
-//		query3(3, 2, "Asia");
-//		query3(4, 3, "Indonesia");
-//		query3(3, 2, "Egypt");
-//		query3(3, 2, "Italy");
-//		query3(5, 4, "Chengdu");
-//		query3(3, 2, "Peru");
+		long start = System.currentTimeMillis();
+		query3(3, 2, "Asia");
+		query3(4, 3, "Indonesia");
+		query3(3, 2, "Egypt");
+		query3(3, 2, "Italy");
+		query3(5, 4, "Chengdu");
+		query3(3, 2, "Peru");
 		query3(3, 2, "Democratic_Republic_of_the_Congo");
-//		query3(7, 6, "Ankara");
-//		query3(3, 2, "Luoyang");
-//		query3(4, 3, "Taiwan");
+		query3(7, 6, "Ankara");
+		query3(3, 2, "Luoyang");
+		query3(4, 3, "Taiwan");
+		System.out.println("Queries took " + ((System.currentTimeMillis() - start) *1000) +" seconds.");
 
 	}
 
@@ -119,7 +121,7 @@ public class WinSigmodRunner
 		{
 			tuple = results.get(i);
 			//System.out.println(tuple.toString());
-			
+
 			// skip self pairs
 			if (!tuple.get(0).equals(tuple.get(1)))
 			{
@@ -170,7 +172,6 @@ public class WinSigmodRunner
 			query.append("person(?pid"+(i+1)+", ?y1, ?y2, ?y3, ?y4, ?y5, ?y6, ?y7).\r\n");
 			query.append("all_hops(?pid1,?pid2) :- hop"+(i+1)+"(?pid1,?pid2).\r\n");
 		}
-		System.out.println(query.toString());
 		return query.toString();
 	}
 	
