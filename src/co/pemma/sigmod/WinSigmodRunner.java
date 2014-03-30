@@ -25,7 +25,7 @@ public class WinSigmodRunner
 		
 //		runQuery(program);
 		
-		query3(1,1,"Australia");
+		query3(3, 2, "Asia");
 		
 	}
 
@@ -59,11 +59,13 @@ public class WinSigmodRunner
 				IRelation results = knowledgeBase.execute( query, variableBindings );
 				duration += System.currentTimeMillis();
 
+				
+				
 				String BAR = "|";
 				String NEW_LINE = "\n";
 				boolean SHOW_ROW_COUNT = true;
 				boolean SHOW_QUERY_TIME = true;
-				boolean SHOW_VARIABLE_BINDINGS = true;
+				boolean SHOW_VARIABLE_BINDINGS = false;
 				
 				output.append( BAR ).append( NEW_LINE );
 				output.append( "Query:      " ).append( query );
@@ -117,6 +119,7 @@ public class WinSigmodRunner
 			builder.append( tuple.toString() ).append( "\n" );
 		}
 		System.out.println(builder);
+		//System.out.println(m.size() + " results.");
 
     }
 
@@ -136,12 +139,30 @@ public class WinSigmodRunner
 		+ "org_people(?pid) :- person_studyAt_organisation(?pid, ?orgid, ?x8), all_orgs(?orgid).\r\n"
 		
 		+ "all_people(?pid) :- loc_people(?pid).\r\n"
-		+ "all_people(?pid) :- org_people(?pid).\r\n";
-				
-		query += "?-org_people(?pid).\r\n?-loc_people(?pid).\r\n";
-
+		+ "all_people(?pid) :- org_people(?pid).\r\n"
+		+ genHopsQuery(h)
+		+ "common_interests(?pid1,?pid2,?interest) :- all_hops(?pid1, ?pid2), person_hasInterest_tag(?pid1,?interest), person_hasInterest_tag(?pid2,?interest).\r\n";
+		query += "?-common_interests(?pid1,?pid2,?interest).\r\n";
+//		query += "?-all_hops(?pid1, ?pid2).\r\n";
+//		query += "?-hop1(?pid1, ?pid2).\r\n";
+//		query += "?-hop2(?pid1, ?pid2).\r\n";
+		
 		
 		runQuery(query);
+	}
+
+	private static String genHopsQuery(int h) {
+		StringBuilder query = new StringBuilder();
+		for(int i = 0; i < h; ++i){
+			query.append("hop"+(i+1)+"(?pid0,?pid"+(i+1)+") :- ");
+			for(int j = 0; j < i+1; ++j){
+				query.append("all_people(?pid"+j+"), person_knows_person(?pid"+j+", ?pid"+(j+1)+"), ");
+			}
+			query.append("all_people(?pid"+(i+1)+").\r\n");
+			query.append("all_hops(?pid1,?pid2) :- hop"+(i+1)+"(?pid1,?pid2).\r\n");
+		}
+		System.out.println(query.toString());
+		return query.toString();
 	}
 
 }

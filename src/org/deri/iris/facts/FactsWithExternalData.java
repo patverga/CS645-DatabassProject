@@ -50,7 +50,7 @@ public class FactsWithExternalData implements IFacts
 	{
 		IRelation result = mFacts.get( predicate );
 
-		System.out.println("doing an external data facts get");
+		//System.out.println("doing an external data facts get");
 
 		// If we haven't got the external data for this predicate yet...
 		if( mExternalPredicatesAlreadyFetched.add( predicate ) )
@@ -59,7 +59,7 @@ public class FactsWithExternalData implements IFacts
 			if ( file.exists())
 			{
 				// ... then get it now.
-				System.out.println("fetching some shit");
+				//System.out.println("fetching some shit");
 				ITuple from = Factory.BASIC.createTuple( new ITerm[ predicate.getArity() ] );
 				ITuple to   = Factory.BASIC.createTuple( new ITerm[ predicate.getArity() ] );
 
