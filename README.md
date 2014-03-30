@@ -10,4 +10,10 @@ Query 1
 
 Query 2
 --------
+- Get people with birthday later than d
+- Get graphs for each interest, connectivity defined as people knowing each other
+- Max size of graphs
+
+Query 3
+---------
 - 
