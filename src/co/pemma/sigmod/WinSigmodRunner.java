@@ -30,18 +30,16 @@ public class WinSigmodRunner
 
 		//		runQuery(program);
 
-		long start = System.currentTimeMillis();
 		query3(3, 2, "Asia");
-		query3(4, 3, "Indonesia");
+//		query3(4, 3, "Indonesia");
 		query3(3, 2, "Egypt");
 		query3(3, 2, "Italy");
-		query3(5, 4, "Chengdu");
+//		query3(5, 4, "Chengdu");
 		query3(3, 2, "Peru");
 		query3(3, 2, "Democratic_Republic_of_the_Congo");
-		query3(7, 6, "Ankara");
+//		query3(7, 6, "Ankara");
 		query3(3, 2, "Luoyang");
 		query3(4, 3, "Taiwan");
-		System.out.println("Queries took " + ((System.currentTimeMillis() - start) *1000) +" seconds.");
 
 	}
 
@@ -87,6 +85,8 @@ public class WinSigmodRunner
 	 */
 	public static void query3(int k, int h, String p)
 	{
+		long start = System.currentTimeMillis();
+
 		// formulate query to get all pairs of people with shared interests meeting place and hop criteria
 		String query = "all_locs(?locid) :- place(?locid, '"+p+"', ?x1, ?x2).\r\n"
 				+ "all_locs(?locid) :- all_locs(?parentlocid), place_isPartOf_place(?locid, ?parentlocid), place(?locid, ?name, ?x1, ?x2).\r\n"
@@ -158,6 +158,8 @@ public class WinSigmodRunner
 		}
 		for(int i = k-1; i >= 0; --i)
 			System.out.println(resultArray.get(i).toString());
+		
+		System.out.println("Query took " + ((System.currentTimeMillis() - start)) +" miliseconds.");
 	}
 
 	private static String genHopsQuery(int h) {
