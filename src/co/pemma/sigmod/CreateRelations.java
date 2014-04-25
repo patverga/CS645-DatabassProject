@@ -128,10 +128,16 @@ public class CreateRelations
 			// map col names to their indices and back
 			for(int i = 0; i < tuple.length; i++)
 			{
-				schemaIndexNameMap.put(i, tuple[i]);
-				schemaNameIndexMap.put(tuple[i], i);
-				if (colNames.contains(tuple[i]))
+				String col = tuple[i];
+				if (schemaNameIndexMap.containsKey(col))
+					col += "2";
+				schemaIndexNameMap.put(i, col);
+				schemaNameIndexMap.put(col, i);
+				if (colNames.contains(col))
+				{
 					colIndices.add(i);
+					System.out.println(predicateName + "\t" +col);
+				}
 			}
 			filteredTuple = new String[colIndices.size()];
 			while ((line = reader.readLine()) != null)
@@ -178,7 +184,9 @@ public class CreateRelations
 		return tuples;
 	}
 
-	public static Map<IPredicate, IRelation> getFacts(){
+	public static Map<IPredicate, IRelation> getFacts()
+	{
+		System.err.println("FCTS");
 		Map<IPredicate, IRelation> facts = new HashMap<>();
 		String predicateName;
 		List<String> args;

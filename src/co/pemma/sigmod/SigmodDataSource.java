@@ -1,5 +1,6 @@
 package co.pemma.sigmod;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ public class SigmodDataSource implements IDataSource
 		switch(queryNumber)
 		{
 		case 1:
-			
+			colsToUse = new HashMap<>();
 			break;
 
 		case 2:
@@ -35,8 +36,10 @@ public class SigmodDataSource implements IDataSource
 	}
 
 	@Override
-	public void get(IPredicate p, ITuple from, ITuple to, IRelation r) {
-		List<ITuple> tuples = CreateRelations.getTuples(p.getPredicateSymbol(), colsToUse.get(r), from, to);
+	public void get(IPredicate p, ITuple from, ITuple to, IRelation r) 
+	{
+		
+		List<ITuple> tuples = CreateRelations.getTuples(p.getPredicateSymbol(), colsToUse.get(p.toString()), from, to);
 		for(ITuple t: tuples)
 			r.add(t);
 	}

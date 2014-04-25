@@ -188,7 +188,7 @@ class Joiner extends RuleElement {
 		
 		for (int f = 0; f < leftRelation.size(); ++f) {
 			ITuple leftTuple = leftRelation.get(f);
-
+			
 			List<ITerm> key = Utils.makeKey(leftTuple, mJoinIndicesInput);
 			List<ITuple> matchingRightTuples = mIndexThisLiteral.get(key);
 
