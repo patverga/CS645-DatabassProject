@@ -26,9 +26,23 @@ public class WinSigmodRunner
 {
 	public static void main(String[] args)
 	{
-				String program = "poop(?g) :- person(?g).\r\n ?-poop(?g).\r\n";
+//		String program = "poop(?g) :- person(?g).\r\n ?-poop(?g).\r\n";
 
-				runQuery(program, 3);
+//		String program = "all_locs(?locid) :- place(?locid, 'Democratic_Republic_of_the_Congo').\r\n"
+//				+ "all_locs(?locid) :- all_locs(?parentlocid), place_isPartOf_place(?locid, ?parentlocid), place(?locid, ?name).\r\n"
+//				+ "all_orgs(?orgid) :- organisation(?orgid), organisation_isLocatedIn_place(?orgid, ?locid), all_locs(?locid).\r\n"
+//				+ "loc_people(?pid) :-  all_locs(?locid), person_isLocatedIn_place(?pid, ?locid).\r\n"
+//				+ "?-loc_people(?pid).\r\n";
+//				//+ "?-all_orgs(?locid).\r\n";
+//		
+//		IRelation results = runQuery(program, 3).get(0);
+//		ITuple tuple;
+//		for (int i = 0; i < results.size(); i++) {
+//			tuple = results.get(i);
+//			for (int j = 0; j < tuple.size(); ++j)
+//				System.out.print(tuple.get(j) + "\t");
+//			System.out.println();
+//		}
 
 //		query3(3, 2, "Asia");
 ////		query3(4, 3, "Indonesia");
@@ -36,7 +50,7 @@ public class WinSigmodRunner
 //		query3(3, 2, "Italy");
 ////		query3(5, 4, "Chengdu");
 //		query3(3, 2, "Peru");
-//		query3(3, 2, "Democratic_Republic_of_the_Congo");
+		query3(3, 2, "Democratic_Republic_of_the_Congo");
 ////		query3(7, 6, "Ankara");
 //		query3(3, 2, "Luoyang");
 //		query3(4, 3, "Taiwan");
@@ -92,6 +106,7 @@ public class WinSigmodRunner
 				+ "all_locs(?locid) :- all_locs(?parentlocid), place_isPartOf_place(?locid, ?parentlocid), place(?locid, ?name).\r\n"
 				+ "all_orgs(?orgid) :- organisation(?orgid), organisation_isLocatedIn_place(?orgid, ?locid), all_locs(?locid).\r\n"
 				+ "loc_people(?pid) :- person_isLocatedIn_place(?pid, ?locid), all_locs(?locid).\r\n"
+				//+ "?-loc_people(?pid).\r\n";
 				+ "org_people(?pid) :- person_workAt_organisation(?pid, ?orgid), all_orgs(?orgid).\r\n"
 				+ "org_people(?pid) :- person_studyAt_organisation(?pid, ?orgid), all_orgs(?orgid).\r\n"
 

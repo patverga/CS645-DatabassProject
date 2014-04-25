@@ -9,10 +9,10 @@ public class Util {
 	@SuppressWarnings("serial")
 	public final static Map<String,List<String>> query3Columns = new HashMap<String,List<String>>() {{
 		put("place", new ArrayList<String>() {{add("id");add("name");}});
-		put("place_isPartOf_place", new ArrayList<String>() {{add("Place.id");add("Place.id");}});
+		put("place_isPartOf_place", new ArrayList<String>() {{add("Place.id");add("Place.id2");}});
 		put("organisation", new ArrayList<String>() {{add("id");}});
 		put("organisation_isLocatedIn_place", new ArrayList<String>() {{add("Organisation.id");add("Place.id");}});
-		put("person_isLocatedIn_place", new ArrayList<String>() {{add("Person.id");add("Location.id");}});
+		put("person_isLocatedIn_place", new ArrayList<String>() {{add("Person.id");add("Place.id");}});
 		put("person_workAt_organisation", new ArrayList<String>() {{add("Person.id");add("Organisation.id");}});
 		put("person_studyAt_organisation", new ArrayList<String>() {{add("Person.id");add("Organisation.id");}});
 		put("person_hasInterest_tag", new ArrayList<String>() {{add("Person.id");add("Tag.id");}});
