@@ -120,6 +120,8 @@ public class WinSigmodRunner
 		for (int i = 0; i < results.size(); i++)
 		{
 			tuple = results.get(i);
+			//System.out.println(tuple.toString());
+
 			// skip self pairs
 			if (!tuple.get(0).equals(tuple.get(1)))
 			{
