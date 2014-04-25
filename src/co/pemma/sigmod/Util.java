@@ -1,32 +1,22 @@
 package co.pemma.sigmod;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class Util {
-//	public List<Pair<K,V>> heapSort(Map<K,V> vals, int k){
-//		
-//		PriorityQueue<Pair<Integer, String>> topKPairs = new PriorityQueue<>(k);
-//		
-//		for (String key : vals.keySet())
-//		{
-//			if (topKPairs.size() < k) 
-//			{
-//				topKPairs.add(new ImmutablePair<Integer, String>(vals.get(key), key));
-//			}				
-//			else if(vals.get(key) > topKPairs.peek().getLeft())
-//			{
-//				topKPairs.poll();
-//				topKPairs.add(new ImmutablePair<Integer, String>(vals.get(key), key));
-//			}
-//		}
-//		while(!topKPairs.isEmpty())
-//		{
-//			System.out.println(topKPairs.poll().getRight());
-//		}
-//	}
+	@SuppressWarnings("serial")
+	public final static Map<String,List<String>> query3Columns = new HashMap<String,List<String>>() {{
+		put("place", new ArrayList<String>() {{add("id");add("name");}});
+		put("place_isPartOf_place", new ArrayList<String>() {{add("Place.id");add("Place2.id");}});
+		put("organsation", new ArrayList<String>() {{add("id");}});
+		put("organisation_isLocatedIn_place", new ArrayList<String>() {{add("Organisation.id");add("Place.id");}});
+		put("person_isLocatedIn_place", new ArrayList<String>() {{add("Person.id");add("Location.id");}});
+		put("person_workAt_organisation", new ArrayList<String>() {{add("Person.id");add("Organisation.id");}});
+		put("person_studyAt_organisation", new ArrayList<String>() {{add("Person.id");add("Organisation.id");}});
+		put("person_hasInterest_tag", new ArrayList<String>() {{add("Person.id");add("Tag.id");}});
+		put("person_knows_person", new ArrayList<String>() {{add("Person.id");add("Person2.id");}});
+		put("person", new ArrayList<String>() {{add("id");}});
+	}};
 }
