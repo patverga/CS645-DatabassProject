@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class SociaLiteGenerator {
 
@@ -133,11 +134,11 @@ public class SociaLiteGenerator {
 		
 		sb.append("`\n");
 		
-		sb.append("count=0");
-		sb.append("		for p1, p2, c in `interest_counts(pid1, pid2, count)`:");
-		sb.append("	    print p1, p2, c");
-		sb.append("	    count+=1");
-		sb.append("    if count>"+k+": break;");
+		sb.append("count=0\n");
+		sb.append("\tfor p1, p2, c in `interest_counts(pid1, pid2, count)`:\n");
+		sb.append("\tprint p1, p2, c\n");
+		sb.append("\tcount += 1\n");
+		sb.append("\tif count>"+k+": break;\n");
 		
 		return sb;
 	}
@@ -159,14 +160,14 @@ public class SociaLiteGenerator {
 
 	public static void main(String[] args)
 	{
-//		Map<String, List<String>> schema = CreateRelations.readSchema();
+		Map<String, List<String>> schema = CreateRelations.readSchema();
 //		String table = "post";
 //		List<String> cols = new ArrayList<>();
 //		cols.add("browserUsed");
 //		cols.add("locationIP");
 //		SociaLiteGenerator.generateTables(table, cols, schema.get(table));
 		
-		System.out.println("query 3:");
+		System.out.println(generateQuery3Tables());
 		System.out.println(generateQuery3(10, 5, "Antarctica"));
 	}
 }
