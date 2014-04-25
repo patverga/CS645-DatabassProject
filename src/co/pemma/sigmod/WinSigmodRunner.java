@@ -43,10 +43,10 @@ public class WinSigmodRunner
 
 	}
 
-	private static List<IRelation> runQuery(String program) 
+	private static List<IRelation> runQuery(String program, int queryNumber) 
 	{
 		Configuration configuration = KnowledgeBaseFactory.getDefaultConfiguration();
-		configuration.externalDataSources.add(new SigmodDataSource());
+		configuration.externalDataSources.add(new SigmodDataSource(queryNumber));
 
 		Parser parser = new Parser();
 		List<IRelation> results = new ArrayList<>();
@@ -106,7 +106,7 @@ public class WinSigmodRunner
 		//+ "?-all_people(?pid).\r\n";
 		
 		// get results from query
-		IRelation results = runQuery(query).get(0);
+		IRelation results = runQuery(query, 3).get(0);
 		
 //		for (int i = 0; i < results.size(); i++)
 //			System.out.println(results.get(i).toString());
