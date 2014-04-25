@@ -116,8 +116,8 @@ public class SociaLiteGenerator
 		/* all_locs: all the locations that we care about (have to get sub-locations) */
 		sb.append("`\n");
 		sb.append("all_locs(Long locid).\n");
-		sb.append("all_locs(locid) :- place(locid, '"+p+"').\n");
-		sb.append("all_locs(locid) :- all_locs(parentlocid), place_isPartOf_place(locid, parentlocid), place(locid, name).\n");
+		sb.append("all_locs(locid) :- place(locid, '"+p+"');\n");
+		sb.append("\t:- all_locs(parentlocid), place_isPartOf_place(locid, parentlocid), place(locid, name).\n");
 
 		/* all_orgs: all the organizations that we care about (orgs in all_locs places) */
 		sb.append("all_orgs(Long orgid).\n");
@@ -129,13 +129,13 @@ public class SociaLiteGenerator
 
 		/* org_people: people who work at organizations in all_orgs */
 		sb.append("org_people(Long pid).\n");
-		sb.append("org_people(pid) :- person_workAt_organisation(pid, orgid), all_orgs(orgid).\n");
-		sb.append("org_people(pid) :- person_studyAt_organisation(pid, orgid), all_orgs(orgid).\n");
+		sb.append("org_people(pid) :- person_workAt_organisation(pid, orgid), all_orgs(orgid);\n");
+		sb.append("\t:- person_studyAt_organisation(pid, orgid), all_orgs(orgid).\n");
 
 		/* all_people: people from all_orgs or all_locs */
 		sb.append("all_people(Long pid).\n");
-		sb.append("loc_people(pid).\n");
-		sb.append("org_people(pid).\n");
+		sb.append("all_people(pid :- loc_people(pid);\n");
+		sb.append("\t:- org_people(pid).\n");
 
 		/* all_hops: all_people who are h or less hops away from each other */
 		sb.append(genHopsQuery(h));
