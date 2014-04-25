@@ -88,7 +88,7 @@ public class SociaLiteGenerator {
 	 * @param p place persons must be located in or work in
 	 * @return StringBuffer representing the generated code
 	 */
-	public StringBuffer generateQuery3(int k, int h, String p){
+	public static StringBuffer generateQuery3(int k, int h, String p){
 		StringBuffer sb = new StringBuffer();
 		
 		/* all_locs: all the locations that we care about (have to get sub-locations) */
@@ -120,22 +120,29 @@ public class SociaLiteGenerator {
 		
 		/* common_interests: people with common interests in all_hops */
 		sb.append("common_interests(Long pid1, Long pid2, String interest).");
-		sb.append("common_interests(pid1,pid2,'__null') :- all_hops(pid1, pid2), all_people(pid1), all_people(pid2).\n");
-		sb.append("common_interests(pid1,pid2,interest) :- common_interests(pid1, pid2, '__null'), person_hasInterest_tag(pid1,interest), person_hasInterest_tag(pid2,interest).\n");
+		sb.append("common_interests(pid1, pid2, '__null') :- all_hops(pid1, pid2), all_people(pid1), all_people(pid2).\n");
+		sb.append("common_interests(pid1, pid2, interest) :- common_interests(pid1, pid2, '__null'), person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
 		
 		/* interest_counts: counts of interests for each pair */
-		sb.append("interest_counts(Long pid1, Long pid2, int count).");
-		sb.append("interest_counts(Long pid1,pid2,)");
-		sb.append("");
+		sb.append("interest_counts(Long pid1, Long pid2, int count).\n");
+		sb.append("interest_counts(pid1, pid2, $inc) :- common_interests(pid1, pid2, interest).");
 		
 		sb.append("`\n");
+		
+		sb.append("count=0");
+		sb.append("		for p1, p2, c in `interest_counts(pid1, pid2, count)`:");
+		sb.append("	    print p1, p2, c");
+		sb.append("	    count+=1");
+		sb.append("    if count>"+k+": break;");
+		
 		return sb;
 	}
 
-	private StringBuffer genHopsQuery(int h) {
+	private static StringBuffer genHopsQuery(int h) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("all_hops(Long pid1, Long pid2).");
 		for(int i = 0; i < h; ++i){
+			sb.append("hop"+(i+1)+"(Long pid0, Long pid"+(i+1)+").");
 			sb.append("hop"+(i+1)+"(pid0,pid"+(i+1)+") :- ");
 			for(int j = 0; j < i+1; ++j){
 				sb.append("person(pid"+j+"), person_knows_person(pid"+j+", pid"+(j+1)+"), ");
@@ -148,11 +155,14 @@ public class SociaLiteGenerator {
 
 	public static void main(String[] args)
 	{
-		Map<String, List<String>> schema = CreateRelations.readSchema();
-		String table = "post";
-		List<String> cols = new ArrayList<>();
-		cols.add("browserUsed");
-		cols.add("locationIP");
-		SociaLiteGenerator.generateTables(table, cols, schema.get(table));
+//		Map<String, List<String>> schema = CreateRelations.readSchema();
+//		String table = "post";
+//		List<String> cols = new ArrayList<>();
+//		cols.add("browserUsed");
+//		cols.add("locationIP");
+//		SociaLiteGenerator.generateTables(table, cols, schema.get(table));
+		
+		System.out.println("query 3:");
+		System.out.println(generateQuery3(10, 5, "Antarctica"));
 	}
 }
