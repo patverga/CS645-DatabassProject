@@ -111,22 +111,43 @@ public class CreateRelations
 		return tuples;
 	}
 
-	public static List<ITuple> getTuples(String predicateName, ITuple from, ITuple to)
+	public static List<ITuple> getTuples(String predicateName, List<String> colNames, ITuple from, ITuple to)
 	{
 		String line;
+		String[] tuple, filteredTuple;
 		List<ITuple> tuples = new ArrayList<>();
+		Map<String, Integer> schemaNameIndexMap = new HashMap<>();
+		Map<Integer, String> schemaIndexNameMap = new HashMap<>();
+		List<Integer> colIndices = new ArrayList<>();
 
 		File file = new File("data/"+predicateName+".csv");
 		try (BufferedReader reader = new BufferedReader(new FileReader(file)))
 		{
-			reader.readLine();
+			line = reader.readLine();
+			tuple = line.split("\\|");
+			// map col names to their indices and back
+			for(int i = 0; i < tuple.length; i++)
+			{
+				String col = tuple[i];
+				if (schemaNameIndexMap.containsKey(col))
+					col += "2";
+				schemaIndexNameMap.put(i, col);
+				schemaNameIndexMap.put(col, i);
+				if (colNames.contains(col))
+				{
+					colIndices.add(i);
+					System.out.println(predicateName + "\t" +col);
+				}
+			}
+			filteredTuple = new String[colIndices.size()];
 			while ((line = reader.readLine()) != null)
-			{		
-				ITuple newTuple = createTuple(predicateName, line.split("\\|"));
-				//				if((from == null || newTuple.compareTo(from) >= 0) && (to == null || newTuple.compareTo(to) <= 0))
-				//				{
-				tuples.add(newTuple);
-				//				}
+			{
+				tuple = line.split("\\|");
+				// only use the columns we need
+				for (int i = 0; i < colIndices.size(); i++)
+					filteredTuple[i] = tuple[colIndices.get(i)];
+				ITuple newTuple = createTuple(predicateName, filteredTuple);
+				tuples.add(newTuple); 	
 			}
 		} 
 		catch (IOException e) 
@@ -136,7 +157,7 @@ public class CreateRelations
 		}
 		return tuples;
 	}
-	
+
 	public static List<ITuple> getTuples(String predicateName)
 	{
 		String line;
@@ -145,7 +166,7 @@ public class CreateRelations
 		File file = new File(getTempDir() + "/" + predicateName + ".csv");
 		if(!file.exists())
 			file = new File("data/"+predicateName+".csv");
-		
+
 		try (BufferedReader reader = new BufferedReader(new FileReader(file)))
 		{
 			reader.readLine();
@@ -162,8 +183,10 @@ public class CreateRelations
 		}
 		return tuples;
 	}
-	
-	public static Map<IPredicate, IRelation> getFacts(){
+
+	public static Map<IPredicate, IRelation> getFacts()
+	{
+		System.err.println("FCTS");
 		Map<IPredicate, IRelation> facts = new HashMap<>();
 		String predicateName;
 		List<String> args;
@@ -180,7 +203,7 @@ public class CreateRelations
 			facts.put(newPredicate, newRelation);
 			i++;
 		}
-		
+
 		return facts;
 	}
 

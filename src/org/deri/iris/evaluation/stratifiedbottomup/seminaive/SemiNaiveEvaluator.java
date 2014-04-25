@@ -49,6 +49,7 @@ public class SemiNaiveEvaluator implements IRuleEvaluator
 		// For each rule in the collection (stratum)
 		for (final ICompiledRule rule : rules )
 		{
+			System.out.println(rule.headPredicate().toString());
 			IRelation delta = rule.evaluate();
 
 			if( delta != null && delta.size() > 0 )

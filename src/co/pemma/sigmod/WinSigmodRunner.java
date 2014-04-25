@@ -26,27 +26,27 @@ public class WinSigmodRunner
 {
 	public static void main(String[] args)
 	{
-		//		String program = "poop(?a,?b,?z) :- person_hasInterest_tag(?x, ?y), tag(?y, ?z, ?q), person(?x, ?a, ?b, ?c, ?d, ?e, ?f, ?g).\r\n ?-poop(?a,?b,?z).\r\n";
+				String program = "poop(?g) :- person(?g).\r\n ?-poop(?g).\r\n";
 
-		//		runQuery(program);
+				runQuery(program, 3);
 
-		query3(3, 2, "Asia");
-//		query3(4, 3, "Indonesia");
-		query3(3, 2, "Egypt");
-		query3(3, 2, "Italy");
-//		query3(5, 4, "Chengdu");
-		query3(3, 2, "Peru");
-		query3(3, 2, "Democratic_Republic_of_the_Congo");
-//		query3(7, 6, "Ankara");
-		query3(3, 2, "Luoyang");
-		query3(4, 3, "Taiwan");
+//		query3(3, 2, "Asia");
+////		query3(4, 3, "Indonesia");
+//		query3(3, 2, "Egypt");
+//		query3(3, 2, "Italy");
+////		query3(5, 4, "Chengdu");
+//		query3(3, 2, "Peru");
+//		query3(3, 2, "Democratic_Republic_of_the_Congo");
+////		query3(7, 6, "Ankara");
+//		query3(3, 2, "Luoyang");
+//		query3(4, 3, "Taiwan");
 
 	}
 
-	private static List<IRelation> runQuery(String program) 
+	private static List<IRelation> runQuery(String program, int queryNumber) 
 	{
 		Configuration configuration = KnowledgeBaseFactory.getDefaultConfiguration();
-		configuration.externalDataSources.add(new SigmodDataSource());
+		configuration.externalDataSources.add(new SigmodDataSource(queryNumber));
 
 		Parser parser = new Parser();
 		List<IRelation> results = new ArrayList<>();
@@ -104,7 +104,7 @@ public class WinSigmodRunner
 		+ "?-common_interests(?pid1,?pid2,?interest).\r\n";
 		
 		// get results from query
-		IRelation results = runQuery(query).get(0);
+		IRelation results = runQuery(query, 3).get(0);
 		
 //		for (int i = 0; i < results.size(); i++)
 //			System.out.println(results.get(i).toString());
