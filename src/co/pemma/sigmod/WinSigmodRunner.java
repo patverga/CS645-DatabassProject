@@ -88,12 +88,12 @@ public class WinSigmodRunner
 		long start = System.currentTimeMillis();
 
 		// formulate query to get all pairs of people with shared interests meeting place and hop criteria
-		String query = "all_locs(?locid) :- place(?locid, '"+p+"', ?x1, ?x2).\r\n"
-				+ "all_locs(?locid) :- all_locs(?parentlocid), place_isPartOf_place(?locid, ?parentlocid), place(?locid, ?name, ?x1, ?x2).\r\n"
-				+ "all_orgs(?orgid) :- organisation(?orgid, ?x1, ?x2, ?x3), organisation_isLocatedIn_place(?orgid, ?locid), all_locs(?locid).\r\n"
+		String query = "all_locs(?locid) :- place(?locid, '"+p+"').\r\n"
+				+ "all_locs(?locid) :- all_locs(?parentlocid), place_isPartOf_place(?locid, ?parentlocid), place(?locid, ?name).\r\n"
+				+ "all_orgs(?orgid) :- organisation(?orgid), organisation_isLocatedIn_place(?orgid, ?locid), all_locs(?locid).\r\n"
 				+ "loc_people(?pid) :- person_isLocatedIn_place(?pid, ?locid), all_locs(?locid).\r\n"
-				+ "org_people(?pid) :- person_workAt_organisation(?pid, ?orgid, ?x8), all_orgs(?orgid).\r\n"
-				+ "org_people(?pid) :- person_studyAt_organisation(?pid, ?orgid, ?x8), all_orgs(?orgid).\r\n"
+				+ "org_people(?pid) :- person_workAt_organisation(?pid, ?orgid), all_orgs(?orgid).\r\n"
+				+ "org_people(?pid) :- person_studyAt_organisation(?pid, ?orgid), all_orgs(?orgid).\r\n"
 
 		+ "all_people(?pid) :- loc_people(?pid).\r\n"
 		+ "all_people(?pid) :- org_people(?pid).\r\n"
@@ -169,9 +169,9 @@ public class WinSigmodRunner
 		for(int i = 0; i < h; ++i){
 			query.append("hop"+(i+1)+"(?pid0,?pid"+(i+1)+") :- ");
 			for(int j = 0; j < i+1; ++j){
-				query.append("person(?pid"+j+", ?x"+j+"1, ?x"+j+"2, ?x"+j+"3, ?x"+j+"4, ?x"+j+"5, ?x"+j+"6, ?x"+j+"7), person_knows_person(?pid"+j+", ?pid"+(j+1)+"), ");
+				query.append("person(?pid"+j+"), person_knows_person(?pid"+j+", ?pid"+(j+1)+"), ");
 			}
-			query.append("person(?pid"+(i+1)+", ?y1, ?y2, ?y3, ?y4, ?y5, ?y6, ?y7).\r\n");
+			query.append("person(?pid"+(i+1)+").\r\n");
 			query.append("all_hops(?pid1,?pid2) :- hop"+(i+1)+"(?pid1,?pid2).\r\n");
 		}
 		return query.toString();
