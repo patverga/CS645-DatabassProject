@@ -1,8 +1,10 @@
 package co.pemma.sigmod;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +13,9 @@ import java.util.Map.Entry;
 
 public class SociaLiteGenerator 
 {	
+	public static final String query3File = "query3.py";
+	
+	
 	public static StringBuilder generateQuery3Tables()
 	{
 		StringBuilder sb = new StringBuilder();
@@ -146,12 +151,12 @@ public class SociaLiteGenerator
 
 		sb.append("`\n");
 
-		sb.append("count=0");
-		sb.append("		for p1, p2, c in `interest_counts(pid1, pid2, count)`:");
-		sb.append("	    print p1, p2, c");
-		sb.append("	    count+=1");
-		sb.append("    if count>"+k+": break;");
-
+		sb.append("count=0\n");
+		sb.append("\tfor p1, p2, c in `interest_counts(pid1, pid2, count)`:\n");
+		sb.append("\tprint p1, p2, c\n");
+		sb.append("\tcount += 1\n");
+		sb.append("\tif count>"+k+": break;\n");
+		
 		return sb;
 	}
 
@@ -170,11 +175,25 @@ public class SociaLiteGenerator
 		return sb;
 	}
 
-
+	private static void exportPython(StringBuilder sb) 
+	{
+		try(PrintWriter writer = new PrintWriter(query3File))
+		{
+			writer.println(sb);
+		} 
+		catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public static void main(String[] args)
 	{
-		System.out.println(generateQuery3Tables());
-		System.out.println("query 3:");
-		System.out.println(generateQuery3(3, 2, "Asia"));
+		StringBuilder sb = new StringBuilder();
+		sb.append(generateQuery3Tables());
+		sb.append(generateQuery3(3, 2, "Asia"));
+		
+		exportPython(sb);
+
 	}
 }
