@@ -7,9 +7,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
-public class SociaLiteGenerator {
+public class SociaLiteGenerator 
+{	
+	public static StringBuilder generateQuery3Tables()
+	{
+		StringBuilder sb = new StringBuilder();
+		Map<String, List<String>> schema = CreateRelations.readSchema();
 
+		for(Entry<String, List<String>> entry : Util.query3Columns.entrySet() )
+		{
+			sb.append(generateTable(entry.getKey(), entry.getValue(), schema.get(entry.getKey())));
+		}
+		return sb;
+	}
+	
 	/**
 	 * Generate SociaLite code to load data into tables
 	 * 
@@ -18,7 +31,7 @@ public class SociaLiteGenerator {
 	 * @param schema SIGMOD db schema
 	 * @return StringBuffer representing generated code
 	 */
-	public static StringBuffer generateTables(String tableName, List<String> colNames, List<String> schema)
+	public static StringBuffer generateTable(String tableName, List<String> colNames, List<String> schema)
 	{
 		StringBuffer sb = new StringBuffer();
 		// figure out indeces of the columns we want
@@ -94,51 +107,51 @@ public class SociaLiteGenerator {
 	 */
 	public static StringBuffer generateQuery3(int k, int h, String p){
 		StringBuffer sb = new StringBuffer();
-		
+
 		/* all_locs: all the locations that we care about (have to get sub-locations) */
 		sb.append("`\n");
 		sb.append("all_locs(Long locid).\n");
 		sb.append("all_locs(locid) :- place(locid, '"+p+"').\n");
 		sb.append("all_locs(locid) :- all_locs(parentlocid), place_isPartOf_place(locid, parentlocid), place(locid, name).\n");
-		
+
 		/* all_orgs: all the organizations that we care about (orgs in all_locs places) */
 		sb.append("all_orgs(Long orgid).\n");
 		sb.append("all_orgs(orgid) :- organisation(orgid), organisation_isLocatedIn_place(orgid, locid), all_locs(locid).\n");
-		
+
 		/* loc_people: people located in all_locs */
 		sb.append("loc_people(Long pid).\n");
 		sb.append("loc_people(pid) :- person_isLocatedIn_place(pid, locid), all_locs(locid).\n");
-		
+
 		/* org_people: people who work at organizations in all_orgs */
 		sb.append("org_people(Long pid).\n");
 		sb.append("org_people(pid) :- person_workAt_organisation(pid, orgid), all_orgs(orgid).\n");
 		sb.append("org_people(pid) :- person_studyAt_organisation(pid, orgid), all_orgs(orgid).\n");
-		
+
 		/* all_people: people from all_orgs or all_locs */
 		sb.append("all_people(Long pid).\n");
 		sb.append("loc_people(pid).\n");
 		sb.append("org_people(pid).\n");
-		
+
 		/* all_hops: all_people who are h or less hops away from each other */
 		sb.append(genHopsQuery(h));
-		
+
 		/* common_interests: people with common interests in all_hops */
 		sb.append("common_interests(Long pid1, Long pid2, String interest).");
 		sb.append("common_interests(pid1, pid2, '__null') :- all_hops(pid1, pid2), all_people(pid1), all_people(pid2).\n");
 		sb.append("common_interests(pid1, pid2, interest) :- common_interests(pid1, pid2, '__null'), person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
-		
+
 		/* interest_counts: counts of interests for each pair */
 		sb.append("interest_counts(Long pid1, Long pid2, int count).\n");
 		sb.append("interest_counts(pid1, pid2, $inc) :- common_interests(pid1, pid2, interest).");
-		
+
 		sb.append("`\n");
-		
+
 		sb.append("count=0");
 		sb.append("		for p1, p2, c in `interest_counts(pid1, pid2, count)`:");
 		sb.append("	    print p1, p2, c");
 		sb.append("	    count+=1");
 		sb.append("    if count>"+k+": break;");
-		
+
 		return sb;
 	}
 
@@ -157,16 +170,11 @@ public class SociaLiteGenerator {
 		return sb;
 	}
 
+
 	public static void main(String[] args)
 	{
-//		Map<String, List<String>> schema = CreateRelations.readSchema();
-//		String table = "post";
-//		List<String> cols = new ArrayList<>();
-//		cols.add("browserUsed");
-//		cols.add("locationIP");
-//		SociaLiteGenerator.generateTables(table, cols, schema.get(table));
-		
+		System.out.println(generateQuery3Tables());
 		System.out.println("query 3:");
-		System.out.println(generateQuery3(10, 5, "Antarctica"));
+		System.out.println(generateQuery3(3, 2, "Asia"));
 	}
 }

@@ -136,7 +136,6 @@ public class CreateRelations
 				if (colNames.contains(col))
 				{
 					colIndices.add(i);
-					System.out.println(predicateName + "\t" +col);
 				}
 			}
 			filteredTuple = new String[colIndices.size()];
@@ -160,6 +159,7 @@ public class CreateRelations
 
 	public static List<ITuple> getTuples(String predicateName)
 	{
+		System.err.println("BAD TUPLER");
 		String line;
 		List<ITuple> tuples = new ArrayList<>();
 
