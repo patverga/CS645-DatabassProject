@@ -168,6 +168,15 @@ public class SociaLiteGenerator {
 //		SociaLiteGenerator.generateTables(table, cols, schema.get(table));
 		
 		System.out.println(generateQuery3Tables());
-		System.out.println(generateQuery3(10, 5, "Antarctica"));
+//		System.out.println(generateQuery3(3, 2, "Asia"));
+//		System.out.println(generateQuery3(4, 3, "Indonesia"));
+//		System.out.println(generateQuery3(3, 2, "Egypt"));
+//		System.out.println(generateQuery3(3, 2, "Italy"));
+//		System.out.println(generateQuery3(5, 4, "Chengdu"));
+//		System.out.println(generateQuery3(3, 2, "Peru"));
+		System.out.println(generateQuery3(3, 2, "Democratic_Republic_of_the_Congo"));
+//		System.out.println(generateQuery3(7, 6, "Ankara"));
+//		System.out.println(generateQuery3(3, 2, "Luoyang"));
+//		System.out.println(generateQuery3(4, 3, "Taiwan"));
 	}
 }
