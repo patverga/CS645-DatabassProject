@@ -213,9 +213,10 @@ public class SociaLiteGenerator
 		StringBuffer sb = new StringBuffer();
 
 		/* all_locs: all the locations that we care about (have to get sub-locations) */
-		sb.append("`\n");
+		sb.append("def inc(n): return n+1\n\n");
+		sb.append("`");
 		sb.append("all_locs(long locid).\n");
-		sb.append("all_locs(locid) :- place(locid, '"+p+"');\n");
+		sb.append("all_locs(locid) :- place(locid, \""+p+"\");\n");
 		sb.append("\t:- all_locs(parentlocid), place_isPartOf_place(locid, parentlocid), place(locid, name).\n");
 
 		/* all_orgs: all the organizations that we care about (orgs in all_locs places) */
@@ -241,9 +242,9 @@ public class SociaLiteGenerator
 
 		/* common_interests: people with common interests in all_hops */
 		sb.append("common_interests(long pid1, long pid2, String interest).");
-		sb.append("common_interests(pid1, pid2, '__null') :- all_hops(pid1, pid2), all_people(pid1), all_people(pid2).\n");
-		sb.append("common_interests(pid1, pid2, interest) :- common_interests(pid1, pid2, '__null'), person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
-
+		sb.append("common_interests(pid1, pid2, \"__null\") :- all_hops(pid1, pid2), all_people(pid1), all_people(pid2).\n");
+		sb.append("common_interests(pid1, pid2, interest) :- common_interests(pid1, pid2, \"__null\"), person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
+		
 		/* interest_counts: counts of interests for each pair */
 		sb.append("interest_counts(long pid1, long pid2, int count).\n");
 		sb.append("interest_counts(pid1, pid2, $inc) :- common_interests(pid1, pid2, interest).");
