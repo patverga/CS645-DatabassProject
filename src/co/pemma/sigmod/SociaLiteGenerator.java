@@ -213,7 +213,7 @@ public class SociaLiteGenerator
 		StringBuffer sb = new StringBuffer();
 
 		/* all_locs: all the locations that we care about (have to get sub-locations) */
-		sb.append("def inc(n): return n+1\n\n");
+		sb.append("def inc(n, by): return n+by\n\n");
 		sb.append("`");
 		sb.append("all_locs(long locid).\n");
 		sb.append("all_locs(locid) :- place(locid, \""+p+"\");\n");
@@ -247,7 +247,7 @@ public class SociaLiteGenerator
 		
 		/* interest_counts: counts of interests for each pair */
 		sb.append("interest_counts(long pid1, long pid2, int count).\n");
-		sb.append("interest_counts(pid1, pid2, $inc) :- common_interests(pid1, pid2, interest).");
+		sb.append("interest_counts(pid1, pid2, $inc(1)) :- common_interests(pid1, pid2, interest).");
 
 		sb.append("`\n");
 
