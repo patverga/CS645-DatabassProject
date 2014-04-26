@@ -223,7 +223,7 @@ public class SociaLiteGenerator
 		sb.append("all_orgs(orgid) :- organisation(orgid), organisation_isLocatedIn_place(orgid, locid), all_locs(locid).\n");
 
 		/* loc_people: people located in all_locs */
-		sb.append("loc_people(Long pid).\n");
+		sb.append("loc_people(long pid).\n");
 		sb.append("loc_people(pid) :- person_isLocatedIn_place(pid, locid), all_locs(locid).\n");
 
 		/* org_people: people who work at organizations in all_orgs */
@@ -240,12 +240,12 @@ public class SociaLiteGenerator
 		sb.append(genHopsQuery(h));
 
 		/* common_interests: people with common interests in all_hops */
-		sb.append("common_interests(long pid1, Long pid2, String interest).");
+		sb.append("common_interests(long pid1, long pid2, String interest).");
 		sb.append("common_interests(pid1, pid2, '__null') :- all_hops(pid1, pid2), all_people(pid1), all_people(pid2).\n");
 		sb.append("common_interests(pid1, pid2, interest) :- common_interests(pid1, pid2, '__null'), person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
 
 		/* interest_counts: counts of interests for each pair */
-		sb.append("interest_counts(long pid1, Long pid2, int count).\n");
+		sb.append("interest_counts(long pid1, long pid2, int count).\n");
 		sb.append("interest_counts(pid1, pid2, $inc) :- common_interests(pid1, pid2, interest).");
 
 		sb.append("`\n");
@@ -261,9 +261,9 @@ public class SociaLiteGenerator
 
 	private static StringBuffer genHopsQuery(int h) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("all_hops(long pid1, Long pid2).");
+		sb.append("all_hops(long pid1, long pid2).");
 		for(int i = 0; i < h; ++i){
-			sb.append("hop"+(i+1)+"(long pid0, Long pid"+(i+1)+").");
+			sb.append("hop"+(i+1)+"(long pid0, long pid"+(i+1)+").");
 			sb.append("hop"+(i+1)+"(pid0,pid"+(i+1)+") :- ");
 			for(int j = 0; j < i+1; ++j){
 				sb.append("person(pid"+j+"), person_knows_person(pid"+j+", pid"+(j+1)+"), ");
