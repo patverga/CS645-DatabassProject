@@ -234,7 +234,7 @@ public class SociaLiteGenerator
 
 		/* all_people: people from all_orgs or all_locs */
 		sb.append("all_people(long pid).\n");
-		sb.append("all_people(pid :- loc_people(pid);\n");
+		sb.append("all_people(pid) :- loc_people(pid);\n");
 		sb.append("\t:- org_people(pid).\n");
 
 		/* all_hops: all_people who are h or less hops away from each other */
