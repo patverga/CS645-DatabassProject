@@ -291,10 +291,10 @@ public class SociaLiteGenerator
 	{
 		System.out.println("Exporting py script");
 		StringBuilder sb = new StringBuilder();
-		sb.append("\n print \"Loading the tables now ...  \"\n");
+		sb.append("\nprint \"Loading the tables now ...  \"\n");
 		sb.append(generateQuery3Tables());
 
-		sb.append("\n print \"Done loading tables, starting query \"\n");
+		sb.append("\nprint \"Done loading tables, starting query \"\n");
 		sb.append(generateQuery3(3, 2, "Asia"));
 
 		exportPython(sb);
