@@ -242,8 +242,8 @@ public class SociaLiteGenerator
 
 		/* common_interests: people with common interests in all_hops */
 		sb.append("common_interests(long pid1, long pid2, String interest).\n");
-		sb.append("common_interests(pid1, pid2, \"__null\") :- all_hops(pid1, pid2), all_people(pid1), all_people(pid2).\n");
-		sb.append("common_interests(pid1, pid2, interest) :- common_interests(pid1, pid2, \"__null\"), person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
+		sb.append("common_interests(pid1, pid2, interest) :- all_hops(pid1, pid2), all_people(pid1), all_people(pid2), interest=\"__null\";\n");
+		sb.append("\t:- common_interests(pid1, pid2, interest), person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
 		
 		/* interest_counts: counts of interests for each pair */
 		sb.append("interest_counts(long pid1, long pid2, int count).\n");
