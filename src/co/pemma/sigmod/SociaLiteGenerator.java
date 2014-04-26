@@ -246,7 +246,7 @@ public class SociaLiteGenerator
 		sb.append("\t:- common_interests(pid1, pid2, interest), person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
 		
 		/* interest_counts: counts of interests for each pair */
-		sb.append("interest_counts(long pid1, long pid2, int count).\n");
+		sb.append("interest_counts(long pid1, long pid2, long count).\n");
 		sb.append("interest_counts(pid1, pid2, $inc(1)) :- common_interests(pid1, pid2, interest).\n");
 
 		sb.append("`\n");
