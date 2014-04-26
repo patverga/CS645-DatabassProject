@@ -13,21 +13,25 @@ import java.util.Map.Entry;
 
 public class SociaLiteGenerator 
 {	
-	public static final String query3File = "query3.py";
-	
-	
+	public static final String query3File = "socialite/bin/query3.py";
+
+
 	public static StringBuilder generateQuery3Tables()
 	{
 		StringBuilder sb = new StringBuilder();
 		Map<String, List<String>> schema = CreateRelations.readSchema();
 
+		sb.append("`");
 		for(Entry<String, List<String>> entry : Util.query3Columns.entrySet() )
 		{
-			sb.append(generateTable(entry.getKey(), entry.getValue(), schema.get(entry.getKey())));
+			sb.append(generateTable2(entry.getKey(), entry.getValue(), schema.get(entry.getKey())));
 		}
+		sb.append("`");
+		System.out.println(sb);
+
 		return sb;
 	}
-	
+
 	/**
 	 * Generate SociaLite code to load data into tables
 	 * 
@@ -46,7 +50,7 @@ public class SociaLiteGenerator
 		try (BufferedReader reader = new BufferedReader(new FileReader("data/"+tableName+".csv")))
 		{
 			// start and end with a backtick
-			sb.append("`");
+			//			sb.append("`");
 
 			// first line of file is schema
 			String line  = reader.readLine();
@@ -91,14 +95,109 @@ public class SociaLiteGenerator
 				sb.append(schemaIndexNameMap.get(colIndex) +"=\""+tuple[colIndex]+"\".");
 			}
 			// start and end with a backtick
-			sb.append("` \n");
+			//			sb.append("` \n");
 		} 
 		catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		System.out.println(sb);
+		return sb;
+	}
+
+	/**
+	 * Generate SociaLite code to load data into tables
+	 * 
+	 * @param tableName name of the table to generage SocialLite for
+	 * @param colNames names of columns that we want to load
+	 * @param schema SIGMOD db schema
+	 * @return StringBuffer representing generated code
+	 */
+	public static StringBuffer generateTable2(String tableName, List<String> colNames, List<String> schema)
+	{
+		StringBuffer sb = new StringBuffer();
+		// figure out indeces of the columns we want
+		List<Integer> colIndeces = new ArrayList<>();		
+		Map<Integer, String> schemaIndexNameMap = new HashMap<>();
+		Map<String, Integer> schemaNameIndexMap = new HashMap<>();
+		try (BufferedReader reader = new BufferedReader(new FileReader("data/"+tableName+".csv")))
+		{
+			// start and end with a backtick
+			//			sb.append("`");
+
+			// first line of file is schema
+			String line  = reader.readLine();
+			String[] tuple = line.split("\\|");
+
+			// map col names to their indices and back
+			for(int i = 0; i < tuple.length; i++)
+			{
+				String col = tuple[i];
+				if (schemaNameIndexMap.containsKey(col))
+					col += "2";
+				schemaIndexNameMap.put(i, col);
+				schemaNameIndexMap.put(col, i);
+				if (colNames.contains(col))
+					colIndeces.add(i);
+			}
+
+			// define the table
+			String type;
+			sb.append(tableName+"(");
+			for (int i = 0; i < colNames.size()-1; i++)
+			{
+				type = schema.get(schemaNameIndexMap.get(colNames.get(i)));
+				if (!type.equals("String"))
+					type = type.toLowerCase();
+				sb.append(type + " " + colNames.get(i).replace(".", "") + ", ");
+			}
+			type = schema.get(schemaNameIndexMap.get(colNames.get(colNames.size()-1)));
+			if (!type.equals("String"))
+				type = type.toLowerCase();
+			sb.append(type + " " + colNames.get(colNames.size()-1).replace(".", "") + ").");
+
+
+			sb.append("\n");
+			sb.append(tableName+"(");
+			for (int i = 0; i < colNames.size()-1; i++)
+				sb.append(colNames.get(i).replace(".", "")+", ");
+			sb.append(colNames.get(colNames.size()-1).replace(".", "")+")");
+			sb.append(" :- ");
+			sb.append("l=$read(\"/home/pv/Documents/CS645-DatabassProject/data/commas/"+ tableName + ".csv\"), ");
+
+			String splitString = "(";
+			for (int i = 0; i < tuple.length-1; i++)
+				splitString += "v"+i+",";
+			splitString += "v"+(tuple.length-1)+")";
+			sb.append(splitString + "=$split(l,\",\")");
+
+			int index;
+			for(String col : colNames)
+			{
+
+				sb.append(", "+col.replace(".", "")+"=");
+				index = schemaNameIndexMap.get(col);
+				type = schema.get(index);
+
+				if (type.equals("Integer"))
+					sb.append("$toInt(v" + index+")");
+				else if (type.equals("Long"))
+					sb.append("$toLong(v" + index+")");
+				else
+					sb.append("v" + index);
+			}
+			sb.append(".\n");
+
+			//`Values(a,b) :- l=read("path/to/file.txt"), (v1,v2)=$split(l), a=$toInt(v1), b=$toInt(v2).`
+
+			// start and end with a backtick
+			//			sb.append(".` \n");
+		} 
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		return sb;
 	}
 
@@ -156,7 +255,7 @@ public class SociaLiteGenerator
 		sb.append("\tprint p1, p2, c\n");
 		sb.append("\tcount += 1\n");
 		sb.append("\tif count>"+k+": break;\n");
-		
+
 		return sb;
 	}
 
@@ -186,14 +285,20 @@ public class SociaLiteGenerator
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void main(String[] args)
 	{
+		System.out.println("Exporting py script");
 		StringBuilder sb = new StringBuilder();
+		sb.append("print \"Loading the tables now ...  \"\n");
 		sb.append(generateQuery3Tables());
+
+		sb.append("print \"Done loading tables, starting query \"\n");
 		sb.append(generateQuery3(3, 2, "Asia"));
-		
+
 		exportPython(sb);
+
+		System.out.println("Done");
 
 	}
 }
