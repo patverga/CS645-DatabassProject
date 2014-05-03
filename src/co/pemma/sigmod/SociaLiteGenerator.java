@@ -40,9 +40,9 @@ public class SociaLiteGenerator
 	 * @param schema SIGMOD db schema
 	 * @return StringBuffer representing generated code
 	 */
-	public static StringBuffer generateTable(String tableName, List<String> colNames, List<String> schema)
+	public static StringBuilder generateTable(String tableName, List<String> colNames, List<String> schema)
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		// figure out indeces of the columns we want
 		List<Integer> colIndeces = new ArrayList<>();		
 		Map<Integer, String> schemaIndexNameMap = new HashMap<>();
@@ -136,8 +136,9 @@ public class SociaLiteGenerator
 	 * @param p place persons must be located in or work in
 	 * @return StringBuffer representing the generated code
 	 */
-	public static StringBuffer generateQuery3(int k, int h, String p){
-		StringBuffer sb = new StringBuffer();
+	public static StringBuilder generateQuery3(int k, int h, String p){
+		StringBuilder sb = new StringBuilder();
+
 
 		/* all_locs: all the locations that we care about (have to get sub-locations) */
 		sb.append("def inc(n, by): return n+by\n\n");
@@ -181,9 +182,51 @@ public class SociaLiteGenerator
 		sb.append("sorted_counts(count, pid1, pid2) :- interest_counts(pid1, pid2, c), count=c-1.\n");
 		sb.append("`\n");
 
-		sb.append("for count,pid1,pid2 in `sorted_counts(count,pid1,pid2)`:\n");
-		sb.append("\tprint pid1,pid2,count\n");
+//		sb.append("for count,pid1,pid2 in `sorted_counts(count,pid1,pid2)`:\n");
+//		sb.append("\tprint pid1,pid2,count\n");
+//		sb.append("count=0\n");
+//		sb.append("for pid1, pid2, count in `interest_counts(pid1, pid2, count)`:\n");
+//		sb.append("\tprint pid1, pid2, count\n");
+//		sb.append("\tcount += 1\n");
+//		sb.append("\tif count>"+k+": break;\n");
 
+
+		sb.append(sortedOutput(k));
+
+		return sb;
+	}
+	
+	/**
+	 * 
+	 * @param k number of results to return
+	 * @return
+	 */
+	public static StringBuilder sortedOutput(int k)
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		// sort the results in the way we want
+		sb.append("from operator import itemgetter \n");
+		sb.append("result_set = `sorted_counts(count,pid1,pid2)`\n");
+		sb.append("result_set = sorted(result_set, key=lambda x:(-x[0],x[1],x[2]))\n");
+		
+		// keep a set to remove duplicate (a,b) = (b,a)
+		sb.append("set = set() \n");
+		sb.append("results = 0 \n");
+		sb.append("for count,pid1,pid2 in result_set:\n");
+		sb.append("\tif results >= "+k+":\n");
+		sb.append("\t\tbreak \n");
+		sb.append("\tif pid1 > pid2:\n");
+		sb.append("\t\tid = str(pid2) + '-' + str(pid1)\n");
+		sb.append("\telse:\n");
+		sb.append("\t\tid = str(pid1) + '-' + str(pid2)\n");
+		
+		// if this is a new element print it, add to set
+		sb.append("\tif id not in set: \n");
+		sb.append("\t\tprint pid1,pid2,count\n");
+		sb.append("\t\tset.add(id) \n");
+		sb.append("\t\tresults += 1 \n");
+		
 		return sb;
 	}
 	
@@ -252,8 +295,8 @@ public class SociaLiteGenerator
 		return sb;
 	}
 
-	private static StringBuffer genHopsQuery(int h) {
-		StringBuffer sb = new StringBuffer();
+	private static StringBuilder genHopsQuery(int h) {
+		StringBuilder sb = new StringBuilder();
 		sb.append("all_hops(long pid1, long pid2).");
 		for(int i = 0; i < h; ++i){
 			sb.append("hop"+(i+1)+"(long pid0, long pid"+(i+1)+").");
@@ -285,6 +328,7 @@ public class SociaLiteGenerator
 		StringBuilder sb = new StringBuilder();
 		sb.append("\nprint \"Loading the tables now ...  \"\n");
 		sb.append(generateQueryTables(Util.query1Columns));
+
 
 		sb.append("\nprint \"Done loading tables, starting query \"\n");
 		
