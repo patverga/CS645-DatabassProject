@@ -35,7 +35,7 @@ public class SociaLiteGenerator
 	/**
 	 * Generate SociaLite code to load data into tables
 	 * 
-	 * @param tableName name of the table to generage SocialLite for
+	 * @param tableName name of the table to generate SociaLite for
 	 * @param colNames names of columns that we want to load
 	 * @param schema SIGMOD db schema
 	 * @return StringBuffer representing generated code
