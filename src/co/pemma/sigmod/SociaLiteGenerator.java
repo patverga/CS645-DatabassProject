@@ -13,18 +13,18 @@ import java.util.Map.Entry;
 
 public class SociaLiteGenerator 
 {	
-	public static final String query3File = "socialite/bin/query3.py";
+	public static final String queryFile = "socialite/bin/query.py";
 
 
-	public static StringBuilder generateQuery3Tables()
+	public static StringBuilder generateQueryTables(Map<String,List<String>> colMap)
 	{
 		StringBuilder sb = new StringBuilder();
 		Map<String, List<String>> schema = CreateRelations.readSchema();
 
 		sb.append("`");
-		for(Entry<String, List<String>> entry : Util.query3Columns.entrySet() )
+		for(Entry<String, List<String>> entry : colMap.entrySet() )
 		{
-			sb.append(generateTable2(entry.getKey(), entry.getValue(), schema.get(entry.getKey())));
+			sb.append(generateTable(entry.getKey(), entry.getValue(), schema.get(entry.getKey())));
 		}
 		sb.append("`");
 		System.out.println(sb);
@@ -41,79 +41,6 @@ public class SociaLiteGenerator
 	 * @return StringBuffer representing generated code
 	 */
 	public static StringBuilder generateTable(String tableName, List<String> colNames, List<String> schema)
-	{
-		StringBuilder sb = new StringBuilder();
-		// figure out indeces of the columns we want
-		List<Integer> colIndeces = new ArrayList<>();		
-		Map<Integer, String> schemaIndexNameMap = new HashMap<>();
-		Map<String, Integer> schemaNameIndexMap = new HashMap<>();
-		try (BufferedReader reader = new BufferedReader(new FileReader("data/"+tableName+".csv")))
-		{
-			// start and end with a backtick
-			//			sb.append("`");
-
-			// first line of file is schema
-			String line  = reader.readLine();
-			String col;
-			String[] tuple = line.split("\\|");
-
-			// map col names to their indices and back
-			for(int i = 0; i < tuple.length; i++)
-			{
-				col = tuple[i];
-				if (schemaNameIndexMap.containsKey(col))
-					col += "2";
-				schemaIndexNameMap.put(i, col);
-				schemaNameIndexMap.put(col, i);
-				if (colNames.contains(col))
-					colIndeces.add(i);
-			}
-
-			// define the table
-			sb.append(tableName+"(");
-			for (int i = 0; i < colNames.size()-1; i++)
-				sb.append(schema.get(schemaNameIndexMap.get(colNames.get(i))) + " " + colNames.get(i) + ", ");
-			sb.append(schema.get(schemaNameIndexMap.get(colNames.get(colNames.size()-1))) + " " + colNames.get(colNames.size()-1) + ").");
-
-			// read in and set the tuples
-			while ((line = reader.readLine()) != null)
-			{	
-				sb.append("\n");
-				sb.append(tableName+"(");
-				for (int i = 0; i < colNames.size()-1; i++)
-					sb.append(colNames.get(i)+", ");
-				sb.append(colNames.get(colNames.size()-1)+")");
-				sb.append(" :- ");
-				tuple = line.split("\\|");
-				int colIndex; 
-				for (int i = 0; i < colIndeces.size()-1; i++)
-				{
-					colIndex = colIndeces.get(i);
-					sb.append(schemaIndexNameMap.get(colIndex) +"=\""+tuple[colIndex]+"\", ");
-				}				
-				colIndex = colIndeces.get(colIndeces.size()-1);
-				sb.append(schemaIndexNameMap.get(colIndex) +"=\""+tuple[colIndex]+"\".");
-			}
-			// start and end with a backtick
-			//			sb.append("` \n");
-		} 
-		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return sb;
-	}
-
-	/**
-	 * Generate SociaLite code to load data into tables
-	 * 
-	 * @param tableName name of the table to generage SocialLite for
-	 * @param colNames names of columns that we want to load
-	 * @param schema SIGMOD db schema
-	 * @return StringBuffer representing generated code
-	 */
-	public static StringBuilder generateTable2(String tableName, List<String> colNames, List<String> schema)
 	{
 		StringBuilder sb = new StringBuilder();
 		// figure out indeces of the columns we want
@@ -263,6 +190,7 @@ public class SociaLiteGenerator
 //		sb.append("\tcount += 1\n");
 //		sb.append("\tif count>"+k+": break;\n");
 
+
 		sb.append(sortedOutput(k));
 
 		return sb;
@@ -301,6 +229,42 @@ public class SociaLiteGenerator
 		
 		return sb;
 	}
+	
+	/**
+	 * Generate SociaLite code for SIGMOD query 1
+	 * 
+	 * @param pid1 pid of first person
+	 * @param pid2 pid of second person
+	 * @param numComments min number of comments between people to consider them frequent communicators
+	 * @return StringBuffer representing the generated code
+	 */
+	public static StringBuilder generateQuery1(long pid1, long pid2, int numComments){
+		StringBuilder sb = new StringBuilder();
+
+		/* aggregate function for incrementing a count */
+		sb.append("def inc(n, by): return n+by\n\n");
+		sb.append("`");
+		
+		/* communications: pairs of people who know each other for each comment made in reply to each other */
+		sb.append("communications(long pid1, long pid2, int count).\n");
+		sb.append("communications(pid1, pid2, $inc(1)) :- person_knows_person(pid1, pid2);\n");
+		sb.append("\t:- pid1 != pid2, comment_hasCreator_person(cid1, pid1), comment_hasCreator_person(cid2, pid2), comment_replyOf_comment(cid1, cid2), person_knows_person(pid1, pid2).\n");
+		
+		/* communications: pairs of people who know each other and number of comments made in reply to each other */
+//		sb.append("communication_counts(long pid1, long pid2, int count).\n");
+//		sb.append("communication_counts(pid1, pid2, $inc(1)) :- communications(pid1, pid2, x).\n");
+		
+		/* communicators: pairs of people who know each other and have made > numComments comments in reply to each other */
+		sb.append("communicators(long pid1, long pid2).\n");
+		sb.append("communicators(pid1, pid2) :- communications(pid1, pid2, count), count-1 > "+numComments+".\n");
+		
+		sb.append("`\n");
+		
+		sb.append("for pid1,pid2 in `communicators(pid1,pid2)`:\n");
+		sb.append("\tprint pid1,pid2\n");
+		 
+		return sb;
+	}
 
 	private static StringBuilder genHopsQuery(int h) {
 		StringBuilder sb = new StringBuilder();
@@ -317,9 +281,9 @@ public class SociaLiteGenerator
 		return sb;
 	}
 
-	private static void exportPython(StringBuilder sb) 
+	private static void exportPython(StringBuilder sb, String fileName) 
 	{
-		try(PrintWriter writer = new PrintWriter(query3File))
+		try(PrintWriter writer = new PrintWriter(fileName))
 		{
 			writer.println(sb);
 		} 
@@ -334,21 +298,37 @@ public class SociaLiteGenerator
 		System.out.println("Exporting py script");
 		StringBuilder sb = new StringBuilder();
 		sb.append("\nprint \"Loading the tables now ...  \"\n");
-		sb.append(generateQuery3Tables());
+		sb.append(generateQueryTables(Util.query1Columns));
 
-		sb.append("\nprint \"Done loading tables\"\n");
-		sb.append(generateQuery3(3, 2, "Asia"));
-		sb.append(generateQuery3(4, 3, "Indonesia"));
-		sb.append(generateQuery3(3, 2, "Egypt"));
-		sb.append(generateQuery3(3, 2, "Italy"));
-		sb.append(generateQuery3(5, 4, "Chengdu"));
-		sb.append(generateQuery3(3, 2, "Peru"));
-		sb.append(generateQuery3(3, 2, "Democratic_Republic_of_the_Congo"));
-		sb.append(generateQuery3(7, 6, "Ankara"));
-		sb.append(generateQuery3(3, 2, "Luoyang"));
-		sb.append(generateQuery3(4, 3, "Taiwan"));
+
+		sb.append("\nprint \"Done loading tables, starting query \"\n");
 		
-		exportPython(sb);
+		/* Query 1 */
+		sb.append(generateQuery1(576, 400, -1));
+//		sb.append(generateQuery1(58, 402, 0));
+//		sb.append(generateQuery1(266, 106, -1));
+//		sb.append(generateQuery1(313, 523, -1));
+//		sb.append(generateQuery1(858, 587, 1));
+//		sb.append(generateQuery1(155, 355, -1));
+//		sb.append(generateQuery1(947, 771, -1));
+//		sb.append(generateQuery1(105, 608, 3));
+//		sb.append(generateQuery1(128, 751, -1));
+//		sb.append(generateQuery1(814, 641, 0));
+
+		/* Query 3 */
+//		sb.append(generateQueryTables(Util.query3Columns));
+//		sb.append(generateQuery3(3, 2, "Asia"));
+//		sb.append(generateQuery3(4, 3, "Indonesia"));
+//		sb.append(generateQuery3(3, 2, "Egypt"));
+//		sb.append(generateQuery3(3, 2, "Italy"));
+//		sb.append(generateQuery3(5, 4, "Chengdu"));
+//		sb.append(generateQuery3(3, 2, "Peru"));
+//		sb.append(generateQuery3(3, 2, "Democratic_Republic_of_the_Congo"));
+//		sb.append(generateQuery3(7, 6, "Ankara"));
+//		sb.append(generateQuery3(3, 2, "Luoyang"));
+//		sb.append(generateQuery3(4, 3, "Taiwan"));
+
+		exportPython(sb, queryFile);
 
 		System.out.println("Done");
 
