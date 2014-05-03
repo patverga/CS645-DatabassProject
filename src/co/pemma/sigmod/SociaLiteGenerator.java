@@ -13,12 +13,14 @@ import java.util.Map.Entry;
 
 public class SociaLiteGenerator 
 {	
-	public static final String queryFile = "socialite/bin/query.py";
+	public static final String queryFile = "socialite/bin/query3.py";
 
 
 	public static StringBuilder generateQueryTables(Map<String,List<String>> colMap)
 	{
 		StringBuilder sb = new StringBuilder();
+		sb.append("\nprint \"Loading the tables now ...  \"\n");
+
 		Map<String, List<String>> schema = CreateRelations.readSchema();
 
 		sb.append("`");
@@ -27,7 +29,8 @@ public class SociaLiteGenerator
 			sb.append(generateTable(entry.getKey(), entry.getValue(), schema.get(entry.getKey())));
 		}
 		sb.append("`");
-		System.out.println(sb);
+
+		sb.append("\nprint \"Done loading tables \"\n");
 
 		return sb;
 	}
@@ -41,8 +44,9 @@ public class SociaLiteGenerator
 	 * @return StringBuffer representing generated code
 	 */
 	public static StringBuilder generateTable(String tableName, List<String> colNames, List<String> schema)
-	{
+	{		
 		StringBuilder sb = new StringBuilder();
+
 		// figure out indeces of the columns we want
 		List<Integer> colIndeces = new ArrayList<>();		
 		Map<Integer, String> schemaIndexNameMap = new HashMap<>();
@@ -139,7 +143,7 @@ public class SociaLiteGenerator
 	public static StringBuilder generateQuery3(int k, int h, String p){
 		StringBuilder sb = new StringBuilder();
 
-
+		sb.append("\nprint \"Running query3("+k+", "+h+", \\\""+ p +"\\\")\"\n");
 		/* all_locs: all the locations that we care about (have to get sub-locations) */
 		sb.append("def inc(n, by): return n+by\n\n");
 		sb.append("`");
@@ -197,7 +201,6 @@ public class SociaLiteGenerator
 	}
 	
 	/**
-	 * 
 	 * @param k number of results to return
 	 * @return
 	 */
@@ -211,7 +214,7 @@ public class SociaLiteGenerator
 		sb.append("result_set = sorted(result_set, key=lambda x:(-x[0],x[1],x[2]))\n");
 		
 		// keep a set to remove duplicate (a,b) = (b,a)
-		sb.append("set = set() \n");
+		sb.append("used = set() \n");
 		sb.append("results = 0 \n");
 		sb.append("for count,pid1,pid2 in result_set:\n");
 		sb.append("\tif results >= "+k+":\n");
@@ -222,9 +225,9 @@ public class SociaLiteGenerator
 		sb.append("\t\tid = str(pid1) + '-' + str(pid2)\n");
 		
 		// if this is a new element print it, add to set
-		sb.append("\tif id not in set: \n");
+		sb.append("\tif id not in used: \n");
 		sb.append("\t\tprint pid1,pid2,count\n");
-		sb.append("\t\tset.add(id) \n");
+		sb.append("\t\tused.add(id) \n");
 		sb.append("\t\tresults += 1 \n");
 		
 		return sb;
@@ -297,14 +300,10 @@ public class SociaLiteGenerator
 	{
 		System.out.println("Exporting py script");
 		StringBuilder sb = new StringBuilder();
-		sb.append("\nprint \"Loading the tables now ...  \"\n");
-		sb.append(generateQueryTables(Util.query1Columns));
-
-
-		sb.append("\nprint \"Done loading tables, starting query \"\n");
+//		sb.append(generateQueryTables(Util.query1Columns));
 		
 		/* Query 1 */
-		sb.append(generateQuery1(576, 400, -1));
+//		sb.append(generateQuery1(576, 400, -1));
 //		sb.append(generateQuery1(58, 402, 0));
 //		sb.append(generateQuery1(266, 106, -1));
 //		sb.append(generateQuery1(313, 523, -1));
@@ -316,10 +315,10 @@ public class SociaLiteGenerator
 //		sb.append(generateQuery1(814, 641, 0));
 
 		/* Query 3 */
-//		sb.append(generateQueryTables(Util.query3Columns));
-//		sb.append(generateQuery3(3, 2, "Asia"));
+		sb.append(generateQueryTables(Util.query3Columns));
+		sb.append(generateQuery3(3, 2, "Asia"));
 //		sb.append(generateQuery3(4, 3, "Indonesia"));
-//		sb.append(generateQuery3(3, 2, "Egypt"));
+		sb.append(generateQuery3(3, 2, "Egypt"));
 //		sb.append(generateQuery3(3, 2, "Italy"));
 //		sb.append(generateQuery3(5, 4, "Chengdu"));
 //		sb.append(generateQuery3(3, 2, "Peru"));

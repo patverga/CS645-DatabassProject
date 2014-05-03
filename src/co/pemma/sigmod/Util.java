@@ -9,9 +9,9 @@ public class Util {
 	
 	@SuppressWarnings("serial")
 	public final static Map<String,List<String>> query1Columns = new HashMap<String,List<String>>() {{
+		put("person_knows_person", new ArrayList<String>() {{add("Person.id");add("Person.id2");}});
 		put("comment_hasCreator_person", new ArrayList<String>() {{add("Comment.id");add("Person.id");}});
 		put("comment_replyOf_comment", new ArrayList<String>() {{add("Comment.id");add("Comment.id2");}});
-		put("person_knows_person", new ArrayList<String>() {{add("Person.id");add("Person.id2");}});
 	}};
 	
 	@SuppressWarnings("serial")
