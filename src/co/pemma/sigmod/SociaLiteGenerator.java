@@ -248,23 +248,52 @@ public class SociaLiteGenerator
 		sb.append("def inc(n, by): return n+by\n\n");
 		sb.append("`");
 		
+		/* start_pairs: pairs of people on a path from the start person */
+		sb.append("start_pairs(long pid1, long pid2).\n");
+		sb.append("start_pairs(pid1, pid2) :- person_knows_person(pid1, pid2), pid1=$toLong(\""+pid1+"\");\n");
+		sb.append("\t:- start_pairs(x, pid1), person_knows_person(pid1, pid2), pid2 != $toLong(\""+pid1+"\"), pid1 != $toLong(\""+pid1+"\").\n");
+		
+		/* end_pairs: pairs of people on a path to the end person */
+		sb.append("end_pairs(long pid1, long pid2).\n");
+		sb.append("end_pairs(pid1, pid2) :- person_knows_person(pid1, pid2), pid2=$toLong(\""+pid2+"\");\n");
+		sb.append("\t:- end_pairs(pid2, x), person_knows_person(pid1, pid2), pid2 != $toLong(\""+pid2+"\"), pid1 != $toLong(\""+pid2+"\").\n");
+		
+		/* pairs: pairs of people on a path from the start to the end person */
+		sb.append("pairs(long pid1, long pid2).\n");
+		sb.append("pairs(pid1, pid2) :- start_pairs(pid1, pid2), end_pairs(pid1, pid2).\n");
+		
+		sb.append("poop(long pid1, long pid2, int count).\n");
+		sb.append("poop(pid1, pid2, $inc(1)) :- pairs(pid1, pid2).\n");
+		
+		
 		/* communications: pairs of people who know each other for each comment made in reply to each other */
-		sb.append("communications(long pid1, long pid2, int count).\n");
-		sb.append("communications(pid1, pid2, $inc(1)) :- person_knows_person(pid1, pid2);\n");
-		sb.append("\t:- pid1 != pid2, comment_hasCreator_person(cid1, pid1), comment_hasCreator_person(cid2, pid2), comment_replyOf_comment(cid1, cid2), person_knows_person(pid1, pid2).\n");
+//		sb.append("communications(long pid1, long pid2, int count).\n");
+//		sb.append("communications(pid1, pid2, $inc(1)) :- person_knows_person(pid1, pid2);\n");
+//		sb.append("\t:- pid1 != pid2, comment_hasCreator_person(cid1, pid1), comment_hasCreator_person(cid2, pid2), comment_replyOf_comment(cid1, cid2), person_knows_person(pid1, pid2).\n");
+//		sb.append("communications(long pid1, long pid2, int x).\n");
+//		sb.append("communications(pid1, pid2, x) :- person_knows_person(pid1, pid2), x=1;\n");
+//		sb.append("\t:- pid1 != pid2, x=1, comment_hasCreator_person(cid1, pid1), comment_hasCreator_person(cid2, pid2), comment_replyOf_comment(cid1, cid2), person_knows_person(pid1, pid2).\n");
 		
-		/* communications: pairs of people who know each other and number of comments made in reply to each other */
+//		sb.append("communications(long pid1, long pid2).\n");
+//		sb.append("communications(pid1, pid2) :- pairs(pid1, pid2);\n");
+//		sb.append("\t:- pairs(pid1, pid2), comment_hasCreator_person(cid1, pid1), comment_hasCreator_person(cid2, pid2), comment_replyOf_comment(cid1, cid2).\n");
+		
+		
+//		/* communications: pairs of people who know each other and number of comments made in reply to each other */
 //		sb.append("communication_counts(long pid1, long pid2, int count).\n");
-//		sb.append("communication_counts(pid1, pid2, $inc(1)) :- communications(pid1, pid2, x).\n");
+//		sb.append("communication_counts(pid1, pid2, $inc(1)) :- communications(pid1, pid2).\n");
+//		
+//		/* communicators: pairs of people who know each other and have made > numComments comments in reply to each other */
+//		sb.append("communicators(long pid1, long pid2).\n");
+//		sb.append("communicators(pid1, pid2) :- communication_counts(pid1, pid2, count), count-1 > "+numComments+".\n");
 		
-		/* communicators: pairs of people who know each other and have made > numComments comments in reply to each other */
-		sb.append("communicators(long pid1, long pid2).\n");
-		sb.append("communicators(pid1, pid2) :- communications(pid1, pid2, count), count-1 > "+numComments+".\n");
+//		sb.append("communicators(long pid1, long pid2).\n");
+//		sb.append("communicators(pid1, pid2) :- communications(pid1, pid2).");
 		
 		sb.append("`\n");
 		
-		sb.append("for pid1,pid2 in `communicators(pid1,pid2)`:\n");
-		sb.append("\tprint pid1,pid2\n");
+		sb.append("for pid1,pid2,count in `poop(pid1,pid2,count)`:\n");
+		sb.append("\tprint pid1,pid2,count\n");
 		 
 		return sb;
 	}
