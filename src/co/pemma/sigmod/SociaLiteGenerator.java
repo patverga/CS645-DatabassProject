@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -177,7 +178,7 @@ public class SociaLiteGenerator
 		sb.append("common_interests(pid1, pid2, interest) :- all_hops(pid1, pid2), pid1 != pid2, all_people(pid1), all_people(pid2), interest=$toLong(\"-1\");\n");
 		sb.append("\t:- all_hops(pid1, pid2), all_people(pid1), all_people(pid2), pid1 != pid2, person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
 		//sb.append("\t:- common_interests(pid1, pid2, interest), person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
-		
+
 		/* interest_counts: counts of interests for each pair */
 		sb.append("interest_counts(long pid1, long pid2, int count).\n");
 		sb.append("interest_counts(pid1, pid2, $inc(1)) :- common_interests(pid1, pid2, interest).\n");
@@ -186,20 +187,69 @@ public class SociaLiteGenerator
 		sb.append("sorted_counts(count, pid1, pid2) :- interest_counts(pid1, pid2, c), count=c-1.\n");
 		sb.append("`\n");
 
-//		sb.append("for count,pid1,pid2 in `sorted_counts(count,pid1,pid2)`:\n");
-//		sb.append("\tprint pid1,pid2,count\n");
-//		sb.append("count=0\n");
-//		sb.append("for pid1, pid2, count in `interest_counts(pid1, pid2, count)`:\n");
-//		sb.append("\tprint pid1, pid2, count\n");
-//		sb.append("\tcount += 1\n");
-//		sb.append("\tif count>"+k+": break;\n");
+		//		sb.append("for count,pid1,pid2 in `sorted_counts(count,pid1,pid2)`:\n");
+		//		sb.append("\tprint pid1,pid2,count\n");
+		//		sb.append("count=0\n");
+		//		sb.append("for pid1, pid2, count in `interest_counts(pid1, pid2, count)`:\n");
+		//		sb.append("\tprint pid1, pid2, count\n");
+		//		sb.append("\tcount += 1\n");
+		//		sb.append("\tif count>"+k+": break;\n");
 
 
 		sb.append(sortedOutput(k));
 
 		return sb;
 	}
-	
+
+	/**
+	 * 
+	 * @param k number of interest tags
+	 * @param d birthday people must be born after or on
+	 * @return
+	 */
+	public static StringBuilder generateQuery2(int k, String d)
+	{
+		StringBuilder sb = new StringBuilder();
+		String[] date = d.split("-");
+		String year = date[0];
+		String month = date[1];
+		String day = date[2];
+
+
+		sb.append("`");
+
+		// find all of the people born after the defined date
+		sb.append("young_people(long id).\n");
+		sb.append("young_people(id) :- person(id, date), (y,m,d)=$split(date, \"-\"), "
+				+ "y1=$toInt(y), y2="+year+", y1 >= y2, \n"
+				+ "m1=$toInt(m), m2="+month+", m1 >= m2, \n"
+				+ "d1=$toInt(d), d2="+day+", d1 >= d2. \n");
+
+		// people have interests, this probably isnt a good next step
+		sb.append("has_interest(long pid, long tid).\n");
+		sb.append("has_interest(pid, tid) :- all_hops(pid1, pid2), pid1 != pid2, all_people(pid1), all_people(pid2), interest=$toLong(\"-1\");\n");
+
+		
+		sb.append("`\n");
+
+		sb.append("for id in `young_people(id)`:\n");
+		sb.append("\tprint id\n");
+
+		return sb;
+	}
+
+
+
+	private static Object generateQuery4(int k, String t) 
+	{
+		StringBuilder sb = new StringBuilder();
+
+
+
+		return sb;
+	}
+
+
 	/**
 	 * @param k number of results to return
 	 * @return
@@ -207,12 +257,12 @@ public class SociaLiteGenerator
 	public static StringBuilder sortedOutput(int k)
 	{
 		StringBuilder sb = new StringBuilder();
-		
+
 		// sort the results in the way we want
 		sb.append("from operator import itemgetter \n");
 		sb.append("result_set = `sorted_counts(count,pid1,pid2)`\n");
 		sb.append("result_set = sorted(result_set, key=lambda x:(-x[0],x[1],x[2]))\n");
-		
+
 		// keep a set to remove duplicate (a,b) = (b,a)
 		sb.append("used = set() \n");
 		sb.append("results = 0 \n");
@@ -223,16 +273,16 @@ public class SociaLiteGenerator
 		sb.append("\t\tid = str(pid2) + '-' + str(pid1)\n");
 		sb.append("\telse:\n");
 		sb.append("\t\tid = str(pid1) + '-' + str(pid2)\n");
-		
+
 		// if this is a new element print it, add to set
 		sb.append("\tif id not in used: \n");
 		sb.append("\t\tprint pid1,pid2,count\n");
 		sb.append("\t\tused.add(id) \n");
 		sb.append("\t\tresults += 1 \n");
-		
+
 		return sb;
 	}
-	
+
 	/**
 	 * Generate SociaLite code for SIGMOD query 1
 	 * 
@@ -247,54 +297,54 @@ public class SociaLiteGenerator
 		/* aggregate function for incrementing a count */
 		sb.append("def inc(n, by): return n+by\n\n");
 		sb.append("`");
-		
+
 		/* start_pairs: pairs of people on a path from the start person */
 		sb.append("start_pairs(long pid1, long pid2).\n");
 		sb.append("start_pairs(pid1, pid2) :- person_knows_person(pid1, pid2), pid1=$toLong(\""+pid1+"\");\n");
 		sb.append("\t:- start_pairs(x, pid1), person_knows_person(pid1, pid2), pid2 != $toLong(\""+pid1+"\"), pid1 != $toLong(\""+pid1+"\").\n");
-		
+
 		/* end_pairs: pairs of people on a path to the end person */
 		sb.append("end_pairs(long pid1, long pid2).\n");
 		sb.append("end_pairs(pid1, pid2) :- person_knows_person(pid1, pid2), pid2=$toLong(\""+pid2+"\");\n");
 		sb.append("\t:- end_pairs(pid2, x), person_knows_person(pid1, pid2), pid2 != $toLong(\""+pid2+"\"), pid1 != $toLong(\""+pid2+"\").\n");
-		
+
 		/* pairs: pairs of people on a path from the start to the end person */
 		sb.append("pairs(long pid1, long pid2).\n");
 		sb.append("pairs(pid1, pid2) :- start_pairs(pid1, pid2), end_pairs(pid1, pid2).\n");
-		
+
 		sb.append("poop(long pid1, long pid2, int count).\n");
 		sb.append("poop(pid1, pid2, $inc(1)) :- pairs(pid1, pid2).\n");
-		
-		
+
+
 		/* communications: pairs of people who know each other for each comment made in reply to each other */
-//		sb.append("communications(long pid1, long pid2, int count).\n");
-//		sb.append("communications(pid1, pid2, $inc(1)) :- person_knows_person(pid1, pid2);\n");
-//		sb.append("\t:- pid1 != pid2, comment_hasCreator_person(cid1, pid1), comment_hasCreator_person(cid2, pid2), comment_replyOf_comment(cid1, cid2), person_knows_person(pid1, pid2).\n");
-//		sb.append("communications(long pid1, long pid2, int x).\n");
-//		sb.append("communications(pid1, pid2, x) :- person_knows_person(pid1, pid2), x=1;\n");
-//		sb.append("\t:- pid1 != pid2, x=1, comment_hasCreator_person(cid1, pid1), comment_hasCreator_person(cid2, pid2), comment_replyOf_comment(cid1, cid2), person_knows_person(pid1, pid2).\n");
-		
-//		sb.append("communications(long pid1, long pid2).\n");
-//		sb.append("communications(pid1, pid2) :- pairs(pid1, pid2);\n");
-//		sb.append("\t:- pairs(pid1, pid2), comment_hasCreator_person(cid1, pid1), comment_hasCreator_person(cid2, pid2), comment_replyOf_comment(cid1, cid2).\n");
-		
-		
-//		/* communications: pairs of people who know each other and number of comments made in reply to each other */
-//		sb.append("communication_counts(long pid1, long pid2, int count).\n");
-//		sb.append("communication_counts(pid1, pid2, $inc(1)) :- communications(pid1, pid2).\n");
-//		
-//		/* communicators: pairs of people who know each other and have made > numComments comments in reply to each other */
-//		sb.append("communicators(long pid1, long pid2).\n");
-//		sb.append("communicators(pid1, pid2) :- communication_counts(pid1, pid2, count), count-1 > "+numComments+".\n");
-		
-//		sb.append("communicators(long pid1, long pid2).\n");
-//		sb.append("communicators(pid1, pid2) :- communications(pid1, pid2).");
-		
+		//		sb.append("communications(long pid1, long pid2, int count).\n");
+		//		sb.append("communications(pid1, pid2, $inc(1)) :- person_knows_person(pid1, pid2);\n");
+		//		sb.append("\t:- pid1 != pid2, comment_hasCreator_person(cid1, pid1), comment_hasCreator_person(cid2, pid2), comment_replyOf_comment(cid1, cid2), person_knows_person(pid1, pid2).\n");
+		//		sb.append("communications(long pid1, long pid2, int x).\n");
+		//		sb.append("communications(pid1, pid2, x) :- person_knows_person(pid1, pid2), x=1;\n");
+		//		sb.append("\t:- pid1 != pid2, x=1, comment_hasCreator_person(cid1, pid1), comment_hasCreator_person(cid2, pid2), comment_replyOf_comment(cid1, cid2), person_knows_person(pid1, pid2).\n");
+
+		//		sb.append("communications(long pid1, long pid2).\n");
+		//		sb.append("communications(pid1, pid2) :- pairs(pid1, pid2);\n");
+		//		sb.append("\t:- pairs(pid1, pid2), comment_hasCreator_person(cid1, pid1), comment_hasCreator_person(cid2, pid2), comment_replyOf_comment(cid1, cid2).\n");
+
+
+		//		/* communications: pairs of people who know each other and number of comments made in reply to each other */
+		//		sb.append("communication_counts(long pid1, long pid2, int count).\n");
+		//		sb.append("communication_counts(pid1, pid2, $inc(1)) :- communications(pid1, pid2).\n");
+		//		
+		//		/* communicators: pairs of people who know each other and have made > numComments comments in reply to each other */
+		//		sb.append("communicators(long pid1, long pid2).\n");
+		//		sb.append("communicators(pid1, pid2) :- communication_counts(pid1, pid2, count), count-1 > "+numComments+".\n");
+
+		//		sb.append("communicators(long pid1, long pid2).\n");
+		//		sb.append("communicators(pid1, pid2) :- communications(pid1, pid2).");
+
 		sb.append("`\n");
-		
+
 		sb.append("for pid1,pid2,count in `poop(pid1,pid2,count)`:\n");
 		sb.append("\tprint pid1,pid2,count\n");
-		 
+
 		return sb;
 	}
 
@@ -329,36 +379,50 @@ public class SociaLiteGenerator
 	{
 		System.out.println("Exporting py script");
 		StringBuilder sb = new StringBuilder();
-//		sb.append(generateQueryTables(Util.query1Columns));
-		
+
 		/* Query 1 */
-//		sb.append(generateQuery1(576, 400, -1));
-//		sb.append(generateQuery1(58, 402, 0));
-//		sb.append(generateQuery1(266, 106, -1));
-//		sb.append(generateQuery1(313, 523, -1));
-//		sb.append(generateQuery1(858, 587, 1));
-//		sb.append(generateQuery1(155, 355, -1));
-//		sb.append(generateQuery1(947, 771, -1));
-//		sb.append(generateQuery1(105, 608, 3));
-//		sb.append(generateQuery1(128, 751, -1));
-//		sb.append(generateQuery1(814, 641, 0));
+		//		sb.append(generateQueryTables(Util.query1Columns));
+		//		sb.append(generateQuery1(576, 400, -1));
+		//		sb.append(generateQuery1(58, 402, 0));
+		//		sb.append(generateQuery1(266, 106, -1));
+		//		sb.append(generateQuery1(313, 523, -1));
+		//		sb.append(generateQuery1(858, 587, 1));
+		//		sb.append(generateQuery1(155, 355, -1));
+		//		sb.append(generateQuery1(947, 771, -1));
+		//		sb.append(generateQuery1(105, 608, 3));
+		//		sb.append(generateQuery1(128, 751, -1));
+		//		sb.append(generateQuery1(814, 641, 0));
+
+
+		/* Query 2 */
+		sb.append(generateQueryTables(Util.query2Columns));
+		sb.append(generateQuery2(3, "1980-02-01"));
+
 
 		/* Query 3 */
-		sb.append(generateQueryTables(Util.query3Columns));
-		sb.append(generateQuery3(3, 2, "Asia"));
-//		sb.append(generateQuery3(4, 3, "Indonesia"));
-		sb.append(generateQuery3(3, 2, "Egypt"));
-//		sb.append(generateQuery3(3, 2, "Italy"));
-//		sb.append(generateQuery3(5, 4, "Chengdu"));
-//		sb.append(generateQuery3(3, 2, "Peru"));
-//		sb.append(generateQuery3(3, 2, "Democratic_Republic_of_the_Congo"));
-//		sb.append(generateQuery3(7, 6, "Ankara"));
-//		sb.append(generateQuery3(3, 2, "Luoyang"));
-//		sb.append(generateQuery3(4, 3, "Taiwan"));
+		//		sb.append(generateQueryTables(Util.query3Columns));
+		//		sb.append(generateQuery3(3, 2, "Asia"));
+		//		sb.append(generateQuery3(4, 3, "Indonesia"));
+		//		sb.append(generateQuery3(3, 2, "Egypt"));
+		//		sb.append(generateQuery3(3, 2, "Italy"));
+		//		sb.append(generateQuery3(5, 4, "Chengdu"));
+		//		sb.append(generateQuery3(3, 2, "Peru"));
+		//		sb.append(generateQuery3(3, 2, "Democratic_Republic_of_the_Congo"));
+		//		sb.append(generateQuery3(7, 6, "Ankara"));
+		//		sb.append(generateQuery3(3, 2, "Luoyang"));
+		//		sb.append(generateQuery3(4, 3, "Taiwan"));
+
+
+		/* Query 4 */
+		//		sb.append(generateQueryTables(Util.query4Columns));
+		//		sb.append(generateQuery4(3, "Bill Clinton"));
+
+
 
 		exportPython(sb, queryFile);
 
 		System.out.println("Done");
 
 	}
+
 }
