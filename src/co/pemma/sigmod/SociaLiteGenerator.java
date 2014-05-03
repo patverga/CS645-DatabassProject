@@ -242,20 +242,25 @@ public class SociaLiteGenerator
 
 		/* common_interests: people with common interests in all_hops */
 		sb.append("common_interests(long pid1, long pid2, long interest).\n");
-		sb.append("common_interests(pid1, pid2, interest) :- all_hops(pid1, pid2), all_people(pid1), all_people(pid2), interest=-1;\n");
-		sb.append("\t:- common_interests(pid1, pid2, interest), person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
+		//sb.append("common_interests(pid1, pid2, interest) :- all_hops(pid1, pid2), all_people(pid1), all_people(pid2), interest=$toLong(\"-1\");\n");
+		sb.append("common_interests(pid1, pid2, interest) :- all_hops(pid1, pid2), all_people(pid1), all_people(pid2), pid1 != pid2, person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
+		//sb.append("\t:- common_interests(pid1, pid2, interest), person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
 		
 		/* interest_counts: counts of interests for each pair */
-		sb.append("interest_counts(long pid1, long pid2, long count).\n");
+		sb.append("interest_counts(long pid1, long pid2, int count).\n");
 		sb.append("interest_counts(pid1, pid2, $inc(1)) :- common_interests(pid1, pid2, interest).\n");
 
+		sb.append("sorted_counts(int count, long pid1, long pid2).\n");
+		sb.append("sorted_counts(count, pid1, pid2) :- interest_counts(pid1, pid2, count).\n");
 		sb.append("`\n");
 
-		sb.append("count=0\n");
-		sb.append("\tfor p1, p2, c in `interest_counts(pid1, pid2, count)`:\n");
-		sb.append("\tprint p1, p2, c\n");
-		sb.append("\tcount += 1\n");
-		sb.append("\tif count>"+k+": break;\n");
+		sb.append("for count,pid1,pid2 in `sorted_counts(count,pid1,pid2)`:\n");
+		sb.append("\tprint pid1,pid2,count\n");
+//		sb.append("count=0\n");
+//		sb.append("for pid1, pid2, count in `interest_counts(pid1, pid2, count)`:\n");
+//		sb.append("\tprint pid1, pid2, count\n");
+//		sb.append("\tcount += 1\n");
+//		sb.append("\tif count>"+k+": break;\n");
 
 		return sb;
 	}
@@ -295,7 +300,7 @@ public class SociaLiteGenerator
 		sb.append(generateQuery3Tables());
 
 		sb.append("\nprint \"Done loading tables, starting query \"\n");
-		sb.append(generateQuery3(3, 2, "Asia"));
+		sb.append(generateQuery3(4, 3, "Indonesia"));
 
 		exportPython(sb);
 
