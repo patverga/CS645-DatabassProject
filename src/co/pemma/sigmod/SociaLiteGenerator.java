@@ -242,8 +242,8 @@ public class SociaLiteGenerator
 
 		/* common_interests: people with common interests in all_hops */
 		sb.append("common_interests(long pid1, long pid2, long interest).\n");
-		//sb.append("common_interests(pid1, pid2, interest) :- all_hops(pid1, pid2), all_people(pid1), all_people(pid2), interest=$toLong(\"-1\");\n");
-		sb.append("common_interests(pid1, pid2, interest) :- all_hops(pid1, pid2), all_people(pid1), all_people(pid2), pid1 != pid2, person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
+		sb.append("common_interests(pid1, pid2, interest) :- all_hops(pid1, pid2), pid1 != pid2, all_people(pid1), all_people(pid2), interest=$toLong(\"-1\");\n");
+		sb.append("\t:- all_hops(pid1, pid2), all_people(pid1), all_people(pid2), pid1 != pid2, person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
 		//sb.append("\t:- common_interests(pid1, pid2, interest), person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
 		
 		/* interest_counts: counts of interests for each pair */
@@ -251,7 +251,7 @@ public class SociaLiteGenerator
 		sb.append("interest_counts(pid1, pid2, $inc(1)) :- common_interests(pid1, pid2, interest).\n");
 
 		sb.append("sorted_counts(int count, long pid1, long pid2).\n");
-		sb.append("sorted_counts(count, pid1, pid2) :- interest_counts(pid1, pid2, count).\n");
+		sb.append("sorted_counts(count, pid1, pid2) :- interest_counts(pid1, pid2, c), count=c-1.\n");
 		sb.append("`\n");
 
 		sb.append("for count,pid1,pid2 in `sorted_counts(count,pid1,pid2)`:\n");
@@ -300,7 +300,16 @@ public class SociaLiteGenerator
 		sb.append(generateQuery3Tables());
 
 		sb.append("\nprint \"Done loading tables, starting query \"\n");
-		sb.append(generateQuery3(4, 3, "Indonesia"));
+//		sb.append(generateQuery3(3, 2, "Asia"));
+//		sb.append(generateQuery3(4, 3, "Indonesia"));
+//		sb.append(generateQuery3(3, 2, "Egypt"));
+//		sb.append(generateQuery3(3, 2, "Italy"));
+//		sb.append(generateQuery3(5, 4, "Chengdu"));
+//		sb.append(generateQuery3(3, 2, "Peru"));
+		sb.append(generateQuery3(3, 2, "Democratic_Republic_of_the_Congo"));
+//		sb.append(generateQuery3(7, 6, "Ankara"));
+//		sb.append(generateQuery3(3, 2, "Luoyang"));
+//		sb.append(generateQuery3(4, 3, "Taiwan"));
 
 		exportPython(sb);
 
