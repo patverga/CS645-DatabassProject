@@ -323,6 +323,8 @@ public class SociaLiteGenerator
 		String year = date[0];
 		String month = date[1];
 		String day = date[2];
+		
+		int ageCutoff = Integer.parseInt(year)*10000+Integer.parseInt(month)*100+Integer.parseInt(day);
 
 		sb.append("def inc(n, by): return n+by\n\n");
 		sb.append("`");
@@ -330,25 +332,39 @@ public class SociaLiteGenerator
 		// find all of the people born after the defined date
 		sb.append("young_people(long id).\n");
 		sb.append("young_people(id) :- person(id, date), (y,m,d)=$split(date, \"-\"), "
-				+ "y1=$toInt(y), y2="+year+", y1 >= y2, \n"
-				+ "m1=$toInt(m), m2="+month+", m1 >= m2, \n"
-				+ "d1=$toInt(d), d2="+day+", d1 >= d2. \n");
-
-		sb.append("conn_comps(long pid, long tag).\n");
-		sb.append("conn_comps(pid, tag) :- young_people(pid), person_hasInterest_tag(pid, tag);\n");
-		sb.append("\t:- conn_comps(pid2, tag), young_people(pid), person_knows_person(pid2, pid), person_hasInterest_tag(pid, tag).\n");
+				+ "$toInt(y)*10000+$toInt(m)*100+$toInt(d) >= " + ageCutoff + ".\n");
 		
-		sb.append("comp_sizes(long tag, int count).\n");
-		sb.append("comp_sizes(tag, $inc(1)) :- conn_comps(pid, tag).\n");
+//		sb.append("conn_comps(long pid, long tag).\n");
+//		sb.append("conn_comps(pid, tag) :- young_people(pid), person_hasInterest_tag(pid, tag);\n");
+//		sb.append("\t:- conn_comps(pid2, tag), young_people(pid), person_knows_person(pid2, pid), person_hasInterest_tag(pid, tag).\n");
+		
+		/* this */
+//		sb.append("conn_comps(long pid, long cid:0..1000, long tag).\n");
+//		sb.append("conn_comps(pid, $min(n), tag) :- young_people(pid), person_hasInterest_tag(pid, tag), n=pid;\n");
+//		sb.append("\t:- conn_comps(pid2, n, tag), young_people(pid), person_knows_person(pid2, pid), person_hasInterest_tag(pid, tag).\n");
+		
+		sb.append("conn_comps(long pid, long cid).\n");
+		sb.append("conn_comps(pid, $min(n)) :- young_people(pid), n=pid;\n");
+		sb.append("\t:- conn_comps(pid2, n), young_people(pid), person_knows_person(pid2, pid).\n");
+		
+//		sb.append("conn_comps(long pid, long cid:0..1000, long tag).\n");
+//		sb.append("conn_comps(pid, $min(n), tag) :- person(pid, name), person_hasInterest_tag(pid, tag), n=pid;\n");
+//		sb.append("\t:- conn_comps(pid2, n, tag), person(pid, name), person_knows_person(pid2, pid), person_hasInterest_tag(pid, tag).\n");
+		
+//		sb.append("comp_sizes(long tag, int count).\n");
+//		sb.append("comp_sizes(tag, $inc(1)) :- conn_comps(pid, tag).\n");
 		
 //		sb.append("sorted_comp_sizes(int count, long tag).\n");
 //		sb.append("sorted_comp_sizes(count, tag) :- comp_sizes(tag, count).\n");
-		sb.append("sorted_comp_sizes(int count, String tagName).\n");
-		sb.append("sorted_comp_sizes(count, tagName) :- comp_sizes(tag, count), tag(tag, tagName).\n");
+//		sb.append("sorted_comp_sizes(int count, String tagName).\n");
+//		sb.append("sorted_comp_sizes(count, tagName) :- comp_sizes(tag, count), tag(tag, tagName).\n");
 		sb.append("`\n");
 		
-		sb.append("for pid,tag in `sorted_comp_sizes(tag,count)`:\n");
-		sb.append("\tprint pid,tag\n");
+//		sb.append("for pid,tag in `sorted_comp_sizes(tag,count)`:\n");
+//		sb.append("\tprint pid,tag\n");
+		
+		sb.append("for pid,cid in `conn_comps(pid, cid)`:\n");
+		sb.append("\tprint pid,cid\n");
 		
 //		sb.append("for pid in `young_people(pid)`:\n");
 //		sb.append("\tprint pid\n");
@@ -405,7 +421,8 @@ public class SociaLiteGenerator
 
 		/* Query 2 */
 		sb.append(generateQueryTables(Util.query2Columns));
-		sb.append(generateQuery2(3, "1980-02-01"));
+//		sb.append(generateQuery2(3, "1980-02-01"));
+		sb.append(generateQuery2(3, "1990-01-20"));
 
 
 		/* Query 3 */
