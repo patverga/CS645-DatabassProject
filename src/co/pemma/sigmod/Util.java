@@ -14,18 +14,11 @@ public class Util {
 		put("comment_replyOf_comment", new ArrayList<String>() {{add("Comment.id");add("Comment.id2");}});
 	}};
 	
-//	@SuppressWarnings("serial")
-//	public final static Map<String,List<String>> query2Columns = new HashMap<String,List<String>>() {{
-//		put("person", new ArrayList<String>() {{add("id");add("birthday");}});
-//		put("tag", new ArrayList<String>() {{add("id");add("name");}});
-//		put("person_hasInterest_tag", new ArrayList<String>() {{add("Person.id");add("Tag.id");}});
-//		put("person_knows_person", new ArrayList<String>() {{add("Person.id");add("Person.id2");}});
-//	}};
-	
 	@SuppressWarnings("serial")
 	public final static Map<String,List<String>> query2Columns = new HashMap<String,List<String>>() {{
 		put("person_knows_person", new ArrayList<String>() {{add("Person.id");add("Person.id2");}});
 		put("person_hasInterest_tag", new ArrayList<String>() {{add("Person.id");add("Tag.id");}});
+		put("tag", new ArrayList<String>() {{add("id");add("name");}});
 		put("person", new ArrayList<String>() {{add("id");add("birthday");}});
 	}};
 	

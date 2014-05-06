@@ -13,7 +13,7 @@ import java.util.Map.Entry;
 
 public class SociaLiteGenerator 
 {	
-	public static final String queryFile = "socialite/bin/query3.py";
+	public static final String queryFile = "socialite/bin/query.py";
 
 
 	public static StringBuilder generateQueryTables(Map<String,List<String>> colMap)
@@ -313,7 +313,7 @@ public class SociaLiteGenerator
 	 * Generate SociaLite code for SIGMOD query 2
 	 * 
 	 * @param k number of interest tags to return
-	 * @param date only consider people born on this date or later
+	 * @param d only consider people born on this date or later
 	 * @return StringBuffer representing the generated code
 	 */
 	public static StringBuilder generateQuery2(int k, String d)
@@ -324,7 +324,7 @@ public class SociaLiteGenerator
 		String month = date[1];
 		String day = date[2];
 
-
+		sb.append("def inc(n, by): return n+by\n\n");
 		sb.append("`");
 
 		// find all of the people born after the defined date
@@ -334,15 +334,24 @@ public class SociaLiteGenerator
 				+ "m1=$toInt(m), m2="+month+", m1 >= m2, \n"
 				+ "d1=$toInt(d), d2="+day+", d1 >= d2. \n");
 
-		// people have interests, this probably isnt a good next step
-		sb.append("has_interest(long pid, long tid).\n");
-		sb.append("has_interest(pid, tid) :- all_hops(pid1, pid2), pid1 != pid2, all_people(pid1), all_people(pid2), interest=$toLong(\"-1\");\n");
-
+		sb.append("conn_comps(long pid, long tag).\n");
+		sb.append("conn_comps(pid, tag) :- young_people(pid), person_hasInterest_tag(pid, tag);\n");
+		sb.append("\t:- conn_comps(pid2, tag), young_people(pid), person_knows_person(pid2, pid), person_hasInterest_tag(pid, tag).\n");
 		
+		sb.append("comp_sizes(long tag, int count).\n");
+		sb.append("comp_sizes(tag, $inc(1)) :- conn_comps(pid, tag).\n");
+		
+//		sb.append("sorted_comp_sizes(int count, long tag).\n");
+//		sb.append("sorted_comp_sizes(count, tag) :- comp_sizes(tag, count).\n");
+		sb.append("sorted_comp_sizes(int count, String tagName).\n");
+		sb.append("sorted_comp_sizes(count, tagName) :- comp_sizes(tag, count), tag(tag, tagName).\n");
 		sb.append("`\n");
-
-		sb.append("for id in `young_people(id)`:\n");
-		sb.append("\tprint id\n");
+		
+		sb.append("for pid,tag in `sorted_comp_sizes(tag,count)`:\n");
+		sb.append("\tprint pid,tag\n");
+		
+//		sb.append("for pid in `young_people(pid)`:\n");
+//		sb.append("\tprint pid\n");
 
 		return sb;
 	}
@@ -366,6 +375,7 @@ public class SociaLiteGenerator
 	{
 		try(PrintWriter writer = new PrintWriter(fileName))
 		{
+			System.out.println(sb);
 			writer.println(sb);
 		} 
 		catch (FileNotFoundException e) {
