@@ -1,4 +1,4 @@
-package co.pemma.sigmod;
+package co.pemma.sigmod.socialite;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import co.pemma.sigmod.iris.CreateRelations;
 
 public class SociaLiteGenerator 
 {	

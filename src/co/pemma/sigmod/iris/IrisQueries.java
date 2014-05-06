@@ -1,4 +1,4 @@
-package co.pemma.sigmod;
+package co.pemma.sigmod.iris;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +22,7 @@ import org.deri.iris.compiler.ParserException;
 import org.deri.iris.storage.IRelation;
 
 
-public class WinSigmodRunner 
+public class IrisQueries 
 {
 	public static void main(String[] args)
 	{
