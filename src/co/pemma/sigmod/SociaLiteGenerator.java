@@ -170,7 +170,7 @@ public class SociaLiteGenerator
 
 		/* common_interests: people with common interests in all_hops */
 		sb.append("common_interests(long pid1, long pid2, long interest).\n");
-		sb.append("common_interests(pid1, pid2, interest) :- all_hops(pid1, pid2), pid1 != pid2, all_people(pid1), all_people(pid2), interest=$toLong(\"-1\");\n");
+		sb.append("common_interests(pid1, pid2, interest) :- all_hops(pid1, pid2), pid1 != pid2, all_people(pid1), all_people(pid2), interest=-1L;\n");
 		sb.append("\t:- all_hops(pid1, pid2), all_people(pid1), all_people(pid2), pid1 != pid2, person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
 		//sb.append("\t:- common_interests(pid1, pid2, interest), person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
 		
@@ -243,25 +243,32 @@ public class SociaLiteGenerator
 
 		/* aggregate function for incrementing a count */
 		sb.append("def inc(n, by): return n+by\n\n");
+//		sb.append("c = 0\n");
+//		sb.append("def counter(n,by):\n");
+//		sb.append("\tc += by\n");
+//		sb.append("\treturn c-by\n\n");
 		sb.append("`");
 		
 		/* start_pairs: pairs of people on a path from the start person */
 		sb.append("start_pairs(long pid1, long pid2).\n");
-		sb.append("start_pairs(pid1, pid2) :- person_knows_person(pid1, pid2), pid1=$toLong(\""+pid1+"\");\n");
-		sb.append("\t:- start_pairs(x, pid1), person_knows_person(pid1, pid2), pid2 != $toLong(\""+pid1+"\"), pid1 != $toLong(\""+pid1+"\").\n");
+		sb.append("start_pairs("+pid1+"L, pid2) :- person_knows_person("+pid1+"L, pid2).\n");
+		sb.append("start_pairs(pid1, pid2) :- start_pairs(x, pid1), person_knows_person(pid1, pid2).\n");
 		
 		/* end_pairs: pairs of people on a path to the end person */
 		sb.append("end_pairs(long pid1, long pid2).\n");
-		sb.append("end_pairs(pid1, pid2) :- person_knows_person(pid1, pid2), pid2=$toLong(\""+pid2+"\");\n");
-		sb.append("\t:- end_pairs(pid2, x), person_knows_person(pid1, pid2), pid2 != $toLong(\""+pid2+"\"), pid1 != $toLong(\""+pid2+"\").\n");
+		sb.append("end_pairs("+pid2+"L, pid2) :- person_knows_person("+pid2+"L, pid2).\n");
+		sb.append("end_pairs(pid1, pid2) :- end_pairs(pid2, x), person_knows_person(pid1, pid2).\n");
+		
+//		sb.append("garbage(long pid1, long pid2).\n");
+//		sb.append("garbage("+pid1+"L, pid2) :- start_pairs(pid1, pid2), end_pairs(pid1, pid2).\n");
 		
 		/* pairs: pairs of people on a path from the start to the end person */
 		sb.append("pairs(long pid1, long pid2).\n");
 		sb.append("pairs(pid1, pid2) :- start_pairs(pid1, pid2), end_pairs(pid1, pid2).\n");
+//		sb.append("pairs("+pid1+"L, pid2) :- person_knows_person("+pid1+"L, pid2).\n");
 		
-		sb.append("poop(long pid1, long pid2, int count).\n");
-		sb.append("poop(pid1, pid2, $inc(1)) :- pairs(pid1, pid2).\n");
-		
+//		sb.append("poop(long pid1, long pid2).\n");
+//		sb.append("poop("+pid1+"L, pid2) :- person_knows_person("+pid1+"L, pid2).\n");
 		
 		/* communications: pairs of people who know each other for each comment made in reply to each other */
 //		sb.append("communications(long pid1, long pid2, int count).\n");
@@ -271,10 +278,10 @@ public class SociaLiteGenerator
 //		sb.append("communications(pid1, pid2, x) :- person_knows_person(pid1, pid2), x=1;\n");
 //		sb.append("\t:- pid1 != pid2, x=1, comment_hasCreator_person(cid1, pid1), comment_hasCreator_person(cid2, pid2), comment_replyOf_comment(cid1, cid2), person_knows_person(pid1, pid2).\n");
 		
-//		sb.append("communications(long pid1, long pid2).\n");
-//		sb.append("communications(pid1, pid2) :- pairs(pid1, pid2);\n");
-//		sb.append("\t:- pairs(pid1, pid2), comment_hasCreator_person(cid1, pid1), comment_hasCreator_person(cid2, pid2), comment_replyOf_comment(cid1, cid2).\n");
-		
+		if(numComments > -1){
+			sb.append("communications(long pid1, long pid2).\n");
+			sb.append("communications(pid1, pid2) :- pairs(pid1, pid2), comment_hasCreator_person(cid1, pid1), comment_hasCreator_person(cid2, pid2), comment_replyOf_comment(cid1, cid2).\n");
+		}
 		
 //		/* communications: pairs of people who know each other and number of comments made in reply to each other */
 //		sb.append("communication_counts(long pid1, long pid2, int count).\n");
@@ -287,10 +294,58 @@ public class SociaLiteGenerator
 //		sb.append("communicators(long pid1, long pid2).\n");
 //		sb.append("communicators(pid1, pid2) :- communications(pid1, pid2).");
 		
+		sb.append("reach(long pid, int len).\n");
+		sb.append("reach(pid, len) :- pairs("+pid1+"L, pid), len=1.\n");
+		sb.append("reach(pid, len) :- reach(y,c), pairs(y,pid), len=c+1.\n");
+		
 		sb.append("`\n");
 		
-		sb.append("for pid1,pid2,count in `poop(pid1,pid2,count)`:\n");
-		sb.append("\tprint pid1,pid2,count\n");
+		sb.append("for pid1,pid2,c in `reach(pid1,pid2)`:\n");
+		sb.append("\tprint pid1,pid2,c\n");
+		 
+		return sb;
+	}
+	
+	/**
+	 * Generate SociaLite code for SIGMOD query 2
+	 * 
+	 * @param k number of interest tags to return
+	 * @param date only consider people born on this date or later
+	 * @return StringBuffer representing the generated code
+	 */
+	public static StringBuilder generateQuery2(int k, String date){
+		StringBuilder sb = new StringBuilder();
+
+		/* aggregate function for incrementing a count */
+		sb.append("def inc(n, by): return n+by\n\n");
+//		sb.append("c = 0\n");
+//		sb.append("def counter(n,by):\n");
+//		sb.append("\tc += by\n");
+//		sb.append("\treturn c-by\n\n");
+		sb.append("`");
+		
+//		sb.append("pairs("+pid1+"L, pid2) :- person_knows_person("+pid1+"L, pid2).\n");
+		
+//		sb.append("poop(long pid1, long pid2).\n");
+//		sb.append("poop("+pid1+"L, pid2) :- person_knows_person("+pid1+"L, pid2).\n");
+		
+		/* communications: pairs of people who know each other for each comment made in reply to each other */
+//		sb.append("communications(long pid1, long pid2, int count).\n");
+//		sb.append("communications(pid1, pid2, $inc(1)) :- person_knows_person(pid1, pid2);\n");
+//		sb.append("\t:- pid1 != pid2, comment_hasCreator_person(cid1, pid1), comment_hasCreator_person(cid2, pid2), comment_replyOf_comment(cid1, cid2), person_knows_person(pid1, pid2).\n");
+//		sb.append("communications(long pid1, long pid2, int x).\n");
+//		sb.append("communications(pid1, pid2, x) :- person_knows_person(pid1, pid2), x=1;\n");
+//		sb.append("\t:- pid1 != pid2, x=1, comment_hasCreator_person(cid1, pid1), comment_hasCreator_person(cid2, pid2), comment_replyOf_comment(cid1, cid2), person_knows_person(pid1, pid2).\n");
+
+		
+//		sb.append("reach(long pid, int len).\n");
+//		sb.append("reach(pid, len) :- pairs("+pid1+"L, pid), len=1.\n");
+//		sb.append("reach(pid, len) :- reach(y,c), pairs(y,pid), len=c+1.\n");
+//		
+//		sb.append("`\n");
+		
+		sb.append("for pid1,pid2,c in `reach(pid1,pid2)`:\n");
+		sb.append("\tprint pid1,pid2,c\n");
 		 
 		return sb;
 	}

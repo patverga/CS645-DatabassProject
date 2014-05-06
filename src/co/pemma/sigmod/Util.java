@@ -15,6 +15,13 @@ public class Util {
 	}};
 	
 	@SuppressWarnings("serial")
+	public final static Map<String,List<String>> query2Columns = new HashMap<String,List<String>>() {{
+		put("person_knows_person", new ArrayList<String>() {{add("Person.id");add("Person.id2");}});
+		put("person_hasInterest_tag", new ArrayList<String>() {{add("Person.id");add("Tag.id");}});
+		put("person", new ArrayList<String>() {{add("id");add("birthday");}});
+	}};
+	
+	@SuppressWarnings("serial")
 	public final static Map<String,List<String>> query3Columns = new HashMap<String,List<String>>() {{
 		put("place", new ArrayList<String>() {{add("id");add("name");}});
 		put("place_isPartOf_place", new ArrayList<String>() {{add("Place.id");add("Place.id2");}});
