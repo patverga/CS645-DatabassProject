@@ -1,4 +1,4 @@
-package co.pemma.sigmod.socialite;
+package co.pemma.sigmod;
 
 import java.util.ArrayList;
 import java.util.HashMap;

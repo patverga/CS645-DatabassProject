@@ -1,6 +1,9 @@
 package co.pemma.sigmod.iris;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +27,7 @@ import org.deri.iris.storage.IRelation;
 
 public class IrisQueries 
 {
-	public static void main(String[] args)
+	public static void main(String[] args) throws ParseException
 	{
 //		String program = "poop(?g) :- person(?g).\r\n ?-poop(?g).\r\n";
 
@@ -44,8 +47,11 @@ public class IrisQueries
 //			System.out.println();
 //		}
 
+		
+		query2(3, "1988-02-01");
+		
 //		query3(3, 2, "Asia");
-		query3(4, 3, "Indonesia");
+//		query3(4, 3, "Indonesia");
 //		query3(3, 2, "Egypt");
 //		query3(3, 2, "Italy");
 ////		query3(5, 4, "Chengdu");
@@ -92,9 +98,23 @@ public class IrisQueries
 		return results;
 	}
 	
-	public static void query2(int k, String d)
+	public static void query2(int k, String d) throws ParseException
 	{
+		String date = "_date(" + d.replace("-", ",")+ ")";
+
+		//		terms.add(termFactory.createDate(date.getYear() + 1900, date.getMonth()+1, date.getDate(), 0, 0));
 		
+		String query = "young_people(?id, ?birthday) :- person(?id, ?birthday), ?birthday > "+date+".\r\n"// > " + date + ".\r\n"
+		
+		+ "?-young_people(?id, ?birthday).\r\n";
+		
+		System.out.println(query);
+		
+		IRelation results = runQuery(query, 2).get(0);
+		for (int i = 0; i < results.size(); i++)
+		{
+			System.out.println(results.get(i).get(0) + "\t" + results.get(i).get(1));
+		}
 	}
 
 	/**

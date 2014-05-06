@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import co.pemma.sigmod.Util;
 import co.pemma.sigmod.iris.CreateRelations;
 
 public class SociaLiteGenerator 
