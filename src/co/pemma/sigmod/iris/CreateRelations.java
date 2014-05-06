@@ -1,4 +1,4 @@
-package co.pemma.sigmod;
+package co.pemma.sigmod.iris;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -145,7 +145,7 @@ public class CreateRelations
 				// only use the columns we need
 				for (int i = 0; i < colIndices.size(); i++)
 					filteredTuple[i] = tuple[colIndices.get(i)];
-				ITuple newTuple = createTuple(predicateName, filteredTuple);
+				ITuple newTuple = createTuple(predicateName, filteredTuple, colIndices);
 				tuples.add(newTuple); 	
 			}
 		} 
@@ -172,7 +172,7 @@ public class CreateRelations
 			reader.readLine();
 			while ((line = reader.readLine()) != null)
 			{		
-				ITuple newTuple = createTuple(predicateName, line.split("\\|"));
+				ITuple newTuple = createTuple(predicateName, line.split("\\|"), null);
 				tuples.add(newTuple);
 			}
 		} 
@@ -207,14 +207,15 @@ public class CreateRelations
 		return facts;
 	}
 
-	private static ITuple createTuple(String predicateName, String[] columns) 
+	private static ITuple createTuple(String predicateName, String[] columns, List<Integer> colIndices) 
 	{
 		IConcreteFactory termFactory = ConcreteFactory.getInstance();
 		List<String> types = schema.get(predicateName);
 		List<ITerm> terms = new ArrayList<>();
 
 		for(int i = 0; i < columns.length; i++){
-			switch(types.get(i)){
+			switch(types.get(colIndices.get(i)))
+			{
 			case "String":
 				terms.add(termFactory.createNormalizedString(columns[i]));
 				break;
@@ -233,6 +234,13 @@ public class CreateRelations
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+//				int dateNum = 0;
+//				String[] date = columns[i].split("-");
+//				dateNum += Integer.parseInt(date[0]) * 10000;
+//				dateNum += Integer.parseInt(date[1]) * 100;
+//				dateNum += Integer.parseInt(date[2]);
+//				terms.add(termFactory.createInt(dateNum));
+
 				break;	
 
 			case "DateTime":
