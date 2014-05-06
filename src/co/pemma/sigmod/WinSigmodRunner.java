@@ -91,6 +91,11 @@ public class WinSigmodRunner
 		}
 		return results;
 	}
+	
+	public static void query2(int k, String d)
+	{
+		
+	}
 
 	/**
 	 * @param k number of person id pairs to return

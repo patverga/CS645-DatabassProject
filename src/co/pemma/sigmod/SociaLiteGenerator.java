@@ -15,8 +15,7 @@ public class SociaLiteGenerator
 {	
 	public static final String queryFile = "socialite/bin/query3.py";
 
-
-	public static StringBuilder generateQueryTables(Map<String,List<String>> colMap)
+	public static StringBuilder generateQueryTables(Map<String,List<String>> colMap, Map<String,List<String>> indexMap)
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("\nprint \"Loading the tables now ...  \"\n");
@@ -24,9 +23,15 @@ public class SociaLiteGenerator
 		Map<String, List<String>> schema = CreateRelations.readSchema();
 
 		sb.append("`");
+
+		List<String> indices;
 		for(Entry<String, List<String>> entry : colMap.entrySet() )
 		{
-			sb.append(generateTable(entry.getKey(), entry.getValue(), schema.get(entry.getKey())));
+			if (indexMap != null && indexMap.containsKey(entry.getKey()))
+				indices = indexMap.get(entry.getKey());
+			else
+				indices = null;
+			sb.append( generateTable(entry.getKey(), entry.getValue(), schema.get(entry.getKey()), indices) );
 		}
 		sb.append("`");
 
@@ -43,7 +48,7 @@ public class SociaLiteGenerator
 	 * @param schema SIGMOD db schema
 	 * @return StringBuffer representing generated code
 	 */
-	public static StringBuilder generateTable(String tableName, List<String> colNames, List<String> schema)
+	public static StringBuilder generateTable(String tableName, List<String> colNames, List<String> schema, List<String> indices)
 	{		
 		StringBuilder sb = new StringBuilder();
 
@@ -85,9 +90,18 @@ public class SociaLiteGenerator
 			type = schema.get(schemaNameIndexMap.get(colNames.get(colNames.size()-1)));
 			if (!type.equals("String"))
 				type = type.toLowerCase();
-			sb.append(type + " " + colNames.get(colNames.size()-1).replace(".", "") + ").");
+			sb.append(type + " " + colNames.get(colNames.size()-1).replace(".", "")+")");
 
+			// set indices over table
+			if (indices != null && !indices.isEmpty())
+			{
+				for (int i = 0; i < indices.size()-1; i++)
+					sb.append(" indexby " + indices.get(i).replace(".", "") + ",");			
+				sb.append(" indexby " + indices.get(indices.size()-1).replace(".", ""));
+			}
+			sb.append(".");
 
+			// read the data from file into the table
 			sb.append("\n");
 			sb.append(tableName+"(");
 			for (int i = 0; i < colNames.size()-1; i++)
@@ -119,8 +133,6 @@ public class SociaLiteGenerator
 			}
 			sb.append(".\n");
 
-			//`Values(a,b) :- l=read("path/to/file.txt"), (v1,v2)=$split(l), a=$toInt(v1), b=$toInt(v2).`
-
 			// start and end with a backtick
 			//			sb.append(".` \n");
 		} 
@@ -143,6 +155,8 @@ public class SociaLiteGenerator
 	public static StringBuilder generateQuery3(int k, int h, String p){
 		StringBuilder sb = new StringBuilder();
 
+		sb.append("\nimport time\n");
+		sb.append("\nstart_time = time.time()\n");
 		sb.append("\nprint \"Running query3("+k+", "+h+", \\\""+ p +"\\\")\"\n");
 		/* all_locs: all the locations that we care about (have to get sub-locations) */
 		sb.append("def inc(n, by): return n+by\n\n");
@@ -196,7 +210,8 @@ public class SociaLiteGenerator
 
 
 		sb.append(sortedOutput(k));
-
+		sb.append("\nprint time.time() - start_time\n");
+		
 		return sb;
 	}
 
@@ -228,7 +243,7 @@ public class SociaLiteGenerator
 		sb.append("has_interest(long pid, long tid).\n");
 		sb.append("has_interest(pid, tid) :- all_hops(pid1, pid2), pid1 != pid2, all_people(pid1), all_people(pid2), interest=$toLong(\"-1\");\n");
 
-		
+
 		sb.append("`\n");
 
 		sb.append("for id in `young_people(id)`:\n");
@@ -391,14 +406,16 @@ public class SociaLiteGenerator
 
 
 		/* Query 2 */
-		sb.append(generateQueryTables(Util.query2Columns));
-		sb.append(generateQuery2(3, "1980-02-01"));
+//		sb.append(generateQueryTables(Util.query2Columns, Util.query2Indices));
+//		sb.append(generateQuery2(3, "1980-02-01"));
 
 
 		/* Query 3 */
-		//		sb.append(generateQueryTables(Util.query3Columns));
-		//		sb.append(generateQuery3(3, 2, "Asia"));
-		//		sb.append(generateQuery3(4, 3, "Indonesia"));
+//				sb.append(generateQueryTables(Util.query3Columns, Util.query3Indices));
+				sb.append(generateQueryTables(Util.query3Columns, null));
+
+				sb.append(generateQuery3(3, 2, "Asia"));
+				sb.append(generateQuery3(4, 3, "Indonesia"));
 		//		sb.append(generateQuery3(3, 2, "Egypt"));
 		//		sb.append(generateQuery3(3, 2, "Italy"));
 		//		sb.append(generateQuery3(5, 4, "Chengdu"));
