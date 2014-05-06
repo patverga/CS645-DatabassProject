@@ -8,7 +8,7 @@ organisation.csv
  id(Long) | type(String) | name(String) | url(String)    
 
 person.csv
- id(Long) | firstName(String) | lastName(String) | gender(String) | birthday(Date) | creationDate(DateTime) | locationIP(String) | browserUsed(String)    
+ id(Long) | firstName(String) | lastName(String) | gender(String) | birthday(String) | creationDate(DateTime) | locationIP(String) | browserUsed(String)    
 
 place.csv
  id(Long) | name(String) | url(String) | type(String)
