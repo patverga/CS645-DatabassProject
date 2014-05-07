@@ -304,40 +304,6 @@ public class SociaLiteGenerator
 
 		sb.append("young_people_interests_"+tablePrefix+"(int pid:0..1000, (int tag)).\n");
 		sb.append("young_people_interests_"+tablePrefix+"(pid, tag) :- young_people_"+tablePrefix+"(pid), person_hasInterest_tag(pid, tag).\n");
-<<<<<<< HEAD
-
-		//		sb.append("young_people_interests_debug_"+tablePrefix+"(int pid:0..1000, (String tagname)).\n");
-		//		sb.append("young_people_interests_debug_"+tablePrefix+"(pid, tagname) :- young_people_"+tablePrefix+"(pid), person_hasInterest_tag(pid, tag), tag(tag, tagname).\n");
-
-		/* All valid edges, with interest labels */
-		sb.append("edge_"+tablePrefix+"(int pid1:0..1000, (int pid2, int tag)).\n");
-		sb.append("edge_"+tablePrefix+"(pid1, pid2, tag) :- young_people_interests_"+tablePrefix+"(pid1, tag), person_knows_person(pid1, pid2), young_people_interests_"+tablePrefix+"(pid2, tag).\n");
-
-		/* Connected components */
-		//		sb.append("comp_"+tablePrefix+"(int pid:0..1000, (int tag, int id)).");
-		//		sb.append("comp_"+tablePrefix+"(pid, tag, $min(id)) :- young_people_interests_"+tablePrefix+"(pid, tag), id=pid;");
-		//		sb.append("\t:- comp_"+tablePrefix+"(x, tag, id), edge_"+tablePrefix+"(x, pid, tag).");
-		////		sb.append("comp_"+tablePrefix+"(int pid:0..1000, (int tag, int id)).\n");
-		////		sb.append("comp_"+tablePrefix+"(pid, tag, $min(id)) :- edge_"+tablePrefix+"(pid, pid2, tag), id=pid;\n");
-		////		sb.append("\t:- comp_"+tablePrefix+"(x, tag, id), edge_"+tablePrefix+"(x, pid, tag).\n");
-		//		
-		//		/* Sizes of connected components */
-		//		sb.append("comp_size_"+tablePrefix+"(int id:0..1000, (int tag, int size)).\n");
-		//		sb.append("comp_size_"+tablePrefix+"(id, tag, $sum(1)) :- comp_"+tablePrefix+"(_, tag, id).\n");
-		//
-		//		sb.append("sorted_comp_size_"+tablePrefix+"(int size, String tagname).\n");
-		//		sb.append("sorted_comp_size_"+tablePrefix+"(size, tagname) :- comp_size_"+tablePrefix+"(id, tag, size), tag(tag, tagname).\n");
-
-		sb.append("`\n");
-
-		/* print result sorted lexicographically by tag name */
-		//		sb.append("for count, tag in `sorted_comp_size_"+tablePrefix+"(count, tag)`:\n");
-		//		sb.append("\tprint count, tag\n");
-		sb.append("for pid1,pid2,tag in `edge_debug_"+tablePrefix+"(pid1,pid2,tag)`:\n");
-		sb.append("\tprint pid1,pid2,tag\n");
-
-		//		sb.append(sortedOutput2(k, tablePrefix));
-=======
 	
 		/* All valid edges, with interest labels */
 		sb.append("edge_"+tablePrefix+"(int pid1:0..1000, (int pid2, int tag)).\n");
@@ -360,7 +326,6 @@ public class SociaLiteGenerator
 //		sb.append("\tprint count, tag\n");
 
 		sb.append(sortedOutput2(k, tablePrefix));
->>>>>>> bb569db4c149b220b2d4d2b20635dba777bf2118
 
 		return sb;
 	}
@@ -544,19 +509,6 @@ public class SociaLiteGenerator
 
 
 		/* Query 2 */
-<<<<<<< HEAD
-		//		sb.append(generateQueryTables(Util.query2Columns, null, Util.query2TailNested));
-		//		sb.append(generateQuery2(3, "1980-02-01") + "\n"); // Chiang_Kai-shek    Augustine_of_Hippo     Napoleon 
-		//		sb.append(generateQuery2(4, "1981-03-10") + "\n"); // Chiang_Kai-shek    Napoleon     Mohandas_Karamchand_Gandhi     Sukarno
-		//		sb.append(generateQuery2(3, "1982-03-29") + "\n"); // Chiang_Kai-shek    Mohandas_Karamchand_Gandhi 	  Napoleon
-		//		sb.append(generateQuery2(3, "1983-05-09") + "\n"); // Chiang_Kai-shek    Mohandas_Karamchand_Gandhi     Augustine_of_Hippo
-		//		sb.append(generateQuery2(5, "1984-07-02") + "\n"); // Chiang_Kai-shek     Aristotle     Mohandas_Karamchand_Gandhi     Augustine_of_Hippo     Fidel_Castro
-		//		sb.append(generateQuery2(3, "1985-05-31") + "\n"); // Chiang_Kai-shek     Mohandas_Karamchand_Gandhi    Joseph_Stalin
-		//		sb.append(generateQuery2(3, "1986-06-14") + "\n"); // Chiang_Kai-shek     Mohandas_Karamchand_Gandhi    Joseph_Stalin
-		//		sb.append(generateQuery2(7, "1987-06-24") + "\n"); // Chiang_Kai-shek     Augustine_of_Hippo     Genghis_Khan     Haile_Selassie_I     Karl_Marx 
-		//		sb.append(generateQuery2Better(3, "1988-11-10") + "\n");
-		//		sb.append(generateQuery2(4, "1990-01-25") + "\n");
-=======
 //		sb.append(generateQueryTables(Util.query2Columns, null, Util.query2TailNested));
 //		sb.append(generateQuery2(3, "1980-02-01") + "\n"); // Chiang_Kai-shek    Augustine_of_Hippo     Napoleon 
 //		sb.append(generateQuery2(4, "1981-03-10") + "\n"); // Chiang_Kai-shek    Napoleon     Mohandas_Karamchand_Gandhi     Sukarno
@@ -568,13 +520,10 @@ public class SociaLiteGenerator
 //		sb.append(generateQuery2(7, "1987-06-24") + "\n"); // Chiang_Kai-shek     Augustine_of_Hippo     Genghis_Khan     Haile_Selassie_I     Karl_Marx 
 //		sb.append(generateQuery2(3, "1988-11-10") + "\n");
 //		sb.append(generateQuery2(4, "1990-01-25") + "\n");
->>>>>>> bb569db4c149b220b2d4d2b20635dba777bf2118
-
 
 		/* Query 3 */
 		//		sb.append(generateQueryTables(Util.query3Columns, Util.query3Indices, tailNested));
 		sb.append(generateQueryTables(Util.query3Columns, null, Util.query3TailNested));
-<<<<<<< HEAD
 		//		sb.append(generateQuery3(3, 2, "Asia"));
 		//		sb.append(generateQuery3(4, 3, "Indonesia"));
 //		sb.append(generateQuery3(3, 2, "Egypt"));
@@ -599,19 +548,6 @@ public class SociaLiteGenerator
 
 
 		//		sb.append(test());
-=======
-		sb.append(generateQuery3(3, 2, "Asia"));
-		sb.append(generateQuery3(4, 3, "Indonesia"));
-		sb.append(generateQuery3(3, 2, "Egypt"));
-		sb.append(generateQuery3(3, 2, "Italy"));
-		sb.append(generateQuery3(5, 4, "Chengdu"));
-		sb.append(generateQuery3(3, 2, "Peru"));
-		sb.append(generateQuery3(3, 2, "Democratic_Republic_of_the_Congo"));
-		sb.append(generateQuery3(7, 6, "Ankara"));
-		sb.append(generateQuery3(3, 2, "Luoyang"));
-		sb.append(generateQuery3(4, 3, "Taiwan"));
->>>>>>> bb569db4c149b220b2d4d2b20635dba777bf2118
-
 
 		exportPython(sb, queryFile);
 
