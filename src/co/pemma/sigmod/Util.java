@@ -12,6 +12,7 @@ import java.util.Map;
 public class Util 
 {
 	public static String DATA_LOCATION;
+	public static int DATA_SIZE;
 	public static String RESULT_FILE = "results/data";
 
 	// Query 1
@@ -122,6 +123,7 @@ public class Util
 
 	public static void setDataLocation(int dataSize)
 	{
+		DATA_SIZE = dataSize*1000;
 		if (dataSize == 1)
 			DATA_LOCATION =  "data";
 		else if(dataSize == 10)

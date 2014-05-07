@@ -94,7 +94,7 @@ public class SociaLiteGenerator
 					type = "String";
 				else if(type.equals("long"))
 					type = "int";
-				sb.append(type + " " + colNames.get(i).replace(".", "") + (tailNested? ":0..1000, "  : ", "));
+				sb.append(type + " " + colNames.get(i).replace(".", "") + (tailNested? ":0.."+Util.DATA_SIZE+", "  : ", "));
 			}
 			type = schema.get(schemaNameIndexMap.get(colNames.get(colNames.size()-1)));
 			if(!type.equals("String"))
@@ -488,7 +488,7 @@ public class SociaLiteGenerator
 
 	public static void main(String[] args)
 	{
-		int dataSize = 1;
+		int dataSize = 10;
 		Util.setDataLocation(dataSize);
 		
 		System.out.println("Exporting py script");
