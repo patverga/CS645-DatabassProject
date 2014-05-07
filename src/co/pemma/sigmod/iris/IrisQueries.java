@@ -32,68 +32,53 @@ public class IrisQueries
 {
 	public static void main(String[] args) throws ParseException
 	{
-		//		String program = "poop(?g) :- person(?g).\r\n ?-poop(?g).\r\n";
+		long start = System.currentTimeMillis();
 
-		//		String program = "all_locs(?locid) :- place(?locid, 'Democratic_Republic_of_the_Congo').\r\n"
-		//				+ "all_locs(?locid) :- all_locs(?parentlocid), place_isPartOf_place(?locid, ?parentlocid), place(?locid, ?name).\r\n"
-		//				+ "all_orgs(?orgid) :- organisation(?orgid), organisation_isLocatedIn_place(?orgid, ?locid), all_locs(?locid).\r\n"
-		//				+ "loc_people(?pid) :-  all_locs(?locid), person_isLocatedIn_place(?pid, ?locid).\r\n"
-		//				+ "?-loc_people(?pid).\r\n";
-		//				//+ "?-all_orgs(?locid).\r\n";
-		//		
-		//		IRelation results = runQuery(program, 3).get(0);
-		//		ITuple tuple;
-		//		for (int i = 0; i < results.size(); i++) {
-		//			tuple = results.get(i);
-		//			for (int j = 0; j < tuple.size(); ++j)
-		//				System.out.print(tuple.get(j) + "\t");
-		//			System.out.println();
-		//		}
+		//		testQuery2();
 
-
-		testQuery2();
-
-//		testQuery3();
+		testQuery3();
+		
+		System.out.println("Query took " + ((System.currentTimeMillis() - start)) +" miliseconds.");
 
 	}
 
 	private static void testQuery3() {
 		///// Query 3 /////
 //		query3(3, 2, "Asia"); 		// 361|812 174|280 280|812 % common interest counts 4 3 3
-//		query3(4, 3, "Indonesia");  // 396|398 363|367 363|368 363|372 % common interest counts 2 1 1 1
-//		query3(3, 2, "Egypt"); 	    // 110|116 106|110 106|112 % common interest counts 1 0 0
-//		query3(3, 2, "Italy");		// 420|825 421|424 10|414 % common interest counts 1 1 0
-//		query3(5, 4, "Chengdu");	// 590|650 590|658 590|614 590|629 590|638 % common interest counts 1 1 0 0 0
-//		query3(3, 2, "Peru");		// 65|766 65|767 65|863 % common interest counts 0 0 0
-//		query3(3, 2, 
-//				"Democratic_Republic_of_the_Congo");// 99|100 99|101 99|102 % common interest counts 0 0 0
-//		query3(7, 6, "Ankara"); 	// 891|898 890|891 890|895 890|898 890|902 891|895 891|902 % common interest counts 1 0 0 0 0 0 0
-//		query3(3, 2, "Luoyang");	// 565|625 653|726 565|653 % common interest counts 2 1 0
-//		query3(4, 3, "Taiwan");		// 795|798 797|798 567|795 567|796 % common interest counts 1 1 0 0 
+//				query3(4, 3, "Indonesia");  // 396|398 363|367 363|368 363|372 % common interest counts 2 1 1 1
+		//		query3(3, 2, "Egypt"); 	    // 110|116 106|110 106|112 % common interest counts 1 0 0
+		//		query3(3, 2, "Italy");		// 420|825 421|424 10|414 % common interest counts 1 1 0
+//				query3(5, 4, "Chengdu");	// 590|650 590|658 590|614 590|629 590|638 % common interest counts 1 1 0 0 0
+		//		query3(3, 2, "Peru");		// 65|766 65|767 65|863 % common interest counts 0 0 0
+		//		query3(3, 2, 
+		//				"Democratic_Republic_of_the_Congo");// 99|100 99|101 99|102 % common interest counts 0 0 0
+				query3(7, 6, "Ankara"); 	// 891|898 890|891 890|895 890|898 890|902 891|895 891|902 % common interest counts 1 0 0 0 0 0 0
+		//		query3(3, 2, "Luoyang");	// 565|625 653|726 565|653 % common interest counts 2 1 0
+		//		query3(4, 3, "Taiwan");		// 795|798 797|798 567|795 567|796 % common interest counts 1 1 0 0 
 	}
 
 	private static void testQuery2() throws ParseException {
 		///// Query 2 /////
 		query2(3, "1980-02-01"); // Chiang_Kai-shek    Augustine_of_Hippo     Napoleon 
-								 // % component sizes 22 16 16
+		// % component sizes 22 16 16
 		query2(4, "1981-03-10"); // Chiang_Kai-shek    Napoleon     Mohandas_Karamchand_Gandhi     Sukarno
-								 // % component sizes 17 13 11 11
+		// % component sizes 17 13 11 11
 		query2(3, "1982-03-29"); // Chiang_Kai-shek    Mohandas_Karamchand_Gandhi 	  Napoleon
-								 // % component sizes 13 11 10
+		// % component sizes 13 11 10
 		query2(3, "1983-05-09"); // Chiang_Kai-shek    Mohandas_Karamchand_Gandhi     Augustine_of_Hippo
-								 // % component sizes 12 10 8
+		// % component sizes 12 10 8
 		query2(5, "1984-07-02"); // Chiang_Kai-shek     Aristotle     Mohandas_Karamchand_Gandhi     Augustine_of_Hippo     Fidel_Castro
-								 // % component sizes 10 7 6 5 5
+		// % component sizes 10 7 6 5 5
 		query2(3, "1985-05-31"); // Chiang_Kai-shek     Mohandas_Karamchand_Gandhi    Joseph_Stalin
-		 						 // % component sizes 6 6 5
+		// % component sizes 6 6 5
 		query2(3, "1986-06-14"); // Chiang_Kai-shek     Mohandas_Karamchand_Gandhi    Joseph_Stalin
-								 // % component sizes 6 6 5
+		// % component sizes 6 6 5
 		query2(7, "1987-06-24"); // Chiang_Kai-shek     Augustine_of_Hippo     Genghis_Khan     Haile_Selassie_I     Karl_Marx 
-			  					 // Lyndon_B._Johnson     Robert_John_\"Mutt\"_Lange    % component sizes 4 3 3 3 3 3 3
+		// Lyndon_B._Johnson     Robert_John_\"Mutt\"_Lange    % component sizes 4 3 3 3 3 3 3
 		query2(3, "1988-11-10"); // Aristotle     Ho_Chi_Minh     Karl_Marx
-								 // % component sizes 2 2 2
-				query2(4, "1990-01-25"); // Arthur_Conan_Doyle     Ashoka     Barack_Obama    Benito_Mussolini
-								 // % component sizes 1 1 1 1
+		// % component sizes 2 2 2
+		query2(4, "1990-01-25"); // Arthur_Conan_Doyle     Ashoka     Barack_Obama    Benito_Mussolini
+		// % component sizes 1 1 1 1
 	}
 
 	private static List<IRelation> runQuery(String program, int queryNumber) 
@@ -146,10 +131,6 @@ public class IrisQueries
 
 		sb.append("reach(?pid1, ?pid1, ?name) :- young_people(?pid1), person_hasInterest_tag(?pid1, ?tag), tag(?tag, ?name).\r\n");
 		sb.append("reach(?pid1, ?pid2, ?tag) :- reach(?pid1,?y, ?tag), conn_comps(?y, ?pid2, ?tag).\r\n");
-
-		//		sb.append("conn_comps(?pid, ?tag) :- conn_comps(?pid2, ?tag), young_people(?pid), "
-		//				+ "person_knows_person(?pid2, ?pid), person_hasInterest_tag(?pid, ?tag).\n");
-
 
 		sb.append("?-reach(?pid1, ?pid2, ?tag).\r\n");
 
@@ -215,28 +196,35 @@ public class IrisQueries
 	 */
 	public static void query3(int k, int h, String p)
 	{
-		long start = System.currentTimeMillis();
-		System.out.println("Running query2("+k+", "+h+", "+p+"))");
+		System.out.println("Running query3("+k+", "+h+", "+p+")");
 
 		// formulate query to get all pairs of people with shared interests meeting place and hop criteria
-		String query = "all_locs(?locid) :- place(?locid, '"+p+"').\r\n"
-				+ "all_locs(?locid) :- all_locs(?parentlocid), place_isPartOf_place(?locid, ?parentlocid), place(?locid, ?name).\r\n"
-				+ "all_orgs(?orgid) :- organisation(?orgid), organisation_isLocatedIn_place(?orgid, ?locid), all_locs(?locid).\r\n"
-				+ "loc_people(?pid) :- person_isLocatedIn_place(?pid, ?locid), all_locs(?locid).\r\n"
-				//+ "?-loc_people(?pid).\r\n";
-				+ "org_people(?pid) :- person_workAt_organisation(?pid, ?orgid), all_orgs(?orgid).\r\n"
-				+ "org_people(?pid) :- person_studyAt_organisation(?pid, ?orgid), all_orgs(?orgid).\r\n"
+		StringBuilder sb = new StringBuilder();
+		sb.append("all_locs(?locid) :- place(?locid, '"+p+"').\r\n");
+		sb.append("all_locs(?locid) :- all_locs(?parentlocid), place_isPartOf_place(?locid, ?parentlocid), place(?locid, ?name).\r\n");
+		sb.append("all_orgs(?orgid) :- organisation(?orgid), organisation_isLocatedIn_place(?orgid, ?locid), all_locs(?locid).\r\n");
+		sb.append("loc_people(?pid) :- person_isLocatedIn_place(?pid, ?locid), all_locs(?locid).\r\n");
+		//+ "?-loc_people(?pid).\r\n";
+		sb.append("org_people(?pid) :- person_workAt_organisation(?pid, ?orgid), all_orgs(?orgid).\r\n");
+		sb.append("org_people(?pid) :- person_studyAt_organisation(?pid, ?orgid), all_orgs(?orgid).\r\n");
 
-		+ "all_people(?pid) :- loc_people(?pid).\r\n"
-		+ "all_people(?pid) :- org_people(?pid).\r\n"
-		+ genHopsQuery(h)
-		+ "common_interests(?pid1,?pid2,'__null') :- all_hops(?pid1, ?pid2), all_people(?pid1), all_people(?pid2).\r\n"
-		+ "common_interests(?pid1,?pid2,?interest) :- common_interests(?pid1, ?pid2, '__null'), person_hasInterest_tag(?pid1,?interest), person_hasInterest_tag(?pid2,?interest).\r\n"
+		sb.append("all_people(?pid) :- loc_people(?pid).\r\n");
+		sb.append("all_people(?pid) :- org_people(?pid).\r\n");
 
-		+ "?-common_interests(?pid1,?pid2,?interest).\r\n";
+		sb.append(genHopsQuery(h));
+		//		+ "common_interests(?pid1, ?pid2, '__null') :- all_hops(?pid1, ?pid2), all_people(?pid1), all_people(?pid2).\r\n"
+		//		+ "common_interests(?pid1, ?pid2, ?interest) :- common_interests(?pid1, ?pid2, '__null'), person_hasInterest_tag(?pid1,?interest), person_hasInterest_tag(?pid2,?interest).\r\n"
 
+		for(int i = 1; i <= h; ++i){
+			sb.append("common_interests(?pid1, ?pid2, ?interest) :- hop"+i+"(?pid1, ?pid2), ?interest=-1.\n");
+			sb.append("common_interests(?pid1, ?pid2, ?interest) :- hop"+i+"(?pid1, ?pid2), person_hasInterest_tag(?pid1, ?interest), person_hasInterest_tag(?pid2, ?interest).\n");
+		}
+
+		sb.append("?-common_interests(?pid1, ?pid2, ?interest).\r\n");
+
+		System.out.println(sb);
 		// get results from query
-		IRelation results = runQuery(query, 3).get(0);
+		IRelation results = runQuery(sb.toString(), 3).get(0);
 
 		//		for (int i = 0; i < results.size(); i++)
 		//			System.out.println(results.get(i).toString());
@@ -267,7 +255,41 @@ public class IrisQueries
 			}
 		}
 		topKResults(k, sharedInterestCounts, new SigmodComparator(3));
-		System.out.println("Query took " + ((System.currentTimeMillis() - start)) +" miliseconds.");
+	}
+
+	//	private static String genHopsQuery(int h) 
+	//	{
+	//		StringBuilder query = new StringBuilder();
+	//		for(int i = 0; i < h; ++i)
+	//		{
+	//			query.append("hop"+(i+1)+"(?pid0,?pid"+(i+1)+") :- ");
+	//			query.append("all_people(?pid0), person_knows_person(?pid0, ?pid1), ");
+	//			for(int j = 1; j < i+1; ++j)
+	//			{
+	//				query.append("person(?pid"+j+"), person_knows_person(?pid"+j+", ?pid"+(j+1)+"), ");
+	//			}
+	//			query.append("all_people(?pid"+(i+1)+"), NOT_EQUAL(?pid0, ?pid"+(i+1)+").\r\n");
+	//			query.append("all_hops(?pid1,?pid2) :- hop"+(i+1)+"(?pid1,?pid2).\r\n");
+	//		}
+	//		return query.toString();
+	//	}
+
+	private static StringBuilder genHopsQuery(int h) 
+	{
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < h; ++i)
+		{
+			if(i == 0){
+				sb.append("temp1(?pid0, ?pid1) :- all_people(?pid0), person_knows_person(?pid0, ?pid1).\n");
+				sb.append("hop"+(i+1)+"(?pid0, ?pid"+(i+1)+") :- ");
+				sb.append("temp1(?pid0, ?pid1), all_people(?pid"+(i+1)+"), ?pid0!=?pid"+(i+1)+".\n");
+			}
+			else{
+				sb.append("temp"+(i+1)+"(?pid0, ?pid2) :- temp"+i+"(?pid0, ?pid1), person(?pid1), person_knows_person(?pid1, ?pid2).\n");
+				sb.append("hop"+(i+1)+"(?pid0, ?pid1) :- temp"+(i+1)+"(?pid0, ?pid1), all_people(?pid1), ?pid0!=?pid1, not hop"+i+"(?pid0, ?pid1).\n");
+			}
+		}
+		return sb;
 	}
 
 	private static void topKResults(int k, Map<String, Integer> sharedInterestCounts, Comparator<Pair<Integer, String>> comp)
@@ -298,20 +320,4 @@ public class IrisQueries
 			System.out.println(resultArray.get(i).toString());
 
 	}
-
-	private static String genHopsQuery(int h) {
-		StringBuilder query = new StringBuilder();
-		for(int i = 0; i < h; ++i){
-			query.append("hop"+(i+1)+"(?pid0,?pid"+(i+1)+") :- ");
-			for(int j = 0; j < i+1; ++j){
-				query.append("person(?pid"+j+"), person_knows_person(?pid"+j+", ?pid"+(j+1)+"), ");
-			}
-			query.append("person(?pid"+(i+1)+").\r\n");
-			query.append("all_hops(?pid1,?pid2) :- hop"+(i+1)+"(?pid1,?pid2).\r\n");
-		}
-		return query.toString();
-	}
-
-
-
 }
