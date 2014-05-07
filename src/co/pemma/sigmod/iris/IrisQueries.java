@@ -34,29 +34,30 @@ public class IrisQueries
 	{
 		long start = System.currentTimeMillis();
 
-		//		testQuery2();
+				testQuery2();
 
-		testQuery3();
-		
+//		testQuery3();
+
 		System.out.println("Query took " + ((System.currentTimeMillis() - start)) +" miliseconds.");
 
 	}
 
 	private static void testQuery3() {
 		///// Query 3 /////
-//		query3(3, 2, "Asia"); 		// 361|812 174|280 280|812 % common interest counts 4 3 3
-//				query3(4, 3, "Indonesia");  // 396|398 363|367 363|368 363|372 % common interest counts 2 1 1 1
-		//		query3(3, 2, "Egypt"); 	    // 110|116 106|110 106|112 % common interest counts 1 0 0
-		//		query3(3, 2, "Italy");		// 420|825 421|424 10|414 % common interest counts 1 1 0
-//				query3(5, 4, "Chengdu");	// 590|650 590|658 590|614 590|629 590|638 % common interest counts 1 1 0 0 0
-		//		query3(3, 2, "Peru");		// 65|766 65|767 65|863 % common interest counts 0 0 0
-		//		query3(3, 2, 
-		//				"Democratic_Republic_of_the_Congo");// 99|100 99|101 99|102 % common interest counts 0 0 0
-				query3(7, 6, "Ankara"); 	// 891|898 890|891 890|895 890|898 890|902 891|895 891|902 % common interest counts 1 0 0 0 0 0 0
-		//		query3(3, 2, "Luoyang");	// 565|625 653|726 565|653 % common interest counts 2 1 0
-		//		query3(4, 3, "Taiwan");		// 795|798 797|798 567|795 567|796 % common interest counts 1 1 0 0 
+		query3(3, 2, "Asia"); 		// 361|812 174|280 280|812 % common interest counts 4 3 3
+		query3(4, 3, "Indonesia");  // 396|398 363|367 363|368 363|372 % common interest counts 2 1 1 1
+		query3(3, 2, "Egypt"); 	    // 110|116 106|110 106|112 % common interest counts 1 0 0
+		query3(3, 2, "Italy");		// 420|825 421|424 10|414 % common interest counts 1 1 0
+		query3(5, 4, "Chengdu");	// 590|650 590|658 590|614 590|629 590|638 % common interest counts 1 1 0 0 0
+		query3(3, 2, "Peru");		// 65|766 65|767 65|863 % common interest counts 0 0 0
+		query3(3, 2, 				// 99|100 99|101 99|102 % common interest counts 0 0 0
+				"Democratic_Republic_of_the_Congo");
+		query3(7, 6, "Ankara"); 	// 891|898 890|891 890|895 890|898 890|902 891|895 891|902 % common interest counts 1 0 0 0 0 0 0
+		query3(3, 2, "Luoyang");	// 565|625 653|726 565|653 % common interest counts 2 1 0
+		query3(4, 3, "Taiwan");		// 795|798 797|798 567|795 567|796 % common interest counts 1 1 0 0 
 	}
 
+	
 	private static void testQuery2() throws ParseException {
 		///// Query 2 /////
 		query2(3, "1980-02-01"); // Chiang_Kai-shek    Augustine_of_Hippo     Napoleon 
@@ -80,6 +81,7 @@ public class IrisQueries
 		query2(4, "1990-01-25"); // Arthur_Conan_Doyle     Ashoka     Barack_Obama    Benito_Mussolini
 		// % component sizes 1 1 1 1
 	}
+	
 
 	private static List<IRelation> runQuery(String program, int queryNumber) 
 	{
@@ -222,7 +224,6 @@ public class IrisQueries
 
 		sb.append("?-common_interests(?pid1, ?pid2, ?interest).\r\n");
 
-		System.out.println(sb);
 		// get results from query
 		IRelation results = runQuery(sb.toString(), 3).get(0);
 
