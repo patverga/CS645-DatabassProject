@@ -1,13 +1,13 @@
 
 print "Loading the tables now ...  "
 `person(int id, String birthday).
-person(id, birthday) :- l=$read("/home/pv/Documents/CS645-DatabassProject/data/commas/person.csv"), (v0,v1,v2,v3,v4,v5,v6,v7)=$split(l,","), id=$toInt(v0), birthday=v4.
+person(id, birthday) :- l=$read("/home/pv/Documents/CS645-DatabassProject/data-10k/commas/person.csv"), (v0,v1,v2,v3,v4,v5,v6,v7)=$split(l,","), id=$toInt(v0), birthday=v4.
 tag(int id, String name).
-tag(id, name) :- l=$read("/home/pv/Documents/CS645-DatabassProject/data/commas/tag.csv"), (v0,v1,v2)=$split(l,","), id=$toInt(v0), name=v1.
-person_knows_person(int Personid:0..1000, (int Personid2)).
-person_knows_person(Personid, Personid2) :- l=$read("/home/pv/Documents/CS645-DatabassProject/data/commas/person_knows_person.csv"), (v0,v1)=$split(l,","), Personid=$toInt(v0), Personid2=$toInt(v1).
-person_hasInterest_tag(int Personid:0..1000, (int Tagid)).
-person_hasInterest_tag(Personid, Tagid) :- l=$read("/home/pv/Documents/CS645-DatabassProject/data/commas/person_hasInterest_tag.csv"), (v0,v1)=$split(l,","), Personid=$toInt(v0), Tagid=$toInt(v1).
+tag(id, name) :- l=$read("/home/pv/Documents/CS645-DatabassProject/data-10k/commas/tag.csv"), (v0,v1,v2)=$split(l,","), id=$toInt(v0), name=v1.
+person_knows_person(int Personid:0..10000, (int Personid2)).
+person_knows_person(Personid, Personid2) :- l=$read("/home/pv/Documents/CS645-DatabassProject/data-10k/commas/person_knows_person.csv"), (v0,v1)=$split(l,","), Personid=$toInt(v0), Personid2=$toInt(v1).
+person_hasInterest_tag(int Personid:0..10000, (int Tagid)).
+person_hasInterest_tag(Personid, Tagid) :- l=$read("/home/pv/Documents/CS645-DatabassProject/data-10k/commas/person_hasInterest_tag.csv"), (v0,v1)=$split(l,","), Personid=$toInt(v0), Tagid=$toInt(v1).
 `
 print "Done loading tables "
 
