@@ -234,13 +234,6 @@ public class CreateRelations
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-//				int dateNum = 0;
-//				String[] date = columns[i].split("-");
-//				dateNum += Integer.parseInt(date[0]) * 10000;
-//				dateNum += Integer.parseInt(date[1]) * 100;
-//				dateNum += Integer.parseInt(date[2]);
-//				terms.add(termFactory.createInt(dateNum));
-
 				break;	
 
 			case "DateTime":
