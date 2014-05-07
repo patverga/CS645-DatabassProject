@@ -304,6 +304,40 @@ public class SociaLiteGenerator
 
 		sb.append("young_people_interests_"+tablePrefix+"(int pid:0..1000, (int tag)).\n");
 		sb.append("young_people_interests_"+tablePrefix+"(pid, tag) :- young_people_"+tablePrefix+"(pid), person_hasInterest_tag(pid, tag).\n");
+<<<<<<< HEAD
+
+		//		sb.append("young_people_interests_debug_"+tablePrefix+"(int pid:0..1000, (String tagname)).\n");
+		//		sb.append("young_people_interests_debug_"+tablePrefix+"(pid, tagname) :- young_people_"+tablePrefix+"(pid), person_hasInterest_tag(pid, tag), tag(tag, tagname).\n");
+
+		/* All valid edges, with interest labels */
+		sb.append("edge_"+tablePrefix+"(int pid1:0..1000, (int pid2, int tag)).\n");
+		sb.append("edge_"+tablePrefix+"(pid1, pid2, tag) :- young_people_interests_"+tablePrefix+"(pid1, tag), person_knows_person(pid1, pid2), young_people_interests_"+tablePrefix+"(pid2, tag).\n");
+
+		/* Connected components */
+		//		sb.append("comp_"+tablePrefix+"(int pid:0..1000, (int tag, int id)).");
+		//		sb.append("comp_"+tablePrefix+"(pid, tag, $min(id)) :- young_people_interests_"+tablePrefix+"(pid, tag), id=pid;");
+		//		sb.append("\t:- comp_"+tablePrefix+"(x, tag, id), edge_"+tablePrefix+"(x, pid, tag).");
+		////		sb.append("comp_"+tablePrefix+"(int pid:0..1000, (int tag, int id)).\n");
+		////		sb.append("comp_"+tablePrefix+"(pid, tag, $min(id)) :- edge_"+tablePrefix+"(pid, pid2, tag), id=pid;\n");
+		////		sb.append("\t:- comp_"+tablePrefix+"(x, tag, id), edge_"+tablePrefix+"(x, pid, tag).\n");
+		//		
+		//		/* Sizes of connected components */
+		//		sb.append("comp_size_"+tablePrefix+"(int id:0..1000, (int tag, int size)).\n");
+		//		sb.append("comp_size_"+tablePrefix+"(id, tag, $sum(1)) :- comp_"+tablePrefix+"(_, tag, id).\n");
+		//
+		//		sb.append("sorted_comp_size_"+tablePrefix+"(int size, String tagname).\n");
+		//		sb.append("sorted_comp_size_"+tablePrefix+"(size, tagname) :- comp_size_"+tablePrefix+"(id, tag, size), tag(tag, tagname).\n");
+
+		sb.append("`\n");
+
+		/* print result sorted lexicographically by tag name */
+		//		sb.append("for count, tag in `sorted_comp_size_"+tablePrefix+"(count, tag)`:\n");
+		//		sb.append("\tprint count, tag\n");
+		sb.append("for pid1,pid2,tag in `edge_debug_"+tablePrefix+"(pid1,pid2,tag)`:\n");
+		sb.append("\tprint pid1,pid2,tag\n");
+
+		//		sb.append(sortedOutput2(k, tablePrefix));
+=======
 	
 		/* All valid edges, with interest labels */
 		sb.append("edge_"+tablePrefix+"(int pid1:0..1000, (int pid2, int tag)).\n");
@@ -326,6 +360,7 @@ public class SociaLiteGenerator
 //		sb.append("\tprint count, tag\n");
 
 		sb.append(sortedOutput2(k, tablePrefix));
+>>>>>>> bb569db4c149b220b2d4d2b20635dba777bf2118
 
 		return sb;
 	}
