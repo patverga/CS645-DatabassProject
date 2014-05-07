@@ -190,10 +190,16 @@ public class SociaLiteGenerator
 		sb.append(genHopsQuery(h));
 
 		/* common_interests: people with common interests in all_hops */
+//		sb.append("common_interests(long pid1, long pid2, long interest).\n");
+//		sb.append("common_interests(pid1, pid2, interest) :- all_hops(pid1, pid2), pid1 != pid2, all_people(pid1), all_people(pid2), interest=-1L;\n");
+//		sb.append("\t:- all_people(pid1), all_people(pid2), pid1 != pid2, person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
+//		//sb.append("\t:- common_interests(pid1, pid2, interest), person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
+		
 		sb.append("common_interests(long pid1, long pid2, long interest).\n");
-		sb.append("common_interests(pid1, pid2, interest) :- all_hops(pid1, pid2), pid1 != pid2, all_people(pid1), all_people(pid2), interest=-1L;\n");
-		sb.append("\t:- all_hops(pid1, pid2), all_people(pid1), all_people(pid2), pid1 != pid2, person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
-		//sb.append("\t:- common_interests(pid1, pid2, interest), person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
+		for(int i = 1; i <= h; ++i){
+			sb.append("common_interests(pid1, pid2, interest) :- hop"+i+"(pid1, pid2), interest=-1L;\n");
+			sb.append("\t:- hop"+i+"(pid1, pid2), person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
+		}
 
 		/* interest_counts: counts of interests for each pair */
 		sb.append("interest_counts(long pid1, long pid2, int count).\n");
@@ -315,9 +321,6 @@ public class SociaLiteGenerator
 		sb.append("pairs(pid1, pid2) :- start_pairs(pid1, pid2), end_pairs(pid1, pid2).\n");
 //		sb.append("pairs("+pid1+"L, pid2) :- person_knows_person("+pid1+"L, pid2).\n");
 		
-//		sb.append("poop(long pid1, long pid2).\n");
-//		sb.append("poop("+pid1+"L, pid2) :- person_knows_person("+pid1+"L, pid2).\n");
-		
 		/* communications: pairs of people who know each other for each comment made in reply to each other */
 //		sb.append("communications(long pid1, long pid2, int count).\n");
 //		sb.append("communications(pid1, pid2, $inc(1)) :- person_knows_person(pid1, pid2);\n");
@@ -411,19 +414,22 @@ public class SociaLiteGenerator
 
 	private static StringBuilder genHopsQuery(int h) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("all_hops(long pid1, long pid2).\n");
 		for(int i = 0; i < h; ++i){
 			sb.append("hop"+(i+1)+"(long pid0, long pid"+(i+1)+").\n");
-			sb.append("hop"+(i+1)+"(pid0,pid"+(i+1)+") :- ");
-			sb.append("all_people(pid0), person_knows_person(pid0, pid1), ");
-			for(int j = 1; j < i+1; ++j){
-				sb.append("person(pid"+j+"), person_knows_person(pid"+j+", pid"+(j+1)+"), ");
+			if(i == 0){
+				sb.append("temp1(long pid0, long pid1).\n");
+				sb.append("temp1(pid0,pid1) :- all_people(pid0), person_knows_person(pid0, pid1).\n");
+				sb.append("hop"+(i+1)+"(pid0,pid"+(i+1)+") :- ");
+				sb.append("temp1(pid0,pid1), all_people(pid"+(i+1)+"), pid0!=pid"+(i+1)+".\n");
 			}
-			sb.append("all_people(pid"+(i+1)+"), pid0!=pid"+(i+1)+".\n");
-			sb.append("all_hops(pid1,pid2) :- hop"+(i+1)+"(pid1,pid2).\n");
+			else{
+				sb.append("temp"+(i+1)+"(long pid0, long pid1).\n");
+				sb.append("temp"+(i+1)+"(pid0, pid2) :- temp"+i+"(pid0, pid1), person(pid1), person_knows_person(pid1, pid2).\n");
+				sb.append("hop"+(i+1)+"(pid0,pid1) :- temp"+(i+1)+"(pid0,pid1), all_people(pid1), pid0!=pid1, not hop"+i+"(pid0,pid1).\n");
+			}
 		}
 		return sb;
-	}
+	}	
 
 	private static void exportPython(StringBuilder sb, String fileName) 
 	{
