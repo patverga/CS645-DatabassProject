@@ -47,7 +47,8 @@ public class SigmodDataSource implements IDataSource
 	}
 
 	@Override
-	public void put(IPredicate p, IRelation r) {
-		CreateRelations.putTuples(p.getPredicateSymbol(), r);
+	public void put(IPredicate p, IRelation r) 
+	{
+//		CreateRelations.putTuples(p.getPredicateSymbol(), r);
 	}
 }
