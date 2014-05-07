@@ -30,7 +30,6 @@ public class SociaLiteGenerator
 		sb.append("`");
 
 		List<String> indices;
-		int i = 0;
 		for(Entry<String, List<String>> entry : colMap.entrySet() )
 		{
 			String key = entry.getKey();
@@ -39,7 +38,6 @@ public class SociaLiteGenerator
 			else
 				indices = null;
 			sb.append(generateTable(key, entry.getValue(), schema.get(key), indices, tailNested.get(key)));
-			i++;
 		}
 		sb.append("`");
 
