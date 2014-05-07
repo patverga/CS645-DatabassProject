@@ -10,9 +10,9 @@ organisation(int id).
 organisation(id) :- l=$read("/home/pv/Documents/CS645-DatabassProject/data-10k/commas/organisation.csv"), (v0,v1,v2,v3)=$split(l,","), id=$toInt(v0).
 place_isPartOf_place(int Placeid, int Placeid2).
 place_isPartOf_place(Placeid, Placeid2) :- l=$read("/home/pv/Documents/CS645-DatabassProject/data-10k/commas/place_isPartOf_place.csv"), (v0,v1)=$split(l,","), Placeid=$toInt(v0), Placeid2=$toInt(v1).
-person_knows_person(int Personid:0..10000, (int Personid2)).
+person_knows_person(int Personid, int Personid2).
 person_knows_person(Personid, Personid2) :- l=$read("/home/pv/Documents/CS645-DatabassProject/data-10k/commas/person_knows_person.csv"), (v0,v1)=$split(l,","), Personid=$toInt(v0), Personid2=$toInt(v1).
-person_hasInterest_tag(int Personid:0..10000, (int Tagid)).
+person_hasInterest_tag(int Personid, int Tagid).
 person_hasInterest_tag(Personid, Tagid) :- l=$read("/home/pv/Documents/CS645-DatabassProject/data-10k/commas/person_hasInterest_tag.csv"), (v0,v1)=$split(l,","), Personid=$toInt(v0), Tagid=$toInt(v1).
 person_studyAt_organisation(int Personid, int Organisationid).
 person_studyAt_organisation(Personid, Organisationid) :- l=$read("/home/pv/Documents/CS645-DatabassProject/data-10k/commas/person_studyAt_organisation.csv"), (v0,v1,v2)=$split(l,","), Personid=$toInt(v0), Organisationid=$toInt(v1).
