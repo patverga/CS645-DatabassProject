@@ -42,8 +42,8 @@ public class Util
 	public final static Map<String,Boolean> query2TailNested = new HashMap<String,Boolean>() {{
 		put("person", false);
 		put("tag", false);
-		put("person_hasInterest_tag", false); // true
-		put("person_knows_person", false); // true
+		put("person_hasInterest_tag", true);
+		put("person_knows_person", true);
 	}};
 
 	// Query 3
@@ -82,8 +82,8 @@ public class Util
 		put("person_isLocatedIn_place", false);//true);
 		put("person_workAt_organisation", false);//true);
 		put("person_studyAt_organisation", false);//true);
-		put("person_hasInterest_tag", false);//true);
-		put("person_knows_person", false);//true);
+		put("person_hasInterest_tag", true);//true);
+		put("person_knows_person", true);//true);
 		put("person", false);
 	}};
 	//	@SuppressWarnings("serial")
