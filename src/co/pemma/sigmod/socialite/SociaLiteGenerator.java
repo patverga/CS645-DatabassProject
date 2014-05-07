@@ -212,7 +212,7 @@ public class SociaLiteGenerator
 		//		sb.append("\tif count>"+k+": break;\n");
 
 
-		sb.append(sortedOutput(k));
+		sb.append(sortedOutput3(k));
 		sb.append("\nprint time.time() - start_time\n");
 		
 		return sb;
@@ -222,7 +222,34 @@ public class SociaLiteGenerator
 	 * @param k number of results to return
 	 * @return
 	 */
-	public static StringBuilder sortedOutput(int k)
+	public static StringBuilder sortedOutput2(int k)
+	{
+		StringBuilder sb = new StringBuilder();
+
+		// sort the results in the way we want
+		sb.append("from operator import itemgetter \n");
+		sb.append("result_set = `tag_sizes(count,name)`\n");
+		sb.append("result_set = sorted(result_set, key=lambda x:(-x[0],x[1]))\n");
+
+		// print results, removing duplicates
+		sb.append("used = set()\n");
+		sb.append("results = 0\n");
+		sb.append("for count, name in result_set:\n");
+		sb.append("\tif results >= "+k+":\n");
+		sb.append("\t\tbreak\n");
+		sb.append("\tif name not in used: \n");
+		sb.append("\t\tprint name, count\n");
+		sb.append("\t\tused.add(name)\n");
+		sb.append("\t\tresults += 1\n");
+
+		return sb;
+	}
+	
+	/**
+	 * @param k number of results to return
+	 * @return
+	 */
+	public static StringBuilder sortedOutput3(int k)
 	{
 		StringBuilder sb = new StringBuilder();
 
@@ -304,17 +331,6 @@ public class SociaLiteGenerator
 			sb.append("communications(pid1, pid2) :- pairs(pid1, pid2), comment_hasCreator_person(cid1, pid1), comment_hasCreator_person(cid2, pid2), comment_replyOf_comment(cid1, cid2).\n");
 		}
 		
-//		/* communications: pairs of people who know each other and number of comments made in reply to each other */
-//		sb.append("communication_counts(long pid1, long pid2, int count).\n");
-//		sb.append("communication_counts(pid1, pid2, $inc(1)) :- communications(pid1, pid2).\n");
-//		
-//		/* communicators: pairs of people who know each other and have made > numComments comments in reply to each other */
-//		sb.append("communicators(long pid1, long pid2).\n");
-//		sb.append("communicators(pid1, pid2) :- communication_counts(pid1, pid2, count), count-1 > "+numComments+".\n");
-		
-//		sb.append("communicators(long pid1, long pid2).\n");
-//		sb.append("communicators(pid1, pid2) :- communications(pid1, pid2).");
-		
 		sb.append("reach(long pid, int len).\n");
 		sb.append("reach(pid, len) :- pairs("+pid1+"L, pid), len=1.\n");
 		sb.append("reach(pid, len) :- reach(y,c), pairs(y,pid), len=c+1.\n");
@@ -347,45 +363,30 @@ public class SociaLiteGenerator
 		sb.append("def inc(n, by): return n+by\n\n");
 		sb.append("`");
 
-		// find all of the people born after the defined date
+		/* young_people: all of the people born after the defined date */
 		sb.append("young_people(long id).\n");
 		sb.append("young_people(id) :- person(id, date), (y,m,d)=$split(date, \"-\"), "
 				+ "$toInt(y)*10000+$toInt(m)*100+$toInt(d) >= " + ageCutoff + ".\n");
 		
-//		sb.append("conn_comps(long pid, long tag).\n");
-//		sb.append("conn_comps(pid, tag) :- young_people(pid), person_hasInterest_tag(pid, tag);\n");
-//		sb.append("\t:- conn_comps(pid2, tag), young_people(pid), person_knows_person(pid2, pid), person_hasInterest_tag(pid, tag).\n");
+		/* conn_comps: all pairs with paths and sharing tags */
+		sb.append("conn_comps(long pid1, long pid2, long tag).\n");
+		sb.append("conn_comps(pid1, pid2, tag) :- young_people(pid1), person_hasInterest_tag(pid1, tag), pid2=pid1;\n");
+		sb.append("\t:- conn_comps(pid1, y, tag), person_knows_person(y, pid2), young_people(pid2), person_hasInterest_tag(pid2, tag).\n");
+
+		/* comp_sizes: sizes of connected components */
+		sb.append("comp_sizes(long pid, long tag, int count).\n");
+		sb.append("comp_sizes(pid, tag, $inc(1)) :- conn_comps(pid, _, tag).\n");
 		
-		/* this */
-//		sb.append("conn_comps(long pid, long cid:0..1000, long tag).\n");
-//		sb.append("conn_comps(pid, $min(n), tag) :- young_people(pid), person_hasInterest_tag(pid, tag), n=pid;\n");
-//		sb.append("\t:- conn_comps(pid2, n, tag), young_people(pid), person_knows_person(pid2, pid), person_hasInterest_tag(pid, tag).\n");
-		
-		sb.append("conn_comps(long pid, long cid).\n");
-		sb.append("conn_comps(pid, $min(n)) :- young_people(pid), n=pid;\n");
-		sb.append("\t:- conn_comps(pid2, n), young_people(pid), person_knows_person(pid2, pid).\n");
-		
-//		sb.append("conn_comps(long pid, long cid:0..1000, long tag).\n");
-//		sb.append("conn_comps(pid, $min(n), tag) :- person(pid, name), person_hasInterest_tag(pid, tag), n=pid;\n");
-//		sb.append("\t:- conn_comps(pid2, n, tag), person(pid, name), person_knows_person(pid2, pid), person_hasInterest_tag(pid, tag).\n");
-		
-//		sb.append("comp_sizes(long tag, int count).\n");
-//		sb.append("comp_sizes(tag, $inc(1)) :- conn_comps(pid, tag).\n");
-		
-//		sb.append("sorted_comp_sizes(int count, long tag).\n");
-//		sb.append("sorted_comp_sizes(count, tag) :- comp_sizes(tag, count).\n");
-//		sb.append("sorted_comp_sizes(int count, String tagName).\n");
-//		sb.append("sorted_comp_sizes(count, tagName) :- comp_sizes(tag, count), tag(tag, tagName).\n");
+		/* tag_sizes: tag names ordered by connected component sizes */
+		sb.append("tag_sizes(int count, String tagname).\n");
+		sb.append("tag_sizes(count, tagname) :- comp_sizes(pid, tag, count), tag(tag, tagname).");
 		sb.append("`\n");
 		
-//		sb.append("for pid,tag in `sorted_comp_sizes(tag,count)`:\n");
-//		sb.append("\tprint pid,tag\n");
+		/* print result sorted lexicographically by tag name */
+//		sb.append("for count,tagname in `tag_sizes(count,tagname)`:\n");
+//		sb.append("\tprint count,tagname\n");
 		
-		sb.append("for pid,cid in `conn_comps(pid, cid)`:\n");
-		sb.append("\tprint pid,cid\n");
-		
-//		sb.append("for pid in `young_people(pid)`:\n");
-//		sb.append("\tprint pid\n");
+		sb.append(sortedOutput2(k));
 
 		return sb;
 	}
@@ -439,16 +440,16 @@ public class SociaLiteGenerator
 
 		/* Query 2 */
 		sb.append(generateQueryTables(Util.query2Columns, null));
-//		sb.append(generateQuery2(3, "1980-02-01"));
-		sb.append(generateQuery2(3, "1990-01-20"));
+		sb.append(generateQuery2(3, "1980-02-01"));
+//		sb.append(generateQuery2(3, "1988-11-10"));
 
 
 		/* Query 3 */
 //				sb.append(generateQueryTables(Util.query3Columns, Util.query3Indices));
-				sb.append(generateQueryTables(Util.query3Columns, null));
+//				sb.append(generateQueryTables(Util.query3Columns, null));
 
-				sb.append(generateQuery3(3, 2, "Asia"));
-				sb.append(generateQuery3(4, 3, "Indonesia"));
+//				sb.append(generateQuery3(3, 2, "Asia"));
+//				sb.append(generateQuery3(4, 3, "Indonesia"));
 		//		sb.append(generateQuery3(3, 2, "Egypt"));
 		//		sb.append(generateQuery3(3, 2, "Italy"));
 		//		sb.append(generateQuery3(5, 4, "Chengdu"));
