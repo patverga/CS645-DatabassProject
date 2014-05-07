@@ -36,9 +36,27 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
+
 	<dependencies>
-		
+
+		<dependency>
+			<groupId>org.deri.iris</groupId>
+			<artifactId>iris-parser</artifactId>
+			<version>0.60</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/iris/iris-parser-0.60.jar</systemPath>
+		</dependency>
+
+	<dependency>
+			<groupId>jgrapht</groupId>
+			<artifactId>jgrapht</artifactId>
+			<version>1.5-0.7.1</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/jgrapht/jgrapht-jdk1.5-0.7.1.jar</systemPath>
+		</dependency>
+
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
