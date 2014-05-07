@@ -1,6 +1,5 @@
 package co.pemma.sigmod.iris;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,9 +13,12 @@ import co.pemma.sigmod.Util;
 public class SigmodDataSource implements IDataSource
 {
 	Map<String, List<String>> colsToUse;
+	String dataLocation;
 	
-	public SigmodDataSource(int queryNumber) 
+	public SigmodDataSource(int queryNumber, String dataLocation) 
 	{		
+		this.dataLocation = dataLocation;
+		
 		switch(queryNumber)
 		{
 		case 1:
@@ -41,7 +43,7 @@ public class SigmodDataSource implements IDataSource
 	public void get(IPredicate p, ITuple from, ITuple to, IRelation r) 
 	{
 		
-		List<ITuple> tuples = CreateRelations.getTuples(p.getPredicateSymbol(), colsToUse.get(p.toString()), from, to);
+		List<ITuple> tuples = CreateRelations.getTuples(dataLocation, p.getPredicateSymbol(), colsToUse.get(p.toString()), from, to);
 		for(ITuple t: tuples)
 			r.add(t);
 	}

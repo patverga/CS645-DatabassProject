@@ -111,7 +111,7 @@ public class CreateRelations
 		return tuples;
 	}
 
-	public static List<ITuple> getTuples(String predicateName, List<String> colNames, ITuple from, ITuple to)
+	public static List<ITuple> getTuples(String dataLocation, String predicateName, List<String> colNames, ITuple from, ITuple to)
 	{
 		String line;
 		String[] tuple, filteredTuple;
@@ -120,7 +120,7 @@ public class CreateRelations
 		Map<Integer, String> schemaIndexNameMap = new HashMap<>();
 		List<Integer> colIndices = new ArrayList<>();
 
-		File file = new File("data/"+predicateName+".csv");
+		File file = new File(dataLocation+"/"+predicateName+".csv");
 		try (BufferedReader reader = new BufferedReader(new FileReader(file)))
 		{
 			line = reader.readLine();
