@@ -18,10 +18,9 @@ public class SociaLiteGenerator
 {	
 	static char prefix = 'a';
 	public static final String queryFile = "socialite/bin/query.py";
-	static String DATA_LOCATION = "data-10k";
 
 	public static StringBuilder generateQueryTables(Map<String,List<String>> colMap, Map<String,List<String>> indexMap, Map<String,Boolean> tailNested)
-	{
+	{		
 		StringBuilder sb = new StringBuilder();
 		sb.append("\nprint \"Loading the tables now ...  \"\n");
 
@@ -62,7 +61,7 @@ public class SociaLiteGenerator
 		List<Integer> colIndeces = new ArrayList<>();		
 		Map<Integer, String> schemaIndexNameMap = new HashMap<>();
 		Map<String, Integer> schemaNameIndexMap = new HashMap<>();
-		try (BufferedReader reader = new BufferedReader(new FileReader(DATA_LOCATION+"/"+tableName+".csv")))
+		try (BufferedReader reader = new BufferedReader(new FileReader(Util.DATA_LOCATION+"/"+tableName+".csv")))
 		{
 			// start and end with a backtick
 			//			sb.append("`");
@@ -122,7 +121,7 @@ public class SociaLiteGenerator
 				sb.append(colNames.get(i).replace(".", "")+", ");
 			sb.append(colNames.get(colNames.size()-1).replace(".", "")+")");
 			sb.append(" :- ");
-			sb.append("l=$read(\"/home/pv/Documents/CS645-DatabassProject/"+DATA_LOCATION+"/commas/"+ tableName + ".csv\"), ");
+			sb.append("l=$read(\"/home/pv/Documents/CS645-DatabassProject/"+Util.DATA_LOCATION+"/commas/"+ tableName + ".csv\"), ");
 
 			String splitString = "(";
 			for (int i = 0; i < tuple.length-1; i++)
@@ -489,6 +488,9 @@ public class SociaLiteGenerator
 
 	public static void main(String[] args)
 	{
+		int dataSize = 1;
+		Util.setDataLocation(dataSize);
+		
 		System.out.println("Exporting py script");
 		StringBuilder sb = new StringBuilder();
 
