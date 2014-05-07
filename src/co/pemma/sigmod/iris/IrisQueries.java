@@ -27,23 +27,31 @@ import org.deri.iris.compiler.Parser;
 import org.deri.iris.compiler.ParserException;
 import org.deri.iris.storage.IRelation;
 
+import co.pemma.sigmod.Util;
+
 
 public class IrisQueries 
 {
-	static String DATA_LOCATION = "data-10k";
-	
 	public static void main(String[] args) throws ParseException
 	{
+		int dataSize = 1;
+		int queryNumber = 3;
+		
+		Util.setDataLocation(dataSize);
+		
 		long start = System.currentTimeMillis();
 
 
-		//		testQuery1();
+		if (queryNumber == 2)
+			testQuery2(dataSize);
+		else if (queryNumber == 3)
+			testQuery3(dataSize);
 
-//		testQuery2();
+		long totalTime = ((System.currentTimeMillis() - start));
+		System.out.println("Query took " + totalTime +" miliseconds.");
 
-				testQuery3();
-
-		System.out.println("Query took " + ((System.currentTimeMillis() - start)) +" miliseconds.");
+		if(totalTime > 0)
+			Util.printResults("Iris", totalTime, queryNumber, dataSize);
 
 	}
 
@@ -65,68 +73,73 @@ public class IrisQueries
 
 	}
 
-	private static void testQuery2() throws ParseException {
-		///// Query 2 - 1k /////
-//		query2(3, "1980-02-01"); // Chiang_Kai-shek    Augustine_of_Hippo     Napoleon 
-//		// % component sizes 22 16 16
-//		query2(4, "1981-03-10"); // Chiang_Kai-shek    Napoleon     Mohandas_Karamchand_Gandhi     Sukarno
-//		// % component sizes 17 13 11 11
-//		query2(3, "1982-03-29"); // Chiang_Kai-shek    Mohandas_Karamchand_Gandhi 	  Napoleon
-//		// % component sizes 13 11 10
-//		query2(3, "1983-05-09"); // Chiang_Kai-shek    Mohandas_Karamchand_Gandhi     Augustine_of_Hippo
-//		// % component sizes 12 10 8
-//		query2(5, "1984-07-02"); // Chiang_Kai-shek     Aristotle     Mohandas_Karamchand_Gandhi     Augustine_of_Hippo     Fidel_Castro
-//		// % component sizes 10 7 6 5 5
-//		query2(3, "1985-05-31"); // Chiang_Kai-shek     Mohandas_Karamchand_Gandhi    Joseph_Stalin
-//		// % component sizes 6 6 5
-//		query2(3, "1986-06-14"); // Chiang_Kai-shek     Mohandas_Karamchand_Gandhi    Joseph_Stalin
-//		// % component sizes 6 6 5
-//		query2(7, "1987-06-24"); // Chiang_Kai-shek     Augustine_of_Hippo     Genghis_Khan     Haile_Selassie_I     Karl_Marx 
-//		// Lyndon_B._Johnson     Robert_John_\"Mutt\"_Lange    % component sizes 4 3 3 3 3 3 3
-//		query2(3, "1988-11-10"); // Aristotle     Ho_Chi_Minh     Karl_Marx
-//		// % component sizes 2 2 2
-//		query2(4, "1990-01-25"); // Arthur_Conan_Doyle     Ashoka     Barack_Obama    Benito_Mussolini
-//		// % component sizes 1 1 1 1
-		
-		
-		// 10k queries
-		query2(3, "1980-02-01"); // Chiang_Kai-shek Sukarno George_W._Bush % component sizes 216 128 96
-		query2(4, "1982-01-30"); //	Chiang_Kai-shek Sukarno Mohandas_Karamchand_Gandhi Ho_Chi_Minh % component sizes 176 102 69 68
-		query2(3, "1984-02-01"); // Chiang_Kai-shek Sukarno Ho_Chi_Minh % component sizes 136 77 52
-		query2(3, "1986-01-28"); // Chiang_Kai-shek Sukarno Ho_Chi_Minh % component sizes 80 50 32
-		query2(5, "1988-01-27"); // Chiang_Kai-shek Ho_Chi_Minh Sukarno Thaksin_Shinawatra Elena_Likhovtseva % component sizes 38 21 18 16 14		
-		query2(3, "1990-01-31"); // Abraham_Lincoln Amartya_Sen Roy_Orbison % component sizes 1 1 1
-
-		
-		
-		
+	private static void testQuery2(int dataSize) throws ParseException 
+	{
+		if (dataSize == 1)
+		{
+			query2(3, "1980-02-01"); // Chiang_Kai-shek    Augustine_of_Hippo     Napoleon 
+			// % component sizes 22 16 16
+			query2(4, "1981-03-10"); // Chiang_Kai-shek    Napoleon     Mohandas_Karamchand_Gandhi     Sukarno
+			// % component sizes 17 13 11 11
+			query2(3, "1982-03-29"); // Chiang_Kai-shek    Mohandas_Karamchand_Gandhi 	  Napoleon
+			// % component sizes 13 11 10
+			query2(3, "1983-05-09"); // Chiang_Kai-shek    Mohandas_Karamchand_Gandhi     Augustine_of_Hippo
+			// % component sizes 12 10 8
+			query2(5, "1984-07-02"); // Chiang_Kai-shek     Aristotle     Mohandas_Karamchand_Gandhi     Augustine_of_Hippo     Fidel_Castro
+			// % component sizes 10 7 6 5 5
+			query2(3, "1985-05-31"); // Chiang_Kai-shek     Mohandas_Karamchand_Gandhi    Joseph_Stalin
+			// % component sizes 6 6 5
+			query2(3, "1986-06-14"); // Chiang_Kai-shek     Mohandas_Karamchand_Gandhi    Joseph_Stalin
+			// % component sizes 6 6 5
+			query2(7, "1987-06-24"); // Chiang_Kai-shek     Augustine_of_Hippo     Genghis_Khan     Haile_Selassie_I     Karl_Marx 
+			// Lyndon_B._Johnson     Robert_John_\"Mutt\"_Lange    % component sizes 4 3 3 3 3 3 3
+			query2(3, "1988-11-10"); // Aristotle     Ho_Chi_Minh     Karl_Marx
+			// % component sizes 2 2 2
+			query2(4, "1990-01-25"); // Arthur_Conan_Doyle     Ashoka     Barack_Obama    Benito_Mussolini
+			// % component sizes 1 1 1 1
+		}
+		else if (dataSize == 10)
+		{
+			// 10k queries
+			query2(3, "1980-02-01"); // Chiang_Kai-shek Sukarno George_W._Bush % component sizes 216 128 96
+			query2(4, "1982-01-30"); //	Chiang_Kai-shek Sukarno Mohandas_Karamchand_Gandhi Ho_Chi_Minh % component sizes 176 102 69 68
+			query2(3, "1984-02-01"); // Chiang_Kai-shek Sukarno Ho_Chi_Minh % component sizes 136 77 52
+			query2(3, "1986-01-28"); // Chiang_Kai-shek Sukarno Ho_Chi_Minh % component sizes 80 50 32
+			query2(5, "1988-01-27"); // Chiang_Kai-shek Ho_Chi_Minh Sukarno Thaksin_Shinawatra Elena_Likhovtseva % component sizes 38 21 18 16 14		
+			query2(3, "1990-01-31"); // Abraham_Lincoln Amartya_Sen Roy_Orbison % component sizes 1 1 1
+		}
 	}
 
 
-	private static void testQuery3() {
-		///// Query 3 /////
-//		query3(3, 2, "Asia"); 		// 361|812 174|280 280|812 % common interest counts 4 3 3
-//		query3(4, 3, "Indonesia");  // 396|398 363|367 363|368 363|372 % common interest counts 2 1 1 1
-//		query3(3, 2, "Egypt"); 	    // 110|116 106|110 106|112 % common interest counts 1 0 0
-//		query3(3, 2, "Italy");		// 420|825 421|424 10|414 % common interest counts 1 1 0
-//		query3(5, 4, "Chengdu");	// 590|650 590|658 590|614 590|629 590|638 % common interest counts 1 1 0 0 0
-//		query3(3, 2, "Peru");		// 65|766 65|767 65|863 % common interest counts 0 0 0
-//		query3(3, 2, 				// 99|100 99|101 99|102 % common interest counts 0 0 0
-//				"Democratic_Republic_of_the_Congo");
-//		query3(7, 6, "Ankara"); 	// 891|898 890|891 890|895 890|898 890|902 891|895 891|902 % common interest counts 1 0 0 0 0 0 0
-//		query3(3, 2, "Luoyang");	// 565|625 653|726 565|653 % common interest counts 2 1 0
-//		query3(4, 3, "Taiwan");		// 795|798 797|798 567|795 567|796 % common interest counts 1 1 0 0 
-		
-		// 10k queries
-		query3(3, 2, "Asia");				//  230|1814 1814|1857 1814|2219 % common interest counts 5 5 5
-		query3(4, 3, "Dolgoprudny");		//	8132|8195 8084|8132 8084|8161 8084|8185 % common interest counts 1 0 0 0
-		query3(3, 2, "Yongkang_District");	//	7953|7981 7953|7987 7953|7989 % common interest counts 1 1 1		
+	private static void testQuery3(int dataSize) 
+	{
+		if (dataSize == 1)
+		{
+			query3(3, 2, "Asia"); 		// 361|812 174|280 280|812 % common interest counts 4 3 3
+			query3(4, 3, "Indonesia");  // 396|398 363|367 363|368 363|372 % common interest counts 2 1 1 1
+			query3(3, 2, "Egypt"); 	    // 110|116 106|110 106|112 % common interest counts 1 0 0
+			query3(3, 2, "Italy");		// 420|825 421|424 10|414 % common interest counts 1 1 0
+			query3(5, 4, "Chengdu");	// 590|650 590|658 590|614 590|629 590|638 % common interest counts 1 1 0 0 0
+			query3(3, 2, "Peru");		// 65|766 65|767 65|863 % common interest counts 0 0 0
+			query3(3, 2, 				// 99|100 99|101 99|102 % common interest counts 0 0 0
+					"Democratic_Republic_of_the_Congo");
+			query3(7, 6, "Ankara"); 	// 891|898 890|891 890|895 890|898 890|902 891|895 891|902 % common interest counts 1 0 0 0 0 0 0
+			query3(3, 2, "Luoyang");	// 565|625 653|726 565|653 % common interest counts 2 1 0
+			query3(4, 3, "Taiwan");		// 795|798 797|798 567|795 567|796 % common interest counts 1 1 0 0 
+		}
+		else if (dataSize == 10)
+		{
+			// 10k queries
+			query3(3, 2, "Asia");				//  230|1814 1814|1857 1814|2219 % common interest counts 5 5 5
+			query3(4, 3, "Dolgoprudny");		//	8132|8195 8084|8132 8084|8161 8084|8185 % common interest counts 1 0 0 0
+			query3(3, 2, "Yongkang_District");	//	7953|7981 7953|7987 7953|7989 % common interest counts 1 1 1
+		}
 	}
 
 	private static List<IRelation> runQuery(String program, int queryNumber) 
 	{
 		Configuration configuration = KnowledgeBaseFactory.getDefaultConfiguration();
-		configuration.externalDataSources.add(new SigmodDataSource(queryNumber, DATA_LOCATION));
+		configuration.externalDataSources.add(new SigmodDataSource(queryNumber, Util.DATA_LOCATION));
 
 		Parser parser = new Parser();
 		List<IRelation> results = new ArrayList<>();

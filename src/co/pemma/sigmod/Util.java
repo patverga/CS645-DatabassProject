@@ -1,5 +1,9 @@
 package co.pemma.sigmod;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +11,9 @@ import java.util.Map;
 
 public class Util 
 {
-	
+	public static String DATA_LOCATION;
+	public static String RESULT_FILE = "results/data";
+
 	// Query 1
 	@SuppressWarnings("serial")
 	public final static Map<String,List<String>> query1Columns = new HashMap<String,List<String>>() {{
@@ -15,8 +21,8 @@ public class Util
 		put("comment_hasCreator_person", new ArrayList<String>() {{add("Comment.id");add("Person.id");}});
 		put("comment_replyOf_comment", new ArrayList<String>() {{add("Comment.id");add("Comment.id2");}});
 	}};
-	
-	
+
+
 	// Query 2
 	@SuppressWarnings("serial")
 	public final static Map<String,List<String>> query2Columns = new HashMap<String,List<String>>() {{
@@ -39,7 +45,7 @@ public class Util
 		put("person_hasInterest_tag", false); // true
 		put("person_knows_person", false); // true
 	}};
-	
+
 	// Query 3
 	@SuppressWarnings("serial")
 	public final static Map<String,List<String>> query3Columns = new HashMap<String,List<String>>() {{
@@ -80,19 +86,19 @@ public class Util
 		put("person_knows_person", false);//true);
 		put("person", false);
 	}};
-//	@SuppressWarnings("serial")
-//	public final static Map<String,Integer> query3Domains = new HashMap<String,Integer>() {{
-//		put("place", false);
-//		put("place_isPartOf_place", false);//true);
-//		put("organisation", false);
-//		put("organisation_isLocatedIn_place", false); // doesn't work on this one?
-//		put("person_isLocatedIn_place", false);//true);
-//		put("person_workAt_organisation", false);//true);
-//		put("person_studyAt_organisation", false);//true);
-//		put("person_hasInterest_tag", false);//true);
-//		put("person_knows_person", false);//true);
-//		put("person", false);
-//	}};
+	//	@SuppressWarnings("serial")
+	//	public final static Map<String,Integer> query3Domains = new HashMap<String,Integer>() {{
+	//		put("place", false);
+	//		put("place_isPartOf_place", false);//true);
+	//		put("organisation", false);
+	//		put("organisation_isLocatedIn_place", false); // doesn't work on this one?
+	//		put("person_isLocatedIn_place", false);//true);
+	//		put("person_workAt_organisation", false);//true);
+	//		put("person_studyAt_organisation", false);//true);
+	//		put("person_hasInterest_tag", false);//true);
+	//		put("person_knows_person", false);//true);
+	//		put("person", false);
+	//	}};
 
 
 	// Query 4
@@ -100,4 +106,27 @@ public class Util
 	public final static Map<String,List<String>> query4Columns = new HashMap<String,List<String>>() {{
 		put("person", new ArrayList<String>() {{add("id");add("birthday");}});
 	}};
+
+
+	public static void printResults(String system,long totalTime, int queryNumber, int dataSize)
+	{
+		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(RESULT_FILE, true))))
+		{
+			writer.println(system + "\t" + totalTime + "\t" + queryNumber + "\t" + dataSize);
+		} 
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void setDataLocation(int dataSize)
+	{
+		if (dataSize == 1)
+			DATA_LOCATION =  "data";
+		else if(dataSize == 10)
+			DATA_LOCATION =  "data-10k";
+		else
+			DATA_LOCATION = null;
+	}
 }
