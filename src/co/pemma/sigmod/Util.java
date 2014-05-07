@@ -32,7 +32,13 @@ public class Util
 		put("person_hasInterest_tag", new ArrayList<String>() {{add("Person.id");add("Tag.id");}});
 		put("person_knows_person", new ArrayList<String>() {{add("Person.id");add("Person.id2");}});
 	}};
-	
+	@SuppressWarnings("serial")
+	public final static Map<String,Boolean> query2TailNested = new HashMap<String,Boolean>() {{
+		put("person", false);
+		put("tag", false);
+		put("person_hasInterest_tag", false); // true
+		put("person_knows_person", false); // true
+	}};
 	
 	// Query 3
 	@SuppressWarnings("serial")
@@ -61,7 +67,33 @@ public class Util
 		put("person_knows_person", new ArrayList<String>() {{add("Person.id");add("Person.id2");}});
 		put("person", new ArrayList<String>() {{add("id");}});
 	}};
-	
+	@SuppressWarnings("serial")
+	public final static Map<String,Boolean> query3TailNested = new HashMap<String,Boolean>() {{
+		put("place", false);
+		put("place_isPartOf_place", false);//true);
+		put("organisation", false);
+		put("organisation_isLocatedIn_place", false); // doesn't work on this one?
+		put("person_isLocatedIn_place", false);//true);
+		put("person_workAt_organisation", false);//true);
+		put("person_studyAt_organisation", false);//true);
+		put("person_hasInterest_tag", false);//true);
+		put("person_knows_person", false);//true);
+		put("person", false);
+	}};
+//	@SuppressWarnings("serial")
+//	public final static Map<String,Integer> query3Domains = new HashMap<String,Integer>() {{
+//		put("place", false);
+//		put("place_isPartOf_place", false);//true);
+//		put("organisation", false);
+//		put("organisation_isLocatedIn_place", false); // doesn't work on this one?
+//		put("person_isLocatedIn_place", false);//true);
+//		put("person_workAt_organisation", false);//true);
+//		put("person_studyAt_organisation", false);//true);
+//		put("person_hasInterest_tag", false);//true);
+//		put("person_knows_person", false);//true);
+//		put("person", false);
+//	}};
+
 
 	// Query 4
 	@SuppressWarnings("serial")
