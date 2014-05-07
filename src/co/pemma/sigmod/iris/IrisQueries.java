@@ -51,41 +51,49 @@ public class IrisQueries
 		//		}
 
 
+		testQuery2();
+
+//		testQuery3();
+
+	}
+
+	private static void testQuery3() {
+		///// Query 3 /////
+//		query3(3, 2, "Asia"); 		// 361|812 174|280 280|812 % common interest counts 4 3 3
+//		query3(4, 3, "Indonesia");  // 396|398 363|367 363|368 363|372 % common interest counts 2 1 1 1
+//		query3(3, 2, "Egypt"); 	    // 110|116 106|110 106|112 % common interest counts 1 0 0
+//		query3(3, 2, "Italy");		// 420|825 421|424 10|414 % common interest counts 1 1 0
+//		query3(5, 4, "Chengdu");	// 590|650 590|658 590|614 590|629 590|638 % common interest counts 1 1 0 0 0
+//		query3(3, 2, "Peru");		// 65|766 65|767 65|863 % common interest counts 0 0 0
+//		query3(3, 2, 
+//				"Democratic_Republic_of_the_Congo");// 99|100 99|101 99|102 % common interest counts 0 0 0
+//		query3(7, 6, "Ankara"); 	// 891|898 890|891 890|895 890|898 890|902 891|895 891|902 % common interest counts 1 0 0 0 0 0 0
+//		query3(3, 2, "Luoyang");	// 565|625 653|726 565|653 % common interest counts 2 1 0
+//		query3(4, 3, "Taiwan");		// 795|798 797|798 567|795 567|796 % common interest counts 1 1 0 0 
+	}
+
+	private static void testQuery2() throws ParseException {
 		///// Query 2 /////
 		query2(3, "1980-02-01"); // Chiang_Kai-shek    Augustine_of_Hippo     Napoleon 
-//		// % component sizes 22 16 16
+								 // % component sizes 22 16 16
 		query2(4, "1981-03-10"); // Chiang_Kai-shek    Napoleon     Mohandas_Karamchand_Gandhi     Sukarno
-//		//								 // % component sizes 17 13 11 11
+								 // % component sizes 17 13 11 11
 		query2(3, "1982-03-29"); // Chiang_Kai-shek    Mohandas_Karamchand_Gandhi 	  Napoleon
-//		//								 // % component sizes 13 11 10
+								 // % component sizes 13 11 10
 		query2(3, "1983-05-09"); // Chiang_Kai-shek    Mohandas_Karamchand_Gandhi     Augustine_of_Hippo
-//		//								 // % component sizes 12 10 8
+								 // % component sizes 12 10 8
 		query2(5, "1984-07-02"); // Chiang_Kai-shek     Aristotle     Mohandas_Karamchand_Gandhi     Augustine_of_Hippo     Fidel_Castro
-//		//								 // % component sizes 10 7 6 5 5
+								 // % component sizes 10 7 6 5 5
 		query2(3, "1985-05-31"); // Chiang_Kai-shek     Mohandas_Karamchand_Gandhi    Joseph_Stalin
-//		//								 // % component sizes 6 6 5
+		 						 // % component sizes 6 6 5
 		query2(3, "1986-06-14"); // Chiang_Kai-shek     Mohandas_Karamchand_Gandhi    Joseph_Stalin
-//		//								 // % component sizes 6 6 5
+								 // % component sizes 6 6 5
 		query2(7, "1987-06-24"); // Chiang_Kai-shek     Augustine_of_Hippo     Genghis_Khan     Haile_Selassie_I     Karl_Marx 
-//		// 						Lyndon_B._Johnson     Robert_John_\"Mutt\"_Lange    % component sizes 4 3 3 3 3 3 3
+			  					 // Lyndon_B._Johnson     Robert_John_\"Mutt\"_Lange    % component sizes 4 3 3 3 3 3 3
 		query2(3, "1988-11-10"); // Aristotle     Ho_Chi_Minh     Karl_Marx
-//		//								 // % component sizes 2 2 2
-//		query2(4, "1990-01-25"); // Arthur_Conan_Doyle     Ashoka     Barack_Obama    Benito_Mussolini
-		// % component sizes 1 1 1 1
-
-		///// Query 3 /////
-		//				query3(3, 2, "Asia"); 		// 361|812 174|280 280|812 % common interest counts 4 3 3
-		//		query3(4, 3, "Indonesia");  // 396|398 363|367 363|368 363|372 % common interest counts 2 1 1 1
-		//		query3(3, 2, "Egypt"); 	    // 110|116 106|110 106|112 % common interest counts 1 0 0
-		//		query3(3, 2, "Italy");		// 420|825 421|424 10|414 % common interest counts 1 1 0
-		//		query3(5, 4, "Chengdu");	// 590|650 590|658 590|614 590|629 590|638 % common interest counts 1 1 0 0 0
-		//		query3(3, 2, "Peru");		// 65|766 65|767 65|863 % common interest counts 0 0 0
-		//		query3(3, 2, 
-		//		"Democratic_Republic_of_the_Congo");// 99|100 99|101 99|102 % common interest counts 0 0 0
-		//		query3(7, 6, "Ankara"); 	// 891|898 890|891 890|895 890|898 890|902 891|895 891|902 % common interest counts 1 0 0 0 0 0 0
-		//		query3(3, 2, "Luoyang");	// 565|625 653|726 565|653 % common interest counts 2 1 0
-		//		query3(4, 3, "Taiwan");		// 795|798 797|798 567|795 567|796 % common interest counts 1 1 0 0 
-
+								 // % component sizes 2 2 2
+				query2(4, "1990-01-25"); // Arthur_Conan_Doyle     Ashoka     Barack_Obama    Benito_Mussolini
+								 // % component sizes 1 1 1 1
 	}
 
 	private static List<IRelation> runQuery(String program, int queryNumber) 
@@ -97,19 +105,19 @@ public class IrisQueries
 		List<IRelation> results = new ArrayList<>();
 
 		try {
-//			System.out.println("Parsing the program...");
+			//			System.out.println("Parsing the program...");
 			parser.parse(program);
 
 			List<IRule> rules = parser.getRules();
 
-//			System.out.println("Loading facts...");
+			//			System.out.println("Loading facts...");
 			//Map<IPredicate, IRelation> facts = CreateRelations.getFacts();
 			Map<IPredicate, IRelation> facts = parser.getFacts();
 
-//			System.out.println("Constructing knowledge base...");
+			//			System.out.println("Constructing knowledge base...");
 			IKnowledgeBase knowledgeBase = KnowledgeBaseFactory.createKnowledgeBase(facts, rules, configuration );
 
-//			System.out.println("Evaluating queries...");
+			//			System.out.println("Evaluating queries...");
 			List<IVariable> variableBindings = new ArrayList<>();
 			for(IQuery query : parser.getQueries())
 			{
@@ -126,56 +134,30 @@ public class IrisQueries
 	public static void query2(int k, String d) throws ParseException
 	{
 		StringBuilder sb = new StringBuilder();
-		String date = "_date(" + d.replace("-", ",")+ ")";		
+		String date = d.replace("-", ",");		
 
 		System.out.println("Running query2("+k+", "+date+")");
-		
-		sb.append("young_people(?id) :- person(?id, ?birthday), ?birthday >= "+date+".\r\n");
+
+		sb.append("young_people(?id) :- person(?id, ?birthday), ?birthday >= _date("+date+").\r\n");
 
 		sb.append("conn_comps(?pid1, ?pid2, ?name) :- tag(?tag, ?name), young_people(?pid1), young_people(?pid2), "
 				+ " person_knows_person(?pid1, ?pid2), person_hasInterest_tag(?pid1, ?tag), person_hasInterest_tag(?pid2, ?tag), "
 				+ "NOT_EQUAL(?pid1, ?pid2).\r\n");
 
-		sb.append("reach(?pid1, ?pid2, ?tag) :- conn_comps(?pid1, ?pid2, ?tag).\r\n");
-		sb.append("reach(?pid1, ?pid2, ?tag) :- reach(?pid1,?y, ?tag), conn_comps(?y, ?pid2, ?tag), "
-				+ "NOT_EQUAL(?pid1, ?pid2), NOT_EQUAL(?pid1, ?y), NOT_EQUAL(?y, ?pid2).\r\n");
+		sb.append("reach(?pid1, ?pid1, ?name) :- young_people(?pid1), person_hasInterest_tag(?pid1, ?tag), tag(?tag, ?name).\r\n");
+		sb.append("reach(?pid1, ?pid2, ?tag) :- reach(?pid1,?y, ?tag), conn_comps(?y, ?pid2, ?tag).\r\n");
 
 		//		sb.append("conn_comps(?pid, ?tag) :- conn_comps(?pid2, ?tag), young_people(?pid), "
 		//				+ "person_knows_person(?pid2, ?pid), person_hasInterest_tag(?pid, ?tag).\n");
 
 
 		sb.append("?-reach(?pid1, ?pid2, ?tag).\r\n");
-		//		sb.append("?-young_people(?pid1).\r\n");
 
 		IRelation results = runQuery(sb.toString(), 2).get(0);
 
-		//		Map<String, Integer> postProcess = new HashMap<>();
-		//		Set<String> seen = new HashSet<>();
-		//
-		//		ITuple tuple;
-		//		String tag, tagId;
-		//
-		//		System.out.println(results.size());
-		//		for (int i = 0; i < results.size(); i++)
-		//		{
-		//			tuple = results.get(i);
-		//			tag = tuple.get(2).toString();
-		//			tagId = tag +"-"+ tuple.get(0).toString();
-		//			if (!seen.contains(tagId))
-		//			{
-		//				if (postProcess.containsKey(tag))
-		//				{
-		//					postProcess.put(tag, postProcess.get(tag)+1);
-		//				}
-		//				else
-		//					postProcess.put(tag, 1);
-		//			}
-		//			seen.add(tagId);
-		//		}
 
 		Map<String, Integer> tagsLargestComponent = new HashMap<>();
 		Map<String, List<String>> tagLists = new HashMap<>();
-		Set<String> seen = new HashSet<>();
 		List<String> list;
 		ITuple tuple;
 		String tag, id1, id2;
@@ -221,7 +203,7 @@ public class IrisQueries
 					largestCC = e2.getValue();
 			}
 			// add max count for this label to map
-			tagsLargestComponent.put(e.getKey(), (largestCC/2)+1);
+			tagsLargestComponent.put(e.getKey(), (largestCC/2));
 		}
 		topKResults(k, tagsLargestComponent, new SigmodComparator(2));
 	}
@@ -234,6 +216,7 @@ public class IrisQueries
 	public static void query3(int k, int h, String p)
 	{
 		long start = System.currentTimeMillis();
+		System.out.println("Running query2("+k+", "+h+", "+p+"))");
 
 		// formulate query to get all pairs of people with shared interests meeting place and hop criteria
 		String query = "all_locs(?locid) :- place(?locid, '"+p+"').\r\n"
