@@ -176,37 +176,37 @@ public class SociaLiteGenerator
 		sb.append("`");
 
 		/* start_pairs: pairs of people on a path from the start person */
-		sb.append("start_pairs(long pid1, long pid2).\n");
+		sb.append("start_pairs(int pid1, int pid2).\n");
 		sb.append("start_pairs("+pid1+"L, pid2) :- person_knows_person("+pid1+"L, pid2).\n");
 		sb.append("start_pairs(pid1, pid2) :- start_pairs(x, pid1), person_knows_person(pid1, pid2).\n");
 
 		/* end_pairs: pairs of people on a path to the end person */
-		sb.append("end_pairs(long pid1, long pid2).\n");
+		sb.append("end_pairs(int pid1, int pid2).\n");
 		sb.append("end_pairs("+pid2+"L, pid2) :- person_knows_person("+pid2+"L, pid2).\n");
 		sb.append("end_pairs(pid1, pid2) :- end_pairs(pid2, x), person_knows_person(pid1, pid2).\n");
 
-		//		sb.append("garbage(long pid1, long pid2).\n");
+		//		sb.append("garbage(int pid1, int pid2).\n");
 		//		sb.append("garbage("+pid1+"L, pid2) :- start_pairs(pid1, pid2), end_pairs(pid1, pid2).\n");
 
 		/* pairs: pairs of people on a path from the start to the end person */
-		sb.append("pairs(long pid1, long pid2).\n");
+		sb.append("pairs(int pid1, int pid2).\n");
 		sb.append("pairs(pid1, pid2) :- start_pairs(pid1, pid2), end_pairs(pid1, pid2).\n");
 		//		sb.append("pairs("+pid1+"L, pid2) :- person_knows_person("+pid1+"L, pid2).\n");
 
 		/* communications: pairs of people who know each other for each comment made in reply to each other */
-		//		sb.append("communications(long pid1, long pid2, int count).\n");
+		//		sb.append("communications(int pid1, int pid2, int count).\n");
 		//		sb.append("communications(pid1, pid2, $inc(1)) :- person_knows_person(pid1, pid2);\n");
 		//		sb.append("\t:- pid1 != pid2, comment_hasCreator_person(cid1, pid1), comment_hasCreator_person(cid2, pid2), comment_replyOf_comment(cid1, cid2), person_knows_person(pid1, pid2).\n");
-		//		sb.append("communications(long pid1, long pid2, int x).\n");
+		//		sb.append("communications(int pid1, int pid2, int x).\n");
 		//		sb.append("communications(pid1, pid2, x) :- person_knows_person(pid1, pid2), x=1;\n");
 		//		sb.append("\t:- pid1 != pid2, x=1, comment_hasCreator_person(cid1, pid1), comment_hasCreator_person(cid2, pid2), comment_replyOf_comment(cid1, cid2), person_knows_person(pid1, pid2).\n");
 
 		if(numComments > -1){
-			sb.append("communications(long pid1, long pid2).\n");
+			sb.append("communications(int pid1, int pid2).\n");
 			sb.append("communications(pid1, pid2) :- pairs(pid1, pid2), comment_hasCreator_person(cid1, pid1), comment_hasCreator_person(cid2, pid2), comment_replyOf_comment(cid1, cid2).\n");
 		}
 
-		sb.append("reach(long pid, int len).\n");
+		sb.append("reach(int pid, int len).\n");
 		sb.append("reach(pid, len) :- pairs("+pid1+"L, pid), len=1.\n");
 		sb.append("reach(pid, len) :- reach(y,c), pairs(y,pid), len=c+1.\n");
 
@@ -243,17 +243,17 @@ public class SociaLiteGenerator
 		sb.append("`");
 
 		/* young_people: all of the people born after the defined date */
-		sb.append("young_people_"+tablePrefix+"(long id).\n");
+		sb.append("young_people_"+tablePrefix+"(int id).\n");
 		sb.append("young_people_"+tablePrefix+"(id) :- person(id, date), (y,m,d)=$split(date, \"-\"), "
 				+ "$toInt(y)*10000+$toInt(m)*100+$toInt(d) >= " + ageCutoff + ".\n");
 
 		/* conn_comps: all pairs with paths and sharing tags */
-		sb.append("conn_comps_"+tablePrefix+"(long pid1, long pid2, long tag).\n");
+		sb.append("conn_comps_"+tablePrefix+"(int pid1, int pid2, int tag).\n");
 		sb.append("conn_comps_"+tablePrefix+"(pid1, pid2, tag) :- young_people_"+tablePrefix+"(pid1), person_hasInterest_tag(pid1, tag), person_hasInterest_tag(pid2, tag), young_people_"+tablePrefix+"(pid2), person_knows_person(pid1, pid2);\n");
 		sb.append("\t:- conn_comps_"+tablePrefix+"(pid1, y, tag), person_knows_person(y, pid2), pid1 != pid2, young_people_"+tablePrefix+"(pid2), person_hasInterest_tag(pid2, tag).\n");
 
 		/* comp_sizes: sizes of connected components */
-		sb.append("comp_sizes_"+tablePrefix+"(long pid, long tag, int count).\n");
+		sb.append("comp_sizes_"+tablePrefix+"(int pid, int tag, int count).\n");
 		sb.append("comp_sizes_"+tablePrefix+"(pid, tag, $inc(1)) :- conn_comps_"+tablePrefix+"(pid, _, tag);\n");
 		sb.append("\t:- young_people_"+tablePrefix+"(pid), person_hasInterest_tag(pid, tag).");
 
@@ -295,15 +295,15 @@ public class SociaLiteGenerator
 
 		int ageCutoff = Integer.parseInt(year)*10000+Integer.parseInt(month)*100+Integer.parseInt(day);
 
-//		sb.append("`person_knows_person(int Personid:0..1000, (int Personid2)).\n");
-//		sb.append("person_knows_person(Personid, Personid2) :- l=$read(\"/home/pv/Documents/CS645-DatabassProject/data/commas/person_knows_person.csv\"), (v0,v1)=$split(l,\",\"), Personid=$toInt(v0), Personid2=$toInt(v1).\n\n");
-//		sb.append("person_hasInterest_tag(int Personid:0..1000, (int Tagid)).\n");
-//		sb.append("person_hasInterest_tag(Personid, Tagid) :- l=$read(\"/home/pv/Documents/CS645-DatabassProject/data/commas/person_hasInterest_tag.csv\"), (v0,v1)=$split(l,\",\"), Personid=$toInt(v0), Tagid=$toInt(v1).\n\n");
-//		sb.append("person(int Personid:0..1000, String bday).\n");
-//		sb.append("person(Personid, bday) :- l=$read(\"/home/pv/Documents/CS645-DatabassProject/data/commas/person.csv\"), (v0,v1,v2,v3,v4,v5,v6,v7)=$split(l,\",\"), Personid=$toInt(v0), bday=v4.\n\n");
-//		sb.append("tag(int id, String name).\n");
-//		sb.append("tag(id, name) :- l=$read(\"/home/pv/Documents/CS645-DatabassProject/data/commas/tag.csv\"), (v0,v1,v2)=$split(l,\",\"), id=$toInt(v0), name=v1.\n");
-//		sb.append("`\n");
+		sb.append("`person_knows_person(int Personid:0..1000, (int Personid2)).\n");
+		sb.append("person_knows_person(Personid, Personid2) :- l=$read(\"/home/pv/Documents/CS645-DatabassProject/data/commas/person_knows_person.csv\"), (v0,v1)=$split(l,\",\"), Personid=$toInt(v0), Personid2=$toInt(v1).\n\n");
+		sb.append("person_hasInterest_tag(int Personid:0..1000, (int Tagid)).\n");
+		sb.append("person_hasInterest_tag(Personid, Tagid) :- l=$read(\"/home/pv/Documents/CS645-DatabassProject/data/commas/person_hasInterest_tag.csv\"), (v0,v1)=$split(l,\",\"), Personid=$toInt(v0), Tagid=$toInt(v1).\n\n");
+		sb.append("person(int Personid:0..1000, String bday).\n");
+		sb.append("person(Personid, bday) :- l=$read(\"/home/pv/Documents/CS645-DatabassProject/data/commas/person.csv\"), (v0,v1,v2,v3,v4,v5,v6,v7)=$split(l,\",\"), Personid=$toInt(v0), bday=v4.\n\n");
+		sb.append("tag(int id, String name).\n");
+		sb.append("tag(id, name) :- l=$read(\"/home/pv/Documents/CS645-DatabassProject/data/commas/tag.csv\"), (v0,v1,v2)=$split(l,\",\"), id=$toInt(v0), name=v1.\n");
+		sb.append("`\n");
 
 		/* young_people: all of the people born after the defined date */
 		sb.append("`young_people_"+tablePrefix+"(int id:0..1000).\n");
@@ -313,32 +313,35 @@ public class SociaLiteGenerator
 		sb.append("young_people_interests_"+tablePrefix+"(int pid:0..1000, (int tag)).\n");
 		sb.append("young_people_interests_"+tablePrefix+"(pid, tag) :- young_people_"+tablePrefix+"(pid), person_hasInterest_tag(pid, tag).\n");
 		
+//		sb.append("young_people_interests_debug_"+tablePrefix+"(int pid:0..1000, (String tagname)).\n");
+//		sb.append("young_people_interests_debug_"+tablePrefix+"(pid, tagname) :- young_people_"+tablePrefix+"(pid), person_hasInterest_tag(pid, tag), tag(tag, tagname).\n");
+		
 		/* All valid edges, with interest labels */
 		sb.append("edge_"+tablePrefix+"(int pid1:0..1000, (int pid2, int tag)).\n");
 		sb.append("edge_"+tablePrefix+"(pid1, pid2, tag) :- young_people_interests_"+tablePrefix+"(pid1, tag), person_knows_person(pid1, pid2), young_people_interests_"+tablePrefix+"(pid2, tag).\n");
 		
 		/* Connected components */
-//		sb.append("comp_"+tablePrefix+"(int pid:0..1000, int id, int tag).");
-//		sb.append("comp_"+tablePrefix+"(pid, $min(id), tag) :- young_people_interests_"+tablePrefix+"(pid, tag), id=pid;");
-//		sb.append("\t:- comp_"+tablePrefix+"(x, id, tag), edge_"+tablePrefix+"(x, pid, tag).");
-		sb.append("comp_"+tablePrefix+"(int pid:0..1000, (int tag, int id)).\n");
-		sb.append("comp_"+tablePrefix+"(pid, tag, $min(id)) :- edge_"+tablePrefix+"(pid, pid2, tag), id=pid;\n");
-		sb.append("\t:- comp_"+tablePrefix+"(x, tag, id), edge_"+tablePrefix+"(x, pid, tag).\n");
-		
-		/* Sizes of connected components */
-		sb.append("comp_size_"+tablePrefix+"(int id:0..1000, (int tag, int size)).\n");
-		sb.append("comp_size_"+tablePrefix+"(id, tag, $sum(1)) :- comp_"+tablePrefix+"(_, tag, id).\n");
-
-		sb.append("sorted_comp_size_"+tablePrefix+"(int size, String tagname).\n");
-		sb.append("sorted_comp_size_"+tablePrefix+"(size, tagname) :- comp_size_"+tablePrefix+"(id, tag, size), tag(tag, tagname).\n");
+//		sb.append("comp_"+tablePrefix+"(int pid:0..1000, (int tag, int id)).");
+//		sb.append("comp_"+tablePrefix+"(pid, tag, $min(id)) :- young_people_interests_"+tablePrefix+"(pid, tag), id=pid;");
+//		sb.append("\t:- comp_"+tablePrefix+"(x, tag, id), edge_"+tablePrefix+"(x, pid, tag).");
+////		sb.append("comp_"+tablePrefix+"(int pid:0..1000, (int tag, int id)).\n");
+////		sb.append("comp_"+tablePrefix+"(pid, tag, $min(id)) :- edge_"+tablePrefix+"(pid, pid2, tag), id=pid;\n");
+////		sb.append("\t:- comp_"+tablePrefix+"(x, tag, id), edge_"+tablePrefix+"(x, pid, tag).\n");
+//		
+//		/* Sizes of connected components */
+//		sb.append("comp_size_"+tablePrefix+"(int id:0..1000, (int tag, int size)).\n");
+//		sb.append("comp_size_"+tablePrefix+"(id, tag, $sum(1)) :- comp_"+tablePrefix+"(_, tag, id).\n");
+//
+//		sb.append("sorted_comp_size_"+tablePrefix+"(int size, String tagname).\n");
+//		sb.append("sorted_comp_size_"+tablePrefix+"(size, tagname) :- comp_size_"+tablePrefix+"(id, tag, size), tag(tag, tagname).\n");
 		
 		sb.append("`\n");
 
 		/* print result sorted lexicographically by tag name */
-		sb.append("for count, tag in `sorted_comp_size_"+tablePrefix+"(count, tag)`:\n");
-		sb.append("\tprint count, tag\n");
-//		sb.append("for pid1,pid2,tag in `comp_"+tablePrefix+"(pid1,pid2,tag)`:\n");
-//		sb.append("\tprint pid1,pid2,tag\n");
+//		sb.append("for count, tag in `sorted_comp_size_"+tablePrefix+"(count, tag)`:\n");
+//		sb.append("\tprint count, tag\n");
+		sb.append("for pid1,pid2,tag in `edge_debug_"+tablePrefix+"(pid1,pid2,tag)`:\n");
+		sb.append("\tprint pid1,pid2,tag\n");
 
 //		sb.append(sortedOutput2(k, tablePrefix));
 
@@ -388,25 +391,25 @@ public class SociaLiteGenerator
 		/* all_locs: all the locations that we care about (have to get sub-locations) */
 		sb.append("def inc(n, by): return n+by\n\n");
 		sb.append("`");
-		sb.append("all_locs_"+p+"(long locid).\n");
+		sb.append("all_locs_"+p+"(int locid).\n");
 		sb.append("all_locs_"+p+"(locid) :- place(locid, \""+p+"\");\n");
 		sb.append("\t:- all_locs_"+p+"(parentlocid), place_isPartOf_place(locid, parentlocid), place(locid, name).\n");
 
 		/* all_orgs: all the organizations that we care about (orgs in all_locs places) */
-		sb.append("all_orgs_"+p+"(long orgid).\n");
+		sb.append("all_orgs_"+p+"(int orgid).\n");
 		sb.append("all_orgs_"+p+"(orgid) :- organisation(orgid), organisation_isLocatedIn_place(orgid, locid), all_locs_"+p+"(locid).\n");
 
 		/* loc_people: people located in all_locs */
-		sb.append("loc_people_"+p+"(long pid).\n");
+		sb.append("loc_people_"+p+"(int pid).\n");
 		sb.append("loc_people_"+p+"(pid) :- person_isLocatedIn_place(pid, locid), all_locs_"+p+"(locid).\n");
 
 		/* org_people: people who work at organizations in all_orgs */
-		sb.append("org_people_"+p+"(long pid).\n");
+		sb.append("org_people_"+p+"(int pid).\n");
 		sb.append("org_people_"+p+"(pid) :- person_workAt_organisation(pid, orgid), all_orgs_"+p+"(orgid);\n");
 		sb.append("\t:- person_studyAt_organisation(pid, orgid), all_orgs_"+p+"(orgid).\n");
 
 		/* all_people: people from all_orgs or all_locs */
-		sb.append("all_people_"+p+"(long pid).\n");
+		sb.append("all_people_"+p+"(int pid).\n");
 		sb.append("all_people_"+p+"(pid) :- loc_people_"+p+"(pid);\n");
 		sb.append("\t:- org_people_"+p+"(pid).\n");
 
@@ -414,22 +417,22 @@ public class SociaLiteGenerator
 		sb.append(genHopsQuery(h, p));
 
 		/* common_interests: people with common interests in all_hops */
-		//		sb.append("common_interests(long pid1, long pid2, long interest).\n");
+		//		sb.append("common_interests(int pid1, int pid2, int interest).\n");
 		//		sb.append("common_interests(pid1, pid2, interest) :- all_hops(pid1, pid2), pid1 != pid2, all_people(pid1), all_people(pid2), interest=-1L;\n");
 		//		sb.append("\t:- all_people(pid1), all_people(pid2), pid1 != pid2, person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
 		//		//sb.append("\t:- common_interests(pid1, pid2, interest), person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
 
-		sb.append("common_interests_"+p+"(long pid1, long pid2, long interest).\n");
+		sb.append("common_interests_"+p+"(int pid1, int pid2, int interest).\n");
 		for(int i = 1; i <= h; ++i){
-			sb.append("common_interests_"+p+"(pid1, pid2, interest) :- hop"+i+"_"+p+"(pid1, pid2), interest=-1L;\n");
+			sb.append("common_interests_"+p+"(pid1, pid2, interest) :- hop"+i+"_"+p+"(pid1, pid2), interest=-1;\n");
 			sb.append("\t:- hop"+i+"_"+p+"(pid1, pid2), person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).\n");
 		}
 
 		/* interest_counts: counts of interests for each pair */
-		sb.append("interest_counts_"+p+"(long pid1, long pid2, int count).\n");
+		sb.append("interest_counts_"+p+"(int pid1, int pid2, int count).\n");
 		sb.append("interest_counts_"+p+"(pid1, pid2, $inc(1)) :- common_interests_"+p+"(pid1, pid2, interest).\n");
 
-		sb.append("sorted_counts_"+p+"(int count, long pid1, long pid2).\n");
+		sb.append("sorted_counts_"+p+"(int count, int pid1, int pid2).\n");
 		sb.append("sorted_counts_"+p+"(count, pid1, pid2) :- interest_counts_"+p+"(pid1, pid2, c), count=c-1.\n");
 		sb.append("`\n");
 
@@ -441,15 +444,15 @@ public class SociaLiteGenerator
 	private static StringBuilder genHopsQuery(int h, String p) {
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0; i < h; ++i){
-			sb.append("hop"+(i+1)+"_"+p+"(long pid0, long pid"+(i+1)+").\n");
+			sb.append("hop"+(i+1)+"_"+p+"(int pid0, int pid"+(i+1)+").\n");
 			if(i == 0){
-				sb.append("temp1_"+p+"(long pid0, long pid1).\n");
+				sb.append("temp1_"+p+"(int pid0, int pid1).\n");
 				sb.append("temp1_"+p+"(pid0,pid1) :- all_people_"+p+"(pid0), person_knows_person(pid0, pid1).\n");
 				sb.append("hop"+(i+1)+"_"+p+"(pid0,pid"+(i+1)+") :- ");
 				sb.append("temp1_"+p+"(pid0,pid1), all_people_"+p+"(pid"+(i+1)+"), pid0!=pid"+(i+1)+".\n");
 			}
 			else{
-				sb.append("temp"+(i+1)+"_"+p+"(long pid0, long pid1).\n");
+				sb.append("temp"+(i+1)+"_"+p+"(int pid0, int pid1).\n");
 				sb.append("temp"+(i+1)+"_"+p+"(pid0, pid2) :- temp"+i+"_"+p+"(pid0, pid1), person(pid1), person_knows_person(pid1, pid2).\n");
 				sb.append("hop"+(i+1)+"_"+p+"(pid0,pid1) :- temp"+(i+1)+"_"+p+"(pid0,pid1), all_people_"+p+"(pid1), pid0!=pid1, not hop"+i+"_"+p+"(pid0,pid1).\n");
 			}
@@ -523,7 +526,7 @@ public class SociaLiteGenerator
 
 
 		/* Query 2 */
-		sb.append(generateQueryTables(Util.query2Columns, null, Util.query2TailNested));
+//		sb.append(generateQueryTables(Util.query2Columns, null, Util.query2TailNested));
 //		sb.append(generateQuery2(3, "1980-02-01") + "\n"); // Chiang_Kai-shek    Augustine_of_Hippo     Napoleon 
 //		sb.append(generateQuery2(4, "1981-03-10") + "\n"); // Chiang_Kai-shek    Napoleon     Mohandas_Karamchand_Gandhi     Sukarno
 //		sb.append(generateQuery2(3, "1982-03-29") + "\n"); // Chiang_Kai-shek    Mohandas_Karamchand_Gandhi 	  Napoleon
@@ -532,16 +535,16 @@ public class SociaLiteGenerator
 //		sb.append(generateQuery2(3, "1985-05-31") + "\n"); // Chiang_Kai-shek     Mohandas_Karamchand_Gandhi    Joseph_Stalin
 //		sb.append(generateQuery2(3, "1986-06-14") + "\n"); // Chiang_Kai-shek     Mohandas_Karamchand_Gandhi    Joseph_Stalin
 //		sb.append(generateQuery2(7, "1987-06-24") + "\n"); // Chiang_Kai-shek     Augustine_of_Hippo     Genghis_Khan     Haile_Selassie_I     Karl_Marx 
-		sb.append(generateQuery2Better(3, "1988-11-10") + "\n");
+//		sb.append(generateQuery2Better(3, "1988-11-10") + "\n");
 //		sb.append(generateQuery2(4, "1990-01-25") + "\n");
 
 
 		/* Query 3 */
 //		sb.append(generateQueryTables(Util.query3Columns, Util.query3Indices, tailNested));
-//		sb.append(generateQueryTables(Util.query3Columns, null, Util.query3TailNested));
+		sb.append(generateQueryTables(Util.query3Columns, null, Util.query3TailNested));
 //		sb.append(generateQuery3(3, 2, "Asia"));
 //		sb.append(generateQuery3(4, 3, "Indonesia"));
-//		sb.append(generateQuery3(3, 2, "Egypt"));
+		sb.append(generateQuery3(3, 2, "Egypt"));
 //		sb.append(generateQuery3(3, 2, "Italy"));
 //		sb.append(generateQuery3(5, 4, "Chengdu"));
 //		sb.append(generateQuery3(3, 2, "Peru"));
