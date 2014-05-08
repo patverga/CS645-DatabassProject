@@ -114,7 +114,6 @@ The two queries we did not implement were Query 1 and Query 4. Query 1 asks for 
 
 \subsection{Query 2: Interests with Large Communities}
 The goal of the second query is given some integer k and date d, to find the k interests with the largest underlying communities of users born on or after d.
--- describe in more detail 
 
 To perform this query we required four tables: 
 \begin{itemize}
@@ -125,10 +124,9 @@ To perform this query we required four tables:
 \end{itemize}
 
 \subsection{Query 3: Socialization Suggestion}
-The third query is to find closely connected pairs of people who are in the same location and share some number of interests, the goal being to recommend connections based on mutual interests.
--- describe in more detail
+The third query is to find closely connected pairs of people who are in the same location and share some number of interests, the goal being to recommend connections based on mutual interests. Given an integer k, integer h, and String p, find the k pairs of people who are associated with place p and are within h degrees of seperation with the most shared interests.
 
-To perform this query we required four tables: 
+To perform this query we required ten tables: 
 \begin{itemize}
 \item place(id, name)
 \item place\_isPartOf\_place(place1.id, place2.id)
@@ -147,14 +145,15 @@ To perform this query we required four tables:
 \subsection{Iris}
 
 Iris (Integrated Rule Inference System) appears to be the most prominent (and well-documented) open source Datalog query evaluation engine, cited in \cite{seo-et-al-13a}, so we selected it as a baseline system to which to compare.
--- talk about how it doesn't have aggregates (neither recursive nor non-recursive) so we had to implement that stuff in Java, theoretically giving Iris an advantage
--- talk about reading in data
+
+We wrote a java class implementing Iris' DataSource interface to read in the table .csv files and store the relevant columns. Because Iris lacks aggregate functions (recursive and non-recursive) the final aggregation steps of the query had to be implmented in java. 
 
 \subsection{SociaLite}
 
-The three main extensions with which the authors achieve these gains are (1) tail-nested tables; (2) recursive aggregate functions; and (3) user-guided execution order. Tail nested tables address the issue of data representation, and allow for graph data to be represented efficiently as what are essentially adjacency lists rather than as traditional relations. Native support for certain recursive aggregate functions allows for common graph queries, such as those based on path length, to be expressed succinctly and to be evaluated efficiently using semi-naive evaluation. Finally, providing a mechanism for users to specify an evaluation order over vertices can significantly decrease the runtime required to traverse a graph if the graph is known to have a certain structure.
+The three main extensions in socialite are (1) tail-nested tables; (2) recursive aggregate functions; and (3) user-guided execution order. Tail nested tables address the issue of data representation, and allow for graph data to be represented efficiently as what are essentially adjacency lists rather than as traditional relations. Native support for certain recursive aggregate functions allows for common graph queries, such as those based on path length, to be expressed succinctly and to be evaluated efficiently using semi-naive evaluation. Finally, providing a mechanism for users to specify an evaluation order over vertices can significantly decrease the runtime required to traverse a graph if the graph is known to have a certain structure.
 
--- talk about actual system, i.e. Python/Jython
+SociaLite is written in Java and takes input through a Jython wrapper. The user defines rules, facts, and queries either through an interactive interface or by providing a script which can be interleaved with python commands. Because we did not have access to the source code, we created code to generate query.py scripts which we submited to SociaLite. 
+
 
 \section{Methods}
 
