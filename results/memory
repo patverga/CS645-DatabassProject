@@ -1,2 +1,4 @@
 query3(4, 3, Indonesia) 6.3g  iris
+query3(4, 3, Indonesia) 
 query3(7, 6, Ankara)   7.75g  iris
+query3(7, 6, Ankara)   .91g  socialite
