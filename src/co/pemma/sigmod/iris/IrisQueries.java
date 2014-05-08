@@ -34,8 +34,8 @@ public class IrisQueries
 {
 	public static void main(String[] args) throws ParseException
 	{
-		int dataSize = 1;
-		int queryNumber = 3;
+		int dataSize = 10;
+		int queryNumber = 2;
 		
 		Util.setDataLocation(dataSize);
 		
@@ -75,7 +75,7 @@ public class IrisQueries
 
 	private static void testQuery2(int dataSize) throws ParseException 
 	{
-		if (dataSize == 1)
+		if (dataSize == 1 || dataSize == 10)
 		{
 			query2(3, "1980-02-01"); // Chiang_Kai-shek    Augustine_of_Hippo     Napoleon 
 			// % component sizes 22 16 16
@@ -98,7 +98,7 @@ public class IrisQueries
 			query2(4, "1990-01-25"); // Arthur_Conan_Doyle     Ashoka     Barack_Obama    Benito_Mussolini
 			// % component sizes 1 1 1 1
 		}
-		else if (dataSize == 10)
+		else if (dataSize == -10)
 		{
 			// 10k queries
 			query2(3, "1980-02-01"); // Chiang_Kai-shek Sukarno George_W._Bush % component sizes 216 128 96
@@ -171,6 +171,7 @@ public class IrisQueries
 		return results;
 	}
 
+	
 	/**
 	 * Generate Iris code for SIGMOD query 1
 	 * 
@@ -331,6 +332,7 @@ public class IrisQueries
 		topKResults(k, tagsLargestComponent, new SigmodComparator(2));
 	}
 
+	
 	/**
 	 * @param k number of person id pairs to return
 	 * @param h maximum number of hops between people
@@ -415,6 +417,8 @@ public class IrisQueries
 		}
 		return sb;
 	}
+
+	
 
 	private static void topKResults(int k, Map<String, Integer> sharedInterestCounts, Comparator<Pair<Integer, String>> comp)
 	{

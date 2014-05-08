@@ -13,7 +13,7 @@ public class Util
 {
 	public static String DATA_LOCATION;
 	public static int DATA_SIZE;
-	public static String RESULT_FILE = "results/data";
+	public static String RESULT_FILE = "results/time";
 
 	// Query 1
 	@SuppressWarnings("serial")
