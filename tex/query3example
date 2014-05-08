@@ -1,0 +1,43 @@
+# get all people associated with given place
+all_locs(int locid).
+all_locs(locid) :- place(locid, ‘Amherst’);
+all_locs(locid) :- all_locs(parentlocid), place(locid, name), place_isPartOf_place(locid, parentlocid).
+
+all_orgs(int orgid).
+all_orgs(orgid) :- organisation(orgid), all_locs(locid), organisation_isLocatedIn_place(orgid,locid).
+
+loc_people(int pid).
+loc_people(pid) :- person_isLocatedIn_place(pid, locid), all_locs(locid).
+
+org_people(int pid).
+org_people(pid) :- person_workAt_organisation(pid, orgid), all_orgs(orgid);
+org_people(pid) :- person_studyAt_organisation(pid, orgid), all_orgs(orgid).
+
+all_people(int pid).
+all_people(pid) :- loc_people(pid);
+all_people(pid) :- org_people(pid).
+
+// get all pairs of people who are within 2 hops of each other
+hop1(int pid0, int pid1).
+temp1(int pid0, int pid1).
+temp1(pid0,pid1) :- all_people(pid0), person_knows_person(pid0, pid1).
+hop1(pid0,pid1) :- temp1(pid0,pid1), all_people(pid1), pid0!=pid1.
+
+hop2(int pid0, int pid2).
+temp2(int pid0, int pid1).
+temp2(pid0, pid2) :- temp1(pid0, pid1), person(pid1), person_knows_person(pid1, pid2).
+hop2(pid0,pid1) :- temp2(pid0,pid1), all_people(pid1), pid0!=pid1, not hop1(pid0,pid1).
+
+// of the people within h hops, find ones who share an interest
+common_interests(int pid1, int pid2, int interest).
+common_interests(pid1, pid2, interest) :- hop1(pid1, pid2), interest=-1;
+common_interests(pid1, pid2, interest) :- hop1(pid1, pid2), person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).
+common_interests(pid1, pid2, interest) :- hop2(pid1, pid2), interest=-1;
+common_interests(pid1, pid2, interest) :- hop2(pid1, pid2), person_hasInterest_tag(pid1, interest), person_hasInterest_tag(pid2, interest).
+
+// count the number of shared interests between the pairs, sort by count
+interest_counts(int pid1, int pid2, int count).
+interest_counts(pid1, pid2, $inc(1)) :- common_interests(pid1, pid2,interest)
+sorted_counts(int count, int pid1, int pid2).
+sorted_counts(count, pid1, pid2) :- interest_counts(pid1, pid2, c), count=c-1
+

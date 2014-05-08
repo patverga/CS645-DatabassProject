@@ -1,0 +1,18 @@
+# get people born after given date
+young_people(int id).
+young_people(id) :- person(id, date), date >= 1980-02-01.
+
+# all pairs reachable from each other and their tags
+conn_comps(int pid1, int pid2, int tag).
+conn_comps(pid1, pid2, tag) :- young_people(pid1), young_people(pid2), person_hasInterest_tag(pid1, tag), person_hasInterest_tag(pid2, tag), person_knows_person(pid1, pid2);
+conn_comps(pid1, pid2, tag) :- conn_comps(pid1, y, tag), person_knows_person(y, pid2), pid1 != pid2, young_people(pid2), person_hasInterest_tag(pid2, tag).
+
+# get sizes of connected components
+comp_sizes(int pid, int tag, int count).
+comp_sizes(pid, tag, $inc(1)) :- conn_comps(pid, _, tag);
+comp_sizes(pid, tag, $inc(1)) :- young_people(pid),
+comp_sizes(pid, tag, $inc(1)) :- person_hasInterest_tag(pid, tag).
+
+# sort by connected component size
+tag_sizes(int count, String tagname).
+tag_sizes(count, tagname) :- comp_sizes(pid, tag, count), tag(tag, tagname).
