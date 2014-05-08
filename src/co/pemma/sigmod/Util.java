@@ -87,20 +87,6 @@ public class Util
 		put("person_knows_person", true);//true);
 		put("person", false);
 	}};
-	//	@SuppressWarnings("serial")
-	//	public final static Map<String,Integer> query3Domains = new HashMap<String,Integer>() {{
-	//		put("place", false);
-	//		put("place_isPartOf_place", false);//true);
-	//		put("organisation", false);
-	//		put("organisation_isLocatedIn_place", false); // doesn't work on this one?
-	//		put("person_isLocatedIn_place", false);//true);
-	//		put("person_workAt_organisation", false);//true);
-	//		put("person_studyAt_organisation", false);//true);
-	//		put("person_hasInterest_tag", false);//true);
-	//		put("person_knows_person", false);//true);
-	//		put("person", false);
-	//	}};
-
 
 	// Query 4
 	@SuppressWarnings("serial")

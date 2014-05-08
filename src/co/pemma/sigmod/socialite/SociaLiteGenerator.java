@@ -17,7 +17,7 @@ import co.pemma.sigmod.Util;
 public class SociaLiteGenerator 
 {	
 	static char prefix = 'a';
-	public static final String queryFile = "socialite/bin/query.py";
+	public static final String queryFile = "socialite/bin/query3-10k.py";
 
 	public static StringBuilder generateQueryTables(Map<String,List<String>> colMap, Map<String,List<String>> indexMap, Map<String,Boolean> tailNested)
 	{		
@@ -94,7 +94,7 @@ public class SociaLiteGenerator
 					type = "String";
 				else if(type.equals("long"))
 					type = "int";
-				sb.append(type + " " + colNames.get(i).replace(".", "") + (tailNested? ":0.."+Util.DATA_SIZE+", "  : ", "));
+				sb.append(type + " " + colNames.get(i).replace(".", "") + (tailNested? ":0.."+Util.DATA_SIZE+", " : ", "));
 			}
 			type = schema.get(schemaNameIndexMap.get(colNames.get(colNames.size()-1)));
 			if(!type.equals("String"))
@@ -510,6 +510,8 @@ public class SociaLiteGenerator
 
 		/* Query 2 */
 //		sb.append(generateQueryTables(Util.query2Columns, null, Util.query2TailNested));
+		
+		/* 1k */
 //		sb.append(generateQuery2(3, "1980-02-01") + "\n"); // Chiang_Kai-shek    Augustine_of_Hippo     Napoleon 
 //		sb.append(generateQuery2(4, "1981-03-10") + "\n"); // Chiang_Kai-shek    Napoleon     Mohandas_Karamchand_Gandhi     Sukarno
 //		sb.append(generateQuery2(3, "1982-03-29") + "\n"); // Chiang_Kai-shek    Mohandas_Karamchand_Gandhi 	  Napoleon
@@ -521,33 +523,57 @@ public class SociaLiteGenerator
 //		sb.append(generateQuery2(3, "1988-11-10") + "\n");
 //		sb.append(generateQuery2(4, "1990-01-25") + "\n");
 
+		/* 10k */
+//		sb.append(generateQuery2(3, "1980-02-01") + "\n"); // Chiang_Kai-shek    Augustine_of_Hippo     Napoleon 
+//		sb.append(generateQuery2(4, "1981-03-10") + "\n"); // Chiang_Kai-shek    Napoleon     Mohandas_Karamchand_Gandhi     Sukarno
+//		sb.append(generateQuery2(3, "1982-03-29") + "\n"); // Chiang_Kai-shek    Mohandas_Karamchand_Gandhi 	  Napoleon
+//		sb.append(generateQuery2(3, "1983-05-09") + "\n"); // Chiang_Kai-shek    Mohandas_Karamchand_Gandhi     Augustine_of_Hippo
+//		sb.append(generateQuery2(5, "1984-07-02") + "\n"); // Chiang_Kai-shek     Aristotle     Mohandas_Karamchand_Gandhi     Augustine_of_Hippo     Fidel_Castro
+//		sb.append(generateQuery2(3, "1985-05-31") + "\n"); // Chiang_Kai-shek     Mohandas_Karamchand_Gandhi    Joseph_Stalin
+//		sb.append(generateQuery2(3, "1986-06-14") + "\n"); // Chiang_Kai-shek     Mohandas_Karamchand_Gandhi    Joseph_Stalin
+//		sb.append(generateQuery2(7, "1987-06-24") + "\n"); // Chiang_Kai-shek     Augustine_of_Hippo     Genghis_Khan     Haile_Selassie_I     Karl_Marx 
+//		sb.append(generateQuery2(3, "1988-11-10") + "\n");
+//		sb.append(generateQuery2(4, "1990-01-25") + "\n");
+		
+//		sb.append(generateQuery2(3, "1980-02-01") + "\n");
+//		sb.append(generateQuery2(4, "1982-01-30") + "\n");
+//		sb.append(generateQuery2(3, "1984-02-01") + "\n");
+//		sb.append(generateQuery2(3, "1986-01-28") + "\n");
+//		sb.append(generateQuery2(5, "1988-01-27") + "\n");
+//		sb.append(generateQuery2(3, "1990-01-31") + "\n");
+		
 		/* Query 3 */
-		//		sb.append(generateQueryTables(Util.query3Columns, Util.query3Indices, tailNested));
+//		sb.append(generateQueryTables(Util.query3Columns, Util.query3Indices, tailNested));
 		sb.append(generateQueryTables(Util.query3Columns, null, Util.query3TailNested));
-		//		sb.append(generateQuery3(3, 2, "Asia"));
-		//		sb.append(generateQuery3(4, 3, "Indonesia"));
+		
+		/* 1k */
+//		sb.append(generateQuery3(3, 2, "Asia"));
+//		sb.append(generateQuery3(4, 3, "Indonesia"));
 //		sb.append(generateQuery3(3, 2, "Egypt"));
-		//		sb.append(generateQuery3(3, 2, "Italy"));
-		//		sb.append(generateQuery3(5, 4, "Chengdu"));
-		//		sb.append(generateQuery3(3, 2, "Peru"));
-		//		sb.append(generateQuery3(3, 2, "Democratic_Republic_of_the_Congo"));
-		//		sb.append(generateQuery3(7, 6, "Ankara"));
-		//		sb.append(generateQuery3(3, 2, "Luoyang"));
-		//		sb.append(generateQuery3(4, 3, "Taiwan"));
+//		sb.append(generateQuery3(3, 2, "Italy"));
+//		sb.append(generateQuery3(5, 4, "Chengdu"));
+//		sb.append(generateQuery3(3, 2, "Peru"));
+//		sb.append(generateQuery3(3, 2, "Democratic_Republic_of_the_Congo"));
+//		sb.append(generateQuery3(7, 6, "Ankara"));
+//		sb.append(generateQuery3(3, 2, "Luoyang"));
+//		sb.append(generateQuery3(4, 3, "Taiwan"));
 
-		/* Query 3 - 10k */
-		sb.append(generateQuery3(3, 2, "Asia")); //				 230|1814 1814|1857 1814|2219 % common interest counts 5 5 5
-		sb.append(generateQuery3(4, 3, "Dolgoprudny")); //		 8132|8195 8084|8132 8084|8161 8084|8185 % common interest counts 1 0 0 0
-		sb.append(generateQuery3(3, 2, "Yongkang_District")); // 7953|7981 7953|7987 7953|7989 % common interest counts 1 1 1
-
-
-
-		/* Query 4 */
-		//		sb.append(generateQueryTables(Util.query4Columns));
-		//		sb.append(generateQuery4(3, "Bill Clinton"));
-
-
-		//		sb.append(test());
+		/* 10k */
+//		sb.append(generateQuery3(3, 2, "Asia"));
+		sb.append(generateQuery3(4, 3, "Indonesia"));
+		sb.append(generateQuery3(3, 2, "Egypt"));
+		sb.append(generateQuery3(3, 2, "Italy"));
+		sb.append(generateQuery3(5, 4, "Chengdu"));
+		sb.append(generateQuery3(3, 2, "Peru"));
+		sb.append(generateQuery3(3, 2, "Democratic_Republic_of_the_Congo"));
+		sb.append(generateQuery3(7, 6, "Ankara"));
+		sb.append(generateQuery3(3, 2, "Luoyang"));
+		sb.append(generateQuery3(4, 3, "Taiwan"));
+		sb.append(generateQuery3(4, 3, "Indonesia"));
+		sb.append(generateQuery3(5, 4, "Chengdu"));
+////		sb.append(generateQuery3(3, 2, "Asia")); //				 230|1814 1814|1857 1814|2219 % common interest counts 5 5 5
+//		sb.append(generateQuery3(4, 3, "Dolgoprudny")); //		 8132|8195 8084|8132 8084|8161 8084|8185 % common interest counts 1 0 0 0
+//		sb.append(generateQuery3(3, 2, "Yongkang_District")); // 7953|7981 7953|7987 7953|7989 % common interest counts 1 1 1
 
 		exportPython(sb, queryFile);
 
