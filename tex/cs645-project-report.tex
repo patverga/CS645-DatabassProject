@@ -170,31 +170,69 @@ Query 3 asks for the top $k$ pairs of individuals connected by at most $h$ hops 
 
 The above produces all triples of people and interests that satisfy the location and hop constraints, including duplicates and self-pairs. We took this intermediate result and aggregated the top k counts of shared interests between non-duplicate pairs of users.
 
-Both above queries include aggregation, in SociaLite syntax. In the case of Iris, the query was the same up until that point, and aggregation was implemented in Java using the result of the Datalog query up until that point.																																									
+Both above queries include aggregation, in SociaLite syntax. In the case of Iris, the query was the same up until that point, and aggregation was implemented in Java using the result of the Datalog query up until that point.		
+																																							
 \section{Results}
 Queries were run on a machine with a 3.4 GhZ Intel Core i7 processor and 16GB RAM, which is comparable to that used for evaluating contest entries (8 CPU cores and 16GB RAM). We ran the test queries provided for the 1k dataset on both the 1k and 10k datasets to compare. All queries returned the correct results for the 1k and 10k queries with provided answers from the contest holders. 
 
-Figure \ref{fig:q2} depicts the results for Query 2 run on the 1k and 10k datasets on Iris and SociaLite. 
+\subsection {Query 2 Runtime}
+For query 2 we recorded the total runtime to run the following queries in succession. We tested the same set of queries on both the 1000 person data set and the 10,000 person dataset. Each was averaged over 10 runs. Figure \ref{fig:q2} depicts the results for Query 2 run on the 1k and 10k datasets on Iris and SociaLite. 
+\begin{itemize}
+\item query2(3, "1980-02-01")
+\item query2(4, "1981-03-10")
+\item query2(3, "1982-03-29")
+\item query2(3, "1983-05-09")
+\item query2(5, "1984-07-02")
+\item query2(3, "1985-05-31")
+\item query2(3, "1986-06-14")
+\item query2(7, "1987-06-24")
+\item query2(3, "1988-11-10")
+\item query2(4, "1990-01-25")
+\end{itemize}
 \begingroup
     \centering
     \includegraphics[scale=0.4]{../results/query2.pdf}
-    \captionof{figure}{This is the caption}\label{fig:q2}
+    \captionof{figure}{Average run time of the query 2 query set for Iris and SociaLite for the 1000 and 10,000 person data sets averaged across ten runs. The coral bars show Iris' run times, the blue bars depict SociaLite. The two bars on the left show the 1000 person data set, the two on the right show the 10,000 person dataset.}\label{fig:q2}
 \endgroup
+
+
+\subsection {Query 3 Runtime}
+
+For query 3 we recorded the total runtime to run the following queries in succession. We tested the same set of queries on both the 1000 person data set and the 10,000 person dataset. Each was averaged over 10 runs. Figure \ref{fig:q3} depicts the results for Query 2 run on the 1k and 10k datasets on Iris and SociaLite. 
+\begin{itemize}
+\item query3(4, 3, "Indonesia")
+\item query3(3, 2, "Egypt")
+\item query3(3, 2, "Italy")
+\item query3(5, 4, "Chengdu")
+\item query3(3, 2, "Peru")
+\item query3(3, 2, "Democratic\_Republic\_of\_the\_Congo")
+\item query3(7, 6, "Ankara")
+\item query3(3, 2, "Luoyang")
+\item query3(4, 3, "Taiwan")
+\end{itemize}
+			
 
 \begingroup
     \centering
     \includegraphics[scale=0.4]{../results/query3.pdf}
-    \captionof{figure}{This is the caption}\label{fig:q3}
+    \captionof{figure}{Average run time of the query 3 query set for Iris and SociaLite for the 1000 and 10,000 person data sets averaged across ten runs. The coral bars show Iris' run times, the blue bars depict SociaLite. The two bars on the left show the 1000 person data set, the two on the right show the 10,000 person dataset.}\label{fig:q3}
 \endgroup
 
+\subsection {Memory Footprint} 
+In addition to comparing the runtime of the two systems, we also analyzed their maximum memory footprint. We took the most memory intensive query in our experiment and recorded the peak memory consumption for each of the two systems. Figure \ref{fig:memory} depicts the memory consumption of both SociaLite and Iris on query3(7, 6, "Ankara") for the 10,000 person dataset. 
 \begingroup
     \centering
     \includegraphics[scale=0.4]{../results/memory.pdf}
-    \captionof{figure}{This is the caption}\label{fig:memory}
+    \captionof{figure}{The peak memory usage for query3(7, 6, "Ankara") on the 10,000 person dataset. The coral bars show Iris' run times, the blue bars depict SociaLite. }\label{fig:memory}
 \endgroup
 
 
 \section{Discussion}
+Our results show that overall, Socialite seems to scale much better than Iris. Figures \ref{fig:q2} and \ref{fig:q3} show that SociaLite's runtimes seems to scale linearly with the size of the data where as Iris suffers more exponential growth. We believe that SociaLite's representation of the data in Adjancancy lists scales more gracefully than Iris' internal representation.
+
+However, Iris does outperform SociaLite for the smaller data set. This may show that Iris' data representation, though it does not scale well, may outperform the additional overhead required by the SociaLite's scalable representations.
+
+SociaLite is also shown to be much more memory efficient in Figure \ref{fig:memory} requiring roughly 1/8 the memory of Iris to perform the same task. This again most likely comes down to the internal represenations of the data. Iris uses a very expensive object heirarchy to represent each tuple which becomes very costly with larger amounts of data.
 
 
 \bibliography{cs645-project-report}
