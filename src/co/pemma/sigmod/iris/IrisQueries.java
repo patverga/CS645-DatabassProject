@@ -35,6 +35,7 @@ public class IrisQueries
 	public static void main(String[] args) throws ParseException
 	{
 		int dataSize = 10;
+
 		int queryNumber = 2;
 		
 		Util.setDataLocation(dataSize);
@@ -264,7 +265,7 @@ public class IrisQueries
 		StringBuilder sb = new StringBuilder();
 		String date = d.replace("-", ",");		
 
-		System.out.println("Running query2("+k+", "+date+")");
+		System.out.println("Running query2("+k+","+date+")");
 
 		sb.append("young_people(?id) :- person(?id, ?birthday), ?birthday >= _date("+date+").\r\n");
 

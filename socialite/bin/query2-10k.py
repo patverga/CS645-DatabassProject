@@ -36,11 +36,11 @@ for count, name in result_set:
 		results += 1
 
 
-print "\nRunning query2(4, 1982-01-30)\n"
+print "\nRunning query2(4, 1981-03-10)\n"
 def inc(n, by): return n+by
 
 `young_people_b(int id).
-young_people_b(id) :- person(id, date), (y,m,d)=$split(date, "-"), $toInt(y)*10000+$toInt(m)*100+$toInt(d) >= 19820130.
+young_people_b(id) :- person(id, date), (y,m,d)=$split(date, "-"), $toInt(y)*10000+$toInt(m)*100+$toInt(d) >= 19810310.
 conn_comps_b(int pid1, int pid2, int tag).
 conn_comps_b(pid1, pid2, tag) :- young_people_b(pid1), person_hasInterest_tag(pid1, tag), person_hasInterest_tag(pid2, tag), young_people_b(pid2), person_knows_person(pid1, pid2);
 	:- conn_comps_b(pid1, y, tag), person_knows_person(y, pid2), pid1 != pid2, young_people_b(pid2), person_hasInterest_tag(pid2, tag).
@@ -61,11 +61,11 @@ for count, name in result_set:
 		results += 1
 
 
-print "\nRunning query2(3, 1984-02-01)\n"
+print "\nRunning query2(3, 1982-03-29)\n"
 def inc(n, by): return n+by
 
 `young_people_c(int id).
-young_people_c(id) :- person(id, date), (y,m,d)=$split(date, "-"), $toInt(y)*10000+$toInt(m)*100+$toInt(d) >= 19840201.
+young_people_c(id) :- person(id, date), (y,m,d)=$split(date, "-"), $toInt(y)*10000+$toInt(m)*100+$toInt(d) >= 19820329.
 conn_comps_c(int pid1, int pid2, int tag).
 conn_comps_c(pid1, pid2, tag) :- young_people_c(pid1), person_hasInterest_tag(pid1, tag), person_hasInterest_tag(pid2, tag), young_people_c(pid2), person_knows_person(pid1, pid2);
 	:- conn_comps_c(pid1, y, tag), person_knows_person(y, pid2), pid1 != pid2, young_people_c(pid2), person_hasInterest_tag(pid2, tag).
@@ -86,11 +86,11 @@ for count, name in result_set:
 		results += 1
 
 
-print "\nRunning query2(3, 1986-01-28)\n"
+print "\nRunning query2(3, 1983-05-09)\n"
 def inc(n, by): return n+by
 
 `young_people_d(int id).
-young_people_d(id) :- person(id, date), (y,m,d)=$split(date, "-"), $toInt(y)*10000+$toInt(m)*100+$toInt(d) >= 19860128.
+young_people_d(id) :- person(id, date), (y,m,d)=$split(date, "-"), $toInt(y)*10000+$toInt(m)*100+$toInt(d) >= 19830509.
 conn_comps_d(int pid1, int pid2, int tag).
 conn_comps_d(pid1, pid2, tag) :- young_people_d(pid1), person_hasInterest_tag(pid1, tag), person_hasInterest_tag(pid2, tag), young_people_d(pid2), person_knows_person(pid1, pid2);
 	:- conn_comps_d(pid1, y, tag), person_knows_person(y, pid2), pid1 != pid2, young_people_d(pid2), person_hasInterest_tag(pid2, tag).
@@ -111,11 +111,11 @@ for count, name in result_set:
 		results += 1
 
 
-print "\nRunning query2(5, 1988-01-27)\n"
+print "\nRunning query2(5, 1984-07-02)\n"
 def inc(n, by): return n+by
 
 `young_people_e(int id).
-young_people_e(id) :- person(id, date), (y,m,d)=$split(date, "-"), $toInt(y)*10000+$toInt(m)*100+$toInt(d) >= 19880127.
+young_people_e(id) :- person(id, date), (y,m,d)=$split(date, "-"), $toInt(y)*10000+$toInt(m)*100+$toInt(d) >= 19840702.
 conn_comps_e(int pid1, int pid2, int tag).
 conn_comps_e(pid1, pid2, tag) :- young_people_e(pid1), person_hasInterest_tag(pid1, tag), person_hasInterest_tag(pid2, tag), young_people_e(pid2), person_knows_person(pid1, pid2);
 	:- conn_comps_e(pid1, y, tag), person_knows_person(y, pid2), pid1 != pid2, young_people_e(pid2), person_hasInterest_tag(pid2, tag).
@@ -136,11 +136,11 @@ for count, name in result_set:
 		results += 1
 
 
-print "\nRunning query2(3, 1990-01-31)\n"
+print "\nRunning query2(3, 1985-05-31)\n"
 def inc(n, by): return n+by
 
 `young_people_f(int id).
-young_people_f(id) :- person(id, date), (y,m,d)=$split(date, "-"), $toInt(y)*10000+$toInt(m)*100+$toInt(d) >= 19900131.
+young_people_f(id) :- person(id, date), (y,m,d)=$split(date, "-"), $toInt(y)*10000+$toInt(m)*100+$toInt(d) >= 19850531.
 conn_comps_f(int pid1, int pid2, int tag).
 conn_comps_f(pid1, pid2, tag) :- young_people_f(pid1), person_hasInterest_tag(pid1, tag), person_hasInterest_tag(pid2, tag), young_people_f(pid2), person_knows_person(pid1, pid2);
 	:- conn_comps_f(pid1, y, tag), person_knows_person(y, pid2), pid1 != pid2, young_people_f(pid2), person_hasInterest_tag(pid2, tag).
@@ -154,6 +154,106 @@ used = set()
 results = 0
 for count, name in result_set:
 	if results >= 3:
+		break
+	if name not in used: 
+		print name, count
+		used.add(name)
+		results += 1
+
+
+print "\nRunning query2(3, 1986-06-14)\n"
+def inc(n, by): return n+by
+
+`young_people_g(int id).
+young_people_g(id) :- person(id, date), (y,m,d)=$split(date, "-"), $toInt(y)*10000+$toInt(m)*100+$toInt(d) >= 19860614.
+conn_comps_g(int pid1, int pid2, int tag).
+conn_comps_g(pid1, pid2, tag) :- young_people_g(pid1), person_hasInterest_tag(pid1, tag), person_hasInterest_tag(pid2, tag), young_people_g(pid2), person_knows_person(pid1, pid2);
+	:- conn_comps_g(pid1, y, tag), person_knows_person(y, pid2), pid1 != pid2, young_people_g(pid2), person_hasInterest_tag(pid2, tag).
+comp_sizes_g(int pid, int tag, int count).
+comp_sizes_g(pid, tag, $inc(1)) :- conn_comps_g(pid, _, tag);
+	:- young_people_g(pid), person_hasInterest_tag(pid, tag).tag_sizes_g(int count, String tagname).
+tag_sizes_g(count, tagname) :- comp_sizes_g(pid, tag, count), tag(tag, tagname).`
+result_set = `tag_sizes_g(count,name)`
+result_set = sorted(result_set, key=lambda x:(-x[0],x[1]))
+used = set()
+results = 0
+for count, name in result_set:
+	if results >= 3:
+		break
+	if name not in used: 
+		print name, count
+		used.add(name)
+		results += 1
+
+
+print "\nRunning query2(7, 1987-06-24)\n"
+def inc(n, by): return n+by
+
+`young_people_h(int id).
+young_people_h(id) :- person(id, date), (y,m,d)=$split(date, "-"), $toInt(y)*10000+$toInt(m)*100+$toInt(d) >= 19870624.
+conn_comps_h(int pid1, int pid2, int tag).
+conn_comps_h(pid1, pid2, tag) :- young_people_h(pid1), person_hasInterest_tag(pid1, tag), person_hasInterest_tag(pid2, tag), young_people_h(pid2), person_knows_person(pid1, pid2);
+	:- conn_comps_h(pid1, y, tag), person_knows_person(y, pid2), pid1 != pid2, young_people_h(pid2), person_hasInterest_tag(pid2, tag).
+comp_sizes_h(int pid, int tag, int count).
+comp_sizes_h(pid, tag, $inc(1)) :- conn_comps_h(pid, _, tag);
+	:- young_people_h(pid), person_hasInterest_tag(pid, tag).tag_sizes_h(int count, String tagname).
+tag_sizes_h(count, tagname) :- comp_sizes_h(pid, tag, count), tag(tag, tagname).`
+result_set = `tag_sizes_h(count,name)`
+result_set = sorted(result_set, key=lambda x:(-x[0],x[1]))
+used = set()
+results = 0
+for count, name in result_set:
+	if results >= 7:
+		break
+	if name not in used: 
+		print name, count
+		used.add(name)
+		results += 1
+
+
+print "\nRunning query2(3, 1988-11-10)\n"
+def inc(n, by): return n+by
+
+`young_people_i(int id).
+young_people_i(id) :- person(id, date), (y,m,d)=$split(date, "-"), $toInt(y)*10000+$toInt(m)*100+$toInt(d) >= 19881110.
+conn_comps_i(int pid1, int pid2, int tag).
+conn_comps_i(pid1, pid2, tag) :- young_people_i(pid1), person_hasInterest_tag(pid1, tag), person_hasInterest_tag(pid2, tag), young_people_i(pid2), person_knows_person(pid1, pid2);
+	:- conn_comps_i(pid1, y, tag), person_knows_person(y, pid2), pid1 != pid2, young_people_i(pid2), person_hasInterest_tag(pid2, tag).
+comp_sizes_i(int pid, int tag, int count).
+comp_sizes_i(pid, tag, $inc(1)) :- conn_comps_i(pid, _, tag);
+	:- young_people_i(pid), person_hasInterest_tag(pid, tag).tag_sizes_i(int count, String tagname).
+tag_sizes_i(count, tagname) :- comp_sizes_i(pid, tag, count), tag(tag, tagname).`
+result_set = `tag_sizes_i(count,name)`
+result_set = sorted(result_set, key=lambda x:(-x[0],x[1]))
+used = set()
+results = 0
+for count, name in result_set:
+	if results >= 3:
+		break
+	if name not in used: 
+		print name, count
+		used.add(name)
+		results += 1
+
+
+print "\nRunning query2(4, 1990-01-25)\n"
+def inc(n, by): return n+by
+
+`young_people_j(int id).
+young_people_j(id) :- person(id, date), (y,m,d)=$split(date, "-"), $toInt(y)*10000+$toInt(m)*100+$toInt(d) >= 19900125.
+conn_comps_j(int pid1, int pid2, int tag).
+conn_comps_j(pid1, pid2, tag) :- young_people_j(pid1), person_hasInterest_tag(pid1, tag), person_hasInterest_tag(pid2, tag), young_people_j(pid2), person_knows_person(pid1, pid2);
+	:- conn_comps_j(pid1, y, tag), person_knows_person(y, pid2), pid1 != pid2, young_people_j(pid2), person_hasInterest_tag(pid2, tag).
+comp_sizes_j(int pid, int tag, int count).
+comp_sizes_j(pid, tag, $inc(1)) :- conn_comps_j(pid, _, tag);
+	:- young_people_j(pid), person_hasInterest_tag(pid, tag).tag_sizes_j(int count, String tagname).
+tag_sizes_j(count, tagname) :- comp_sizes_j(pid, tag, count), tag(tag, tagname).`
+result_set = `tag_sizes_j(count,name)`
+result_set = sorted(result_set, key=lambda x:(-x[0],x[1]))
+used = set()
+results = 0
+for count, name in result_set:
+	if results >= 4:
 		break
 	if name not in used: 
 		print name, count
